@@ -24,5 +24,20 @@ func New(t *Task) Runner {
 	return &runner{Task: t}
 }
 
+func (r *runner) listen() {
+	// TODO: Listen for upcomming events
+}
+
+func (r *runner) interval(i int) {
+	// TODO: Listen for interval timeouts
+}
+
 func (r *runner) Start() {
+	evs := make(chan Event, 100)
+	go r.listen()
+	go r.interval(r.Task.Interval)
+	for {
+		ev := <-evs
+		r.Task.Run()
+	}
 }
