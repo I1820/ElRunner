@@ -29,7 +29,7 @@ func New(t *Task) Runner {
 	return &runner{
 		task: t,
 		evs:  make(chan Event, 100),
-		stp:  make(chan int, 1),
+		stp:  make(chan int),
 	}
 }
 
