@@ -10,8 +10,10 @@
 
 package runner
 
+import "time"
+
 // Task represents single task must run on the runner
 type Task struct {
-	Run      func()
-	Interval int
+	Run      func(ev Event)
+	Interval time.Duration
 }
