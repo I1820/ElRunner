@@ -36,7 +36,7 @@ func (i *IntervalEvent) Type() int {
 
 // Data returns data associated with event
 func (i *IntervalEvent) Data() string {
-	return i.time.String()
+	return i.time.Format(time.RFC3339)
 }
 
 // DataEvent occurs when new data comes from push service
