@@ -16,6 +16,7 @@ import "time"
 type Runner interface {
 	Start()
 	Stop()
+	Trigger(e *DataEvent)
 }
 
 type runner struct {
@@ -25,16 +26,16 @@ type runner struct {
 }
 
 // New creates new runner based on given task
-func New(t *Task) Runner {
+func New(t *Task, backlog int) Runner {
 	return &runner{
 		task: t,
-		evs:  make(chan Event, 100),
+		evs:  make(chan Event, backlog),
 		stp:  make(chan int),
 	}
 }
 
-func (r *runner) listen() {
-	// TODO: Listen for upcomming events
+func (r *runner) Trigger(e *DataEvent) {
+	r.evs <- e
 }
 
 func (r *runner) interval(i time.Duration) {
@@ -48,8 +49,9 @@ func (r *runner) interval(i time.Duration) {
 }
 
 func (r *runner) Start() {
-	go r.listen()
-	go r.interval(r.task.Interval)
+	if r.task.Interval > 0 {
+		go r.interval(r.task.Interval)
+	}
 	for {
 		select {
 		case ev := <-r.evs:
@@ -61,5 +63,11 @@ func (r *runner) Start() {
 }
 
 func (r *runner) Stop() {
-	r.stp <- 1
+	t := time.NewTimer(time.Second * 10)
+	select {
+	case r.stp <- 1:
+		break
+	case <-t.C:
+		break
+	}
 }
