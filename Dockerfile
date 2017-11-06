@@ -5,7 +5,7 @@ RUN apk update && apk add git
 RUN cd $GOPATH/src/github/platformwg/GoRunner/ && go get && go build -o /GoRunner
 
 # Final stage
-FROM alpine
+FROM node:alpine
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
 ENTRYPOINT ["./GoRunner"]
