@@ -6,4 +6,5 @@
 #
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
-print("hello from python")
+s = input()
+print("hello from python", s)
