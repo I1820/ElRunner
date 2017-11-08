@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"io"
 	"os/exec"
 	"testing"
 	"time"
@@ -48,7 +49,7 @@ func TestDataEvent(t *testing.T) {
 	r.Stop()
 }
 
-func TestNodeJS(t *testing.T) {
+func TestPython(t *testing.T) {
 	var rz = make(chan int)
 	r := New(&Task{
 		Run: func(e Event) {
@@ -60,10 +61,19 @@ func TestNodeJS(t *testing.T) {
 			t.Log(te.Sub(ts))
 
 			cmd := exec.Command("python3", "hello.py")
-			err := cmd.Run()
+
+			stdin, err := cmd.StdinPipe()
 			if err != nil {
 				t.Fatal(err)
 			}
+			io.WriteString(stdin, e.Data())
+			stdin.Close()
+
+			out, err := cmd.Output()
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Log(string(out))
 
 			rz <- 1
 		},
