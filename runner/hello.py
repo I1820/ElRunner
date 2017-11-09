@@ -6,5 +6,8 @@
 #
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
+import time
+
 s = input()
+time.sleep(1)
 print("hello from python", s)
