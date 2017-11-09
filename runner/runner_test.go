@@ -41,12 +41,8 @@ func TestDataEvent(t *testing.T) {
 		Interval: 0,
 	}, 100)
 	go r.Start()
-	r.Trigger(&DataEvent{
-		data: "Hello",
-	})
-	r.Trigger(&DataEvent{
-		data: "Bye",
-	})
+	r.Trigger("Hello")
+	r.Trigger("Bye")
 	<-rz
 	r.Stop()
 }
