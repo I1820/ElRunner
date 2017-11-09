@@ -16,12 +16,14 @@ import "time"
 type Runner interface {
 	Start()
 	Stop()
+	Output() Output
 	Trigger(e *DataEvent)
 }
 
 type runner struct {
 	task *Task
 	evs  chan Event
+	out  chan Output
 	stp  chan int
 }
 
@@ -30,6 +32,7 @@ func New(t *Task, backlog int) Runner {
 	return &runner{
 		task: t,
 		evs:  make(chan Event, backlog),
+		out:  make(chan Output, backlog),
 		stp:  make(chan int),
 	}
 }
@@ -55,7 +58,10 @@ func (r *runner) Start() {
 	for {
 		select {
 		case ev := <-r.evs:
-			r.task.Run(ev)
+			o := r.task.Run(ev)
+			if o != "" {
+				r.out <- o
+			}
 		case <-r.stp:
 			break
 		}
@@ -70,4 +76,9 @@ func (r *runner) Stop() {
 	case <-t.C:
 		break
 	}
+}
+
+func (r *runner) Output() Output {
+	o := <-r.out
+	return o
 }
