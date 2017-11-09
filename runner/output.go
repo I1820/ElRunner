@@ -11,5 +11,4 @@
 package runner
 
 // Output represents output of the task that runs on runner
-type Output interface {
-}
+type Output string
