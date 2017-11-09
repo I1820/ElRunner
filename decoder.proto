@@ -1,0 +1,3 @@
+service Decoder {
+  rpc Decode(string) string
+}
