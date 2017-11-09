@@ -4,25 +4,22 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	fmt.Println("GoRunner by Parham Alvani")
 
-	r := mux.NewRouter().StrictSlash(false)
-	r.HandleFunc("/api/about", about).Methods("GET")
+	r := gin.Default()
 
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: r,
-	}
-	fmt.Printf("Listen on %s\n", server.Addr)
-	server.ListenAndServe()
+	r.GET("/api/about", about)
+
+	r.Run()
 }
 
-func about(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "18.20 is leaving us")
+func about(c *gin.Context) {
+	c.String(http.StatusOK, "18.20 is leaving us")
+}
+
+func decoder(w http.ResponseWriter, r *http.Request) {
 }
