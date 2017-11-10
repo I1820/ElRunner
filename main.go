@@ -66,7 +66,13 @@ func decodeHandler(c *gin.Context) {
 	if err != nil {
 	}
 
-	c.String(http.StatusOK, decoders[id].Decode(string(data)))
+	decoder, ok := decoders[id]
+	if !ok {
+		c.String(http.StatusNotFound, fmt.Sprintf("\"%s\" does not exit on GoRunner", id))
+		return
+	}
+
+	c.String(http.StatusOK, decoder.Decode(string(data)))
 }
 
 func decoderHandler(c *gin.Context) {
