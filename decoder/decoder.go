@@ -22,11 +22,13 @@ import (
 // Decoder binded functions
 type Decoder interface {
 	Decode(string) string
+	ID() string
 	Stop()
 }
 
 type decoder struct {
 	r runner.Runner
+	i string
 }
 
 func (d *decoder) Decode(r string) string {
@@ -36,6 +38,10 @@ func (d *decoder) Decode(r string) string {
 
 func (d *decoder) Stop() {
 	d.r.Stop()
+}
+
+func (d *decoder) ID() string {
+	return d.i
 }
 
 // New creates decoder based on given code
@@ -73,5 +79,6 @@ func New(code []byte, id string) (Decoder, error) {
 
 	return &decoder{
 		r: runner,
+		i: id,
 	}, nil
 }
