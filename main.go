@@ -1,58 +1,83 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
-	"os/exec"
+	"os"
+	"os/signal"
+	"time"
 
-	"github.com/aiotrc/GoRunner/runner"
+	"github.com/aiotrc/GoRunner/decoder"
 	"github.com/gin-gonic/gin"
 )
 
-var runners []runner.Runner
+var decoders map[string]decoder.Decoder
 
 func main() {
 	fmt.Println("GoRunner by Parham Alvani")
-	runners = make([]runner.Runner, 1, 100)
+
+	decoders = make(map[string]decoder.Decoder)
 
 	r := gin.Default()
 
 	api := r.Group("/api")
 	{
-		api.GET("/decode/:data", decode)
-		api.GET("/about", about)
+		api.POST("/decode/:id", decodeHandler)
+		api.GET("/about", aboutHandler)
+		api.POST("/decoder/:id", decoderHandler)
 	}
 
-	runners[0] = runner.New(&runner.Task{
-		Run: func(e runner.Event) runner.Output {
-			cmd := exec.Command("python3", "./runner/hello.py")
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
+	}
 
-			stdin, err := cmd.StdinPipe()
-			if err != nil {
-			}
-			io.WriteString(stdin, e.Data())
-			stdin.Close()
+	go func() {
+		fmt.Printf("GoRunner Listen: %s\n", srv.Addr)
+		// service connections
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal("Listen Error:", err)
+		}
+	}()
 
-			out, err := cmd.Output()
-			if err != nil {
-			}
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	fmt.Println("GoRunner Shutdown")
 
-			return runner.Output(out)
-		},
-		Interval: 0,
-	}, 1)
-	go runners[0].Start()
-
-	r.Run()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Shutdown Error:", err)
+	}
 }
 
-func about(c *gin.Context) {
+func aboutHandler(c *gin.Context) {
 	c.String(http.StatusOK, "18.20 is leaving us")
 }
 
-func decode(c *gin.Context) {
-	data := c.Param("data")
-	runners[0].Trigger(data)
-	c.String(http.StatusOK, string(runners[0].Output()))
+func decodeHandler(c *gin.Context) {
+	id := c.Param("id")
+	data, err := c.GetRawData()
+	if err != nil {
+	}
+
+	c.String(http.StatusOK, decoders[id].Decode(string(data)))
+}
+
+func decoderHandler(c *gin.Context) {
+	id := c.Param("id")
+	data, err := c.GetRawData()
+	if err != nil {
+	}
+
+	decoder, err := decoder.New(data, id)
+
+	decoders[id] = decoder
+
+	c.String(http.StatusOK, id)
 }
