@@ -64,6 +64,8 @@ func decodeHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	decoder, ok := decoders[id]
@@ -79,10 +81,15 @@ func decoderHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	decoder, err := decoder.New(data, id)
 
+	if decoders[id] != nil {
+		decoders[id].Stop()
+	}
 	decoders[id] = decoder
 
 	c.String(http.StatusOK, id)
