@@ -1,11 +1,11 @@
 # Build stage
 FROM golang:alpine AS build-env
-ADD . $GOPATH/src/github/aiotrc/GoRunner
+ADD . $GOPATH/src/github.com/aiotrc/GoRunner
 RUN apk update && apk add git
-RUN cd $GOPATH/src/github/aiotrc/GoRunner/ && go get && go build -o /GoRunner
+RUN cd $GOPATH/src/github.com/aiotrc/GoRunner/ && go get -v && go build -v -o /GoRunner
 
 # Final stage
-FROM python:3
+FROM python:3-alpine
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
 ENTRYPOINT ["./GoRunner"]
