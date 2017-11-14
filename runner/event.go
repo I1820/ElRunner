@@ -21,7 +21,7 @@ const (
 // Event represents type and data of occurred events
 type Event interface {
 	Type() int
-	Data() string
+	Data() []byte
 }
 
 // IntervalEvent occurs when user specific interval finishes
@@ -35,13 +35,13 @@ func (i *IntervalEvent) Type() int {
 }
 
 // Data returns data associated with event
-func (i *IntervalEvent) Data() string {
-	return i.time.Format(time.RFC3339)
+func (i *IntervalEvent) Data() []byte {
+	return []byte(i.time.Format(time.RFC3339))
 }
 
 // DataEvent occurs when new data comes from push service
 type DataEvent struct {
-	data string
+	data []byte
 }
 
 // Type returns type of event
@@ -50,6 +50,6 @@ func (d *DataEvent) Type() int {
 }
 
 // Data returns data associated with event
-func (d *DataEvent) Data() string {
+func (d *DataEvent) Data() []byte {
 	return d.data
 }

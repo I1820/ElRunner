@@ -11,6 +11,7 @@
 package decoder
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io"
 	"os"
@@ -21,7 +22,7 @@ import (
 
 // Decoder binded functions
 type Decoder interface {
-	Decode(string) string
+	Decode([]byte) string
 	ID() string
 	Stop()
 }
@@ -31,7 +32,7 @@ type decoder struct {
 	i string
 }
 
-func (d *decoder) Decode(r string) string {
+func (d *decoder) Decode(r []byte) string {
 	d.r.Trigger(r)
 	return string(d.r.Output())
 }
@@ -63,7 +64,7 @@ func New(code []byte, id string) (Decoder, error) {
 			if err != nil {
 				return runner.Output(err.Error())
 			}
-			io.WriteString(stdin, e.Data())
+			io.WriteString(stdin, base64.StdEncoding.EncodeToString(e.Data()))
 			stdin.Close()
 
 			out, err := cmd.Output()

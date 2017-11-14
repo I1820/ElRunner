@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"encoding/base64"
 	"io"
 	"os/exec"
 	"testing"
@@ -14,7 +15,7 @@ func TestIntervalEvent(t *testing.T) {
 			if e.Type() != IntervalEventType {
 				t.Fatal("Invalid Event Type")
 			}
-			ts, _ := time.Parse(time.RFC3339, e.Data())
+			ts, _ := time.Parse(time.RFC3339, string(e.Data()))
 			te := time.Now()
 			t.Log(te.Sub(ts))
 			rz <- 1
@@ -34,15 +35,15 @@ func TestDataEvent(t *testing.T) {
 			if e.Type() != DataEventType {
 				t.Fatal("Invalid Event Type")
 			}
-			t.Log(e.Data())
+			t.Log(string(e.Data()))
 			rz <- 1
 			return ""
 		},
 		Interval: 0,
 	}, 100)
 	go r.Start()
-	r.Trigger("Hello")
-	r.Trigger("Bye")
+	r.Trigger([]byte("Hello"))
+	r.Trigger([]byte("Bye"))
 	<-rz
 	r.Stop()
 }
@@ -53,7 +54,7 @@ func TestPython(t *testing.T) {
 			if e.Type() != IntervalEventType {
 				t.Fatal("Invalid Event Type")
 			}
-			ts, _ := time.Parse(time.RFC3339, e.Data())
+			ts, _ := time.Parse(time.RFC3339, string(e.Data()))
 			te := time.Now()
 			t.Log(te.Sub(ts))
 
@@ -63,7 +64,7 @@ func TestPython(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			io.WriteString(stdin, e.Data())
+			io.WriteString(stdin, base64.StdEncoding.EncodeToString(e.Data()))
 			stdin.Close()
 
 			out, err := cmd.Output()
