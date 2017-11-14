@@ -44,9 +44,10 @@ func main() {
 
 	decoders["isrc-sensor"], _ = decoder.New([]byte(`
 import cbor
+import base64
 
 s = input()
-d = cbor.loads(s.encode("ascii"))
+d = cbor.loads(s.base64.b64decode(s))
 print(d)
 	`), "isrc-sensor")
 
