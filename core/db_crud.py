@@ -27,3 +27,7 @@ def read_many(partial_document):
 
 def update_one(partial_document, update_instructions):
     return collection.update_one(partial_document, update_instructions)
+
+
+def update_many(partial_document, update_instructions):
+    return collection.update_many(partial_document, update_instructions)
