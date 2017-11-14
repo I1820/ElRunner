@@ -47,7 +47,7 @@ import cbor
 import base64
 
 s = input()
-d = cbor.loads(s.base64.b64decode(s))
+d = cbor.loads(base64.b64decode(s))
 print(d)
 	`), "isrc-sensor")
 
