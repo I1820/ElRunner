@@ -56,9 +56,11 @@ def read_many_test():
 def update_one_test():
     print("update_one_test:")
     result = update_one({"ID": "123456789"}, {"$set": {"Message": "UPDATED device message test 1"}})
-    print(result)
+    print(result.raw_result)
+
 
 create_one_test()
 create_many_test()
 read_one_test()
 read_many_test()
+update_one_test()
