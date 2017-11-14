@@ -74,7 +74,7 @@ func decodeHandler(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, decoder.Decode(string(data)))
+	c.String(http.StatusOK, decoder.Decode(data))
 }
 
 func decoderHandler(c *gin.Context) {
