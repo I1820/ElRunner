@@ -31,3 +31,11 @@ def update_one(partial_document, update_instructions):
 
 def update_many(partial_document, update_instructions):
     return collection.update_many(partial_document, update_instructions)
+
+
+def delete_one(partial_document):
+    return collection.delete_one(partial_document)
+
+
+def delete_many(partial_document):
+    return collection.delete_many(partial_document)

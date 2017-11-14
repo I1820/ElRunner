@@ -1,6 +1,6 @@
 import datetime
 
-from core.db_crud import create_one, read_one, create_many, read_many, update_one, update_many
+from core.db_crud import create_one, read_one, create_many, read_many, update_one, update_many, delete_one, delete_many
 
 test_document = {"ID": "123456789",
                  "User": "Mike",
@@ -64,9 +64,23 @@ def update_many_test():
     result = update_many({"User": "Mike"}, {"$set": {"Message": "UPDATED Many device message test"}})
     print(result.raw_result)
 
+
+def delete_one_test():
+    print("delete_one_test:")
+    result = delete_one({"ID": "12345678900"})
+    print(result.raw_result)
+
+
+def delete_many_test():
+    print("delete_many_test:")
+    result = delete_many({"User": "Mike"})
+    print(result.raw_result)
+
 create_one_test()
 create_many_test()
 read_one_test()
 read_many_test()
 update_one_test()
 update_many_test()
+delete_one_test()
+delete_many_test()
