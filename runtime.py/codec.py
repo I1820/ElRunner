@@ -11,11 +11,17 @@ import abc
 
 
 class Codec(metaclass=abc.ABCMeta):
+    sub_class = None
+
     @classmethod
     def __init_subclass__(cls, requirements, **kwargs):
         super().__init_subclass__(**kwargs)
         pip.main(['install', *requirements])
-        print(cls)
+        cls.sub_class = cls
+
+    @classmethod
+    def get(cls):
+        return cls.sub_class
 
     @abc.abstractmethod
     def decode(self, data):
