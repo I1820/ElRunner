@@ -42,6 +42,15 @@ func main() {
 		}
 	}()
 
+	decoders["isrc-sensor"], _ = decoder.New([]byte(`
+import cbor
+import base64
+
+s = input()
+d = cbor.loads(base64.b64decode(s))
+print(d)
+	`), "isrc-sensor")
+
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
 	quit := make(chan os.Signal)
