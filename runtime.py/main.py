@@ -8,6 +8,7 @@
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
 import click
+from codec import Codec
 
 
 @click.command()
