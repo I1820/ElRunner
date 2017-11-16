@@ -13,7 +13,7 @@ from codec import Codec
 
 
 @click.command()
-@click.option('--target', help='Target python source code', type=click.Path())
+@click.argument('target', type=click.Path())
 @click.option('--job', type=click.Choice(['decode', 'encode', 'rule']))
 def run(target, job):
     '''
@@ -26,10 +26,9 @@ def run(target, job):
         return
     if job == 'decode':
         s = input()
-        s = base64.b64decode(s)
-        d = Codec.get().decode(s)
+        d = Codec.get()().decode(base64.b64decode(s))
         print(d)
 
 
-if __name__ == '__main__':
+def main():
     run()
