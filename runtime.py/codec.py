@@ -11,20 +11,25 @@ import abc
 import importlib
 
 
-class Codec(metaclass=abc.ABCMeta):
+class CodecBase(abc.ABCMeta):
     sub_class = None
 
-    @classmethod
-    def __init_subclass__(cls, requirements, **kwargs):
-        super().__init_subclass__(**kwargs)
+    def __new__(cls, name, bases, namespace, requirements):
+        instance = abc.ABCMeta.__new__(
+            cls, name, bases, namespace)
+
         subprocess.run(['pip3', '-qqq', 'install'] + requirements)
         for requirement in requirements:
             setattr(cls, requirement, importlib.import_module(requirement))
-        Codec.sub_class = cls
 
-    @classmethod
-    def get(cls):
-        return cls.sub_class
+        cls.sub_class = instance
+        return instance
+
+
+class Codec(metaclass=CodecBase, requirements=[]):
+    @staticmethod
+    def get():
+        return CodecBase.sub_class
 
     @abc.abstractmethod
     def decode(self, data):
