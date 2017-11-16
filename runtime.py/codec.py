@@ -6,8 +6,9 @@
 #
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
-import pip
+import subprocess
 import abc
+import importlib
 
 
 class Codec(metaclass=abc.ABCMeta):
@@ -16,8 +17,10 @@ class Codec(metaclass=abc.ABCMeta):
     @classmethod
     def __init_subclass__(cls, requirements, **kwargs):
         super().__init_subclass__(**kwargs)
-        pip.main(['install', *requirements])
-        cls.sub_class = cls
+        subprocess.run(['pip3', '-qqq', 'install', *requirements])
+        for requirement in requirements:
+            setattr(cls, requirement, importlib.import_module(requirement))
+        Codec.sub_class = cls
 
     @classmethod
     def get(cls):
