@@ -43,12 +43,11 @@ func main() {
 	}()
 
 	decoders["isrc-sensor"], _ = decoder.New([]byte(`
-import cbor
-import base64
-
-s = input()
-d = cbor.loads(base64.b64decode(s))
-print(d)
+class ISRC(Codec, requirements=["cbor"]):
+    def decode(self, data):
+        return self.cbor.loads(data)
+    def encode(self, data):
+        pass
 	`), "isrc-sensor")
 
 	// Wait for interrupt signal to gracefully shutdown the server with
