@@ -10,5 +10,4 @@ addon:
       - python3-setuptools
 
 before_install:
-  - sudo pip3 install setuptools
   - cd runtime.py && sudo python3 setup.py install && cd ..
