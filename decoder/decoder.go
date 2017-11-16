@@ -14,6 +14,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 
@@ -58,7 +59,7 @@ func New(code []byte, id string) (Decoder, error) {
 
 	runner := runner.New(&runner.Task{
 		Run: func(e runner.Event) runner.Output {
-			cmd := exec.Command("python3.6", "./runtime.py/main.py", "--job", "decode", fmt.Sprintf("/tmp/%s.py", id))
+			cmd := exec.Command("runtime.py", "--job", "decode", fmt.Sprintf("/tmp/%s.py", id))
 
 			stdin, err := cmd.StdinPipe()
 			if err != nil {
@@ -70,7 +71,7 @@ func New(code []byte, id string) (Decoder, error) {
 			out, err := cmd.Output()
 			if err != nil {
 				if err, ok := err.(*exec.ExitError); ok {
-					fmt.Println(string(err.Stderr))
+					log.Println(string(err.Stderr))
 					return runner.Output(string(err.Stderr))
 				}
 				return runner.Output(err.Error())
