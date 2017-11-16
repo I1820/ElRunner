@@ -8,4 +8,6 @@ RUN cd $GOPATH/src/github.com/aiotrc/GoRunner/ && go get -v && go build -v -o /G
 FROM python:3-alpine
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
+ADD runtime.py /app/runtime.py
+RUN cd /app/runtime.py && python3 setup.py install
 ENTRYPOINT ["./GoRunner"]
