@@ -17,7 +17,7 @@ class Codec(metaclass=abc.ABCMeta):
     @classmethod
     def __init_subclass__(cls, requirements, **kwargs):
         super().__init_subclass__(**kwargs)
-        subprocess.run(['pip3', '-qqq', 'install', *requirements])
+        subprocess.run(['pip3', '-qqq', 'install'] + requirements)
         for requirement in requirements:
             setattr(cls, requirement, importlib.import_module(requirement))
         Codec.sub_class = cls
