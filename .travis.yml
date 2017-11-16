@@ -5,4 +5,6 @@ go:
   - master
 
 before_install:
-  - python3 runtime.py/setup.py install
+  - sudo apt-get -qq update
+  - sudo apt-get install -y python3-setuptools
+  - sudo python3 runtime.py/setup.py install
