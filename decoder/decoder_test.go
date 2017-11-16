@@ -14,20 +14,19 @@ import "testing"
 
 func TestHelloDeocder(t *testing.T) {
 	code := []byte(`
-import time
-import base64
-
-s = input()
-s = base64.b64decode(s).decode('ascii')
-print("hello from python", s)
+class ISRC(Codec, requirements=[]):
+    def decode(self, data):
+        return data.decode('ascii')
+    def encode(self, data):
+        pass
 	`)
 	d, err := New(code, "hi")
 	if err != nil {
 		t.Fatal(err)
 	}
 	r := d.Decode([]byte("Hi"))
-	if r != "hello from python Hi\n" {
-		t.Fatal("Invalid Decode Result", r)
+	if r != "Hi\n" {
+		t.Fatal("Invalid Decode Result \"", r, "\"")
 	}
 	d.Stop()
 }
