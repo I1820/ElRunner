@@ -4,10 +4,7 @@ go:
   - 1.8
   - master
 
-addon:
-  apt:
-    packages:
-      - python3-setuptools
-
 before_install:
+  - sudo apt-get update
+  - sudo apt-get -y python3-setuptools
   - cd runtime.py && sudo python3 setup.py install && cd ..
