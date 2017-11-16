@@ -6,5 +6,5 @@ go:
 
 before_install:
   - sudo apt-get -m update || true
-  - sudo apt-get -y python3-setuptools
+  - sudo apt-get install -y python3-setuptools
   - cd runtime.py && sudo python3 setup.py install && cd ..
