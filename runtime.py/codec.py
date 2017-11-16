@@ -14,6 +14,9 @@ import importlib
 class CodecBase(abc.ABCMeta):
     sub_class = None
 
+    def __init__(self, name, bases, namespace, **kwargs):
+        abc.ABCMeta.__init__(self, name, bases, namespace)
+
     def __new__(cls, name, bases, namespace, requirements):
         instance = abc.ABCMeta.__new__(
             cls, name, bases, namespace)
