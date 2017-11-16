@@ -3,3 +3,6 @@ language: go
 go:
   - 1.8
   - master
+
+before_install:
+  - python3 runtime.py/setup.py install
