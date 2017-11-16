@@ -18,7 +18,7 @@ class CodecBase(abc.ABCMeta):
         instance = abc.ABCMeta.__new__(
             cls, name, bases, namespace)
 
-        subprocess.call(['pip3', '-qqq', 'install'] + requirements)
+        subprocess.call(['pip', '-qqq', 'install'] + requirements)
         for requirement in requirements:
             setattr(instance, requirement,
                     importlib.import_module(requirement))
