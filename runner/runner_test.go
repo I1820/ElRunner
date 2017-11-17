@@ -11,7 +11,7 @@ import (
 func TestIntervalEvent(t *testing.T) {
 	var rz = make(chan int)
 	r := New(&Task{
-		Run: func(e Event) Output {
+		Run: func(e Event) (string, error) {
 			if e.Type() != IntervalEventType {
 				t.Fatal("Invalid Event Type")
 			}
@@ -19,7 +19,7 @@ func TestIntervalEvent(t *testing.T) {
 			te := time.Now()
 			t.Log(te.Sub(ts))
 			rz <- 1
-			return nil
+			return "", nil
 		},
 		Interval: 1 * time.Second,
 	}, 100)
@@ -31,13 +31,13 @@ func TestIntervalEvent(t *testing.T) {
 func TestDataEvent(t *testing.T) {
 	var rz = make(chan int)
 	r := New(&Task{
-		Run: func(e Event) Output {
+		Run: func(e Event) (string, error) {
 			if e.Type() != DataEventType {
 				t.Fatal("Invalid Event Type")
 			}
 			t.Log(string(e.Data()))
 			rz <- 1
-			return nil
+			return "", nil
 		},
 		Interval: 0,
 	}, 100)
@@ -50,7 +50,7 @@ func TestDataEvent(t *testing.T) {
 
 func TestPython(t *testing.T) {
 	r := New(&Task{
-		Run: func(e Event) Output {
+		Run: func(e Event) (string, error) {
 			if e.Type() != IntervalEventType {
 				t.Fatal("Invalid Event Type")
 			}
@@ -73,7 +73,7 @@ func TestPython(t *testing.T) {
 			}
 			t.Log(string(out))
 
-			return CreateOutput(out, 0)
+			return string(out), nil
 		},
 		Interval: 1 * time.Second,
 	}, 100)
