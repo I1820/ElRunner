@@ -9,16 +9,16 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/aiotrc/GoRunner/decoder"
+	"github.com/aiotrc/GoRunner/codec"
 	"github.com/gin-gonic/gin"
 )
 
-var decoders map[string]decoder.Decoder
+var decoders map[string]codec.Codec
 
 func main() {
 	fmt.Println("GoRunner by Parham Alvani")
 
-	decoders = make(map[string]decoder.Decoder)
+	decoders = make(map[string]codec.Codec)
 
 	r := gin.Default()
 
@@ -26,7 +26,7 @@ func main() {
 	{
 		api.POST("/decode/:id", decodeHandler)
 		api.GET("/about", aboutHandler)
-		api.POST("/decoder/:id", decoderHandler)
+		api.POST("/codec/:id", codecHandler)
 	}
 
 	srv := &http.Server{
@@ -42,7 +42,7 @@ func main() {
 		}
 	}()
 
-	decoders["isrc-sensor"], _ = decoder.New([]byte(`
+	decoders["isrc-sensor"], _ = codec.New([]byte(`
 class ISRC(Codec, requirements=["cbor"]):
     def decode(self, data):
         return self.cbor.loads(data)
@@ -82,10 +82,15 @@ func decodeHandler(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, decoder.Decode(data))
+	parsed, err := decoder.Decode(data)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	} else {
+		c.String(http.StatusOK, parsed)
+	}
 }
 
-func decoderHandler(c *gin.Context) {
+func codecHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
@@ -93,7 +98,7 @@ func decoderHandler(c *gin.Context) {
 		return
 	}
 
-	decoder, err := decoder.New(data, id)
+	decoder, err := codec.New(data, id)
 
 	if decoders[id] != nil {
 		decoders[id].Stop()
