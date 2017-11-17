@@ -66,7 +66,7 @@ func (r *runner) Start() {
 		select {
 		case ev := <-r.evs:
 			o := r.task.Run(ev)
-			if o != "" {
+			if o != nil {
 				r.out <- o
 			}
 		case <-r.stp:
