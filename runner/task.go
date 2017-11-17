@@ -14,6 +14,6 @@ import "time"
 
 // Task represents single task must run on the runner
 type Task struct {
-	Run      func(ev Event) Output
+	Run      func(ev Event) (string, error)
 	Interval time.Duration
 }
