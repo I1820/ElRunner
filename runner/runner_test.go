@@ -19,7 +19,7 @@ func TestIntervalEvent(t *testing.T) {
 			te := time.Now()
 			t.Log(te.Sub(ts))
 			rz <- 1
-			return ""
+			return nil
 		},
 		Interval: 1 * time.Second,
 	}, 100)
@@ -37,7 +37,7 @@ func TestDataEvent(t *testing.T) {
 			}
 			t.Log(string(e.Data()))
 			rz <- 1
-			return ""
+			return nil
 		},
 		Interval: 0,
 	}, 100)
@@ -73,7 +73,7 @@ func TestPython(t *testing.T) {
 			}
 			t.Log(string(out))
 
-			return Output(out)
+			return CreateOutput(out, 0)
 		},
 		Interval: 1 * time.Second,
 	}, 100)
