@@ -17,7 +17,8 @@ type Runner interface {
 	Start()
 	Stop()
 	Output() Output
-	Trigger([]byte)
+	DataEvent([]byte)
+	Event(Event)
 }
 
 type runner struct {
@@ -37,10 +38,14 @@ func New(t *Task, backlog int) Runner {
 	}
 }
 
-func (r *runner) Trigger(data []byte) {
+func (r *runner) DataEvent(data []byte) {
 	r.evs <- &DataEvent{
 		data,
 	}
+}
+
+func (r *runner) Event(e Event) {
+	r.evs <- e
 }
 
 func (r *runner) interval(i time.Duration) {

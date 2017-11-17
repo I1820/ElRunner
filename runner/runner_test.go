@@ -42,8 +42,8 @@ func TestDataEvent(t *testing.T) {
 		Interval: 0,
 	}, 100)
 	go r.Start()
-	r.Trigger([]byte("Hello"))
-	r.Trigger([]byte("Bye"))
+	r.DataEvent([]byte("Hello"))
+	r.DataEvent([]byte("Bye"))
 	<-rz
 	r.Stop()
 }
