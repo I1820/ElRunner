@@ -12,5 +12,5 @@ package runner
 
 type output struct {
 	s string
-	e int
+	e error
 }
