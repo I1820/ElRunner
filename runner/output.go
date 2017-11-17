@@ -19,12 +19,12 @@ type output struct {
 	e int
 }
 
-// CreateOutput creates output from given stringer type
+// CreateOutput creates output from given variable using fmt.Sprint
 // s: output message
 // e: error code (0 = no-error)
-func CreateOutput(s fmt.Stringer, e int) Output {
+func CreateOutput(v interface{}, e int) Output {
 	return &output{
-		o: s.String(),
+		o: fmt.Sprint(v),
 		e: e,
 	}
 }
