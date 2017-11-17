@@ -16,6 +16,7 @@ import "time"
 const (
 	IntervalEventType int = iota
 	DataEventType
+	UserEventType
 )
 
 // Event represents type and data of occurred events
