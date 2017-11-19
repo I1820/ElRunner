@@ -28,6 +28,10 @@ def run(target, job):
         s = input()
         d = Codec.get()().decode(base64.b64decode(s))
         print(d)
+    if job == 'encode':
+        s = input()
+        e = Codec.get()().encode(s)
+        print(base64.b64encode(e))
 
 
 def main():
