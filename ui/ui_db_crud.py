@@ -76,6 +76,7 @@ def delete_many_test():
     result = delete_many({"User": "Mike"})
     print(result.raw_result)
 
+
 create_one_test()
 create_many_test()
 read_one_test()
