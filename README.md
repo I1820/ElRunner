@@ -3,4 +3,4 @@
 
 Library for using in IoT Platform Rule Engine
 
-* Database: MongoDB (run on windows: -mongod --storageEngine=mmapv1 --dbpath)
+* Database: MongoDB (run on windows: -mongod --storageEngine=mmapv1 --dbpath <path/to/mongo DB>)
