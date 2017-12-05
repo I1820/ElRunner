@@ -11,25 +11,19 @@ from core.connection_actions import wait_for_data, send_to_down_link
 from core.db_crud import read_one, create_one, update_one
 from core.time_actions import sleep
 
-thing_id = "a"
-sensor_id = "x"
-packet_message = """{"thing_id":"a","sensor_id":"x","data":"100"}"""
-ack_message = """ACK"""
+thing_id = 'a'
+sensor_id = 'x'
+packet_message = '{"thing_id":"a","sensor_id":"x","data":"100"}'
+ack_message = 'ACK'
 w = 3
 received = False
 
-db_sensor_document = {"thing_id": "b",
-                      "sensor_id": "y",
-                      "data": "50",
-                      "user": "Mike",
-                      "tags": ["iot", "temperature"],
-                      "date": datetime.datetime.utcnow()}
+db_sensor_document = dict(thing_id="b", sensor_id="y", data="50", user="Mike", tags=["iot", "temperature"],
+                          date=datetime.datetime.utcnow())
 
 db_sensor_partial_doc = db_sensor_document.copy()
-db_sensor_partial_doc.pop("data")
-db_sensor_partial_doc.pop("user")
-db_sensor_partial_doc.pop("tags")
-db_sensor_partial_doc.pop("date")
+for e in ['data', 'user', 'tags', 'date']:
+    db_sensor_partial_doc.pop(e)
 
 
 def init_db():

@@ -6,10 +6,10 @@ import json
 from core.connection_actions import wait_for_data, send_to_down_link
 from core.notification_actions import send_email
 
-thing_id = "a"
-sensor_id = "x"
-packet_message = """{"thing_id":"a","sensor_id":"x","data":"100"}"""
-ack_message = """ACK"""
+thing_id = 'a'
+sensor_id = 'x'
+packet_message = '{"thing_id":"a","sensor_id":"x","data":"100"}'
+ack_message = 'ACK'
 received = False
 
 
