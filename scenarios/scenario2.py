@@ -11,16 +11,25 @@ from core.connection_actions import wait_for_data, send_to_down_link
 from core.db_crud import read_one, create_one, update_one
 from core.time_actions import sleep
 
+thing_id = "a"
+sensor_id = "x"
 packet_message = """{"thing_id":"a","sensor_id":"x","data":"100"}"""
 ack_message = """ACK"""
 w = 3
+received = False
 
 db_sensor_document = {"thing_id": "b",
                       "sensor_id": "y",
                       "data": "50",
-                      "User": "Mike",
+                      "user": "Mike",
                       "tags": ["iot", "temperature"],
                       "date": datetime.datetime.utcnow()}
+
+db_sensor_partial_doc = db_sensor_document.copy()
+db_sensor_partial_doc.pop("data")
+db_sensor_partial_doc.pop("user")
+db_sensor_partial_doc.pop("tags")
+db_sensor_partial_doc.pop("date")
 
 
 def init_db():
@@ -31,7 +40,7 @@ def init_db():
 
 def read_from_db():
     print("read one:")
-    document = read_one({"thing_id": "b", "sensor_id": "y"})
+    document = read_one(db_sensor_partial_doc)
     if document is not None:
         return document
     else:
@@ -40,16 +49,23 @@ def read_from_db():
 
 def store_result_in_db(new_data):
     print("update one:")
-    result = update_one({"thing_id": "b", "sensor_id": "y"}, {"$set": {"data": new_data}})
+    result = update_one(db_sensor_partial_doc, {"$set": {"data": new_data}})
     print(result.raw_result)
 
 
-def action(json_data):
+def action(data):
     print("action:")
+    data_parsed_json = json.loads(data)
+    if data_parsed_json["thing_id"] != thing_id or data_parsed_json["sensor_id"] != sensor_id:
+        print("not expected thing and sensor! expected[" + thing_id + ":" + sensor_id + "] got[" +
+              data_parsed_json["thing_id"] + ":" + data_parsed_json["sensor_id"] + "]")
+        return
+    global received
+    received = True
     print("before wait: " + str(datetime.datetime.utcnow()))
     sleep(w)
     print("after wait: " + str(datetime.datetime.utcnow()))
-    data_parsed_json = json.loads(json_data)
+    data_parsed_json = json.loads(data)
     doc = read_from_db()
     new_data_value = int(doc["data"]) + int(data_parsed_json["data"])
     store_result_in_db(new_data_value)
@@ -57,12 +73,15 @@ def action(json_data):
 
 # init_db()
 
-try:
-    print("wait for data...")
-    wait_for_data(data_received_function=action, read_bytes=len(packet_message.encode('utf-8')),
-                  ack_message=ack_message, timeout_seconds=30)
-except socket.timeout:
-    print("wait for data: Timeout!")
+while True:
+    try:
+        print("wait for data...")
+        wait_for_data(data_received_function=action, read_bytes=len(packet_message.encode('utf-8')),
+                      ack_message=ack_message, timeout_seconds=30)
+    except socket.timeout:
+        print("wait for data: Timeout!")
+    if received:
+        break
 
 # try:
 #     print("send to down link...")
