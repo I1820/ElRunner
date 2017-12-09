@@ -31,7 +31,7 @@ def run(target, job):
     if job == 'encode':
         s = input()
         e = Codec.get()().encode(s)
-        print(base64.b64encode(e))
+        print(base64.b64encode(e).decode('ascii'))
 
 
 def main():
