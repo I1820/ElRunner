@@ -29,7 +29,30 @@ class ISRC(Codec, requirements=[]):
 		t.Fatal(err)
 	}
 	if r != "Hi\n" {
-		t.Fatal("Invalid Decode Result \"", r, "\"")
+		t.Fatalf("Invalid Decode Result %q", r)
 	}
 	d.Stop()
+}
+
+func TestHelloEncoder(t *testing.T) {
+	code := []byte(`
+class ISRC(Codec, requirements=[]):
+    def decode(self, data):
+        pass
+    def encode(self, data):
+        return data.encode('ascii')
+	`)
+	d, err := New(code, "hi")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := d.Encode("Hi")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(r) != "Hi" {
+		t.Fatalf("Invalid Decode Result %q", r)
+	}
+	d.Stop()
+
 }
