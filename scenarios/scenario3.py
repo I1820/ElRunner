@@ -7,6 +7,7 @@ from core.notification_actions import send_email
 
 db_sensor_partial_doc = {'thing_id': 'a', 'sensor_id': 'x'}
 w = 7
+num_recent_data = 5
 
 
 def init_db():
@@ -23,7 +24,7 @@ def init_db():
 
 def read_data_from_db():
     print("read_data_from_db:")
-    return read_many(db_sensor_partial_doc).sort([("date", -1)]).limit(5)
+    return read_many(db_sensor_partial_doc).sort([("date", -1)]).limit(num_recent_data)
 
 
 def action(data):
@@ -35,7 +36,7 @@ def action(data):
               'To: To Person <ceitiotlabtest@gmail.com>\n' \
               'Subject: Rule Engine Notification\n\n' \
               'Data: ' + data + '\n' \
-              'Sent by Rule Engine. Scenario:3.'
+                                'Sent by Rule Engine. Scenario:3.'
     send_email(host='smtp.gmail.com', port=587, username="ceitiotlabtest", password="ceit is the best", sender=sender,
                receivers=receivers, message=message)
 
