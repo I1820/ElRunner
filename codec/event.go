@@ -13,11 +13,11 @@ package codec
 import "github.com/aiotrc/GoRunner/runner"
 
 // DecodeEvent generates for decode call
-type DecodeEvent []byte
+type DecodeEvent string
 
 // Data returns data associated with event
-func (d DecodeEvent) Data() []byte {
-	return d
+func (d DecodeEvent) Data() string {
+	return string(d)
 }
 
 // Type returns type of event
@@ -29,8 +29,8 @@ func (d DecodeEvent) Type() int {
 type EncodeEvent string
 
 // Data returns data associated with event
-func (e EncodeEvent) Data() []byte {
-	return []byte(e)
+func (e EncodeEvent) Data() string {
+	return string(e)
 }
 
 // Type returns type of event
