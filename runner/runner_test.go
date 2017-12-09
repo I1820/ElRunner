@@ -42,8 +42,8 @@ func TestDataEvent(t *testing.T) {
 		Interval: 0,
 	}, 100)
 	go r.Start()
-	r.DataEvent([]byte("Hello"))
-	r.DataEvent([]byte("Bye"))
+	r.DataEvent("Hello")
+	r.DataEvent("Bye")
 	<-rz
 	r.Stop()
 }
@@ -64,7 +64,7 @@ func TestPython(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			io.WriteString(stdin, base64.StdEncoding.EncodeToString(e.Data()))
+			io.WriteString(stdin, base64.StdEncoding.EncodeToString([]byte(e.Data())))
 			stdin.Close()
 
 			out, err := cmd.Output()

@@ -17,7 +17,7 @@ type Runner interface {
 	Start()
 	Stop()
 	Output() (string, error)
-	DataEvent([]byte)
+	DataEvent(string)
 	Event(Event)
 }
 
@@ -38,7 +38,7 @@ func New(t *Task, backlog int) Runner {
 	}
 }
 
-func (r *runner) DataEvent(data []byte) {
+func (r *runner) DataEvent(data string) {
 	r.evs <- &DataEvent{
 		data,
 	}
