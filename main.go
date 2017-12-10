@@ -13,18 +13,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var decoders map[string]codec.Codec
+var codecs map[string]codec.Codec
 
 func main() {
 	fmt.Println("GoRunner by Parham Alvani")
 
-	decoders = make(map[string]codec.Codec)
+	codecs = make(map[string]codec.Codec)
 
 	r := gin.Default()
 
 	api := r.Group("/api")
 	{
 		api.POST("/decode/:id", decodeHandler)
+		api.POST("/encode/:id", encodeHandler)
 		api.GET("/about", aboutHandler)
 		api.POST("/codec/:id", codecHandler)
 	}
@@ -42,12 +43,12 @@ func main() {
 		}
 	}()
 
-	decoders["isrc-sensor"], _ = codec.New([]byte(`
+	codecs["isrc-sensor"], _ = codec.New([]byte(`
 class ISRC(Codec, requirements=["cbor"]):
     def decode(self, data):
         return self.cbor.loads(data)
     def encode(self, data):
-        pass
+        return self.cbor.dumps(data)
 	`), "isrc-sensor")
 
 	// Wait for interrupt signal to gracefully shutdown the server with
@@ -68,6 +69,28 @@ func aboutHandler(c *gin.Context) {
 	c.String(http.StatusOK, "18.20 is leaving us")
 }
 
+func encodeHandler(c *gin.Context) {
+	id := c.Param("id")
+	data, err := c.GetRawData()
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	encoder, ok := codecs[id]
+	if !ok {
+		c.String(http.StatusNotFound, fmt.Sprintf("\"%s\" does not exit on GoRunner", id))
+		return
+	}
+
+	parsed, err := encoder.Encode(string(data))
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	} else {
+		c.Data(http.StatusOK, "application/octet-stream", parsed)
+	}
+}
+
 func decodeHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
@@ -76,7 +99,7 @@ func decodeHandler(c *gin.Context) {
 		return
 	}
 
-	decoder, ok := decoders[id]
+	decoder, ok := codecs[id]
 	if !ok {
 		c.String(http.StatusNotFound, fmt.Sprintf("\"%s\" does not exit on GoRunner", id))
 		return
@@ -98,12 +121,12 @@ func codecHandler(c *gin.Context) {
 		return
 	}
 
-	decoder, err := codec.New(data, id)
+	codec, err := codec.New(data, id)
 
-	if decoders[id] != nil {
-		decoders[id].Stop()
+	if codecs[id] != nil {
+		codecs[id].Stop()
 	}
-	decoders[id] = decoder
+	codecs[id] = codec
 
 	c.String(http.StatusOK, id)
 }
