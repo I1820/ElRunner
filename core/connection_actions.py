@@ -40,6 +40,7 @@ def send_to_down_link(message, expected_ack_message, ack_timeout_seconds):
     # Create a TCP/IP socket
     sock = socket.create_connection((send_data_server_name, send_data_server_port))
     sock.settimeout(ack_timeout_seconds)
+    successful = False
     try:
         # Send data
         if debug:
@@ -51,10 +52,14 @@ def send_to_down_link(message, expected_ack_message, ack_timeout_seconds):
         if data != expected_ack_message:
             print(sys.stderr, "Real and Expected Ack message are not equal. Real:[" + data + "] \
                 Expected:[" + expected_ack_message + "]")
-        if debug:
-            print >> sys.stderr, 'received "%s"' % data
+        else:
+            if debug:
+                print >> sys.stderr, 'received "%s"' % data
+            successful = True
 
     finally:
         if debug:
             print >> sys.stderr, 'closing socket'
         sock.close()
+
+    return successful

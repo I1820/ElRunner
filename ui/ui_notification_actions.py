@@ -12,14 +12,16 @@ def send_email_test():
 
     This is a test e-mail message.
     """
-    send_email(host='smtp.gmail.com', port=587, username="username", password="password", sender=sender,
-               receivers=receivers, message=message)
+    successful = send_email(host='smtp.gmail.com', port=587, username="username", password="password", sender=sender,
+                            receivers=receivers, message=message)
+    print(successful)
 
 
 def send_sms_test():
     print("send_sms_test")
-    send_sms(username="user", password="pass", from_number="-1", to_number="09121111111",
-             message="test message!")
+    successful = send_sms(username="user", password="pass", from_number="-1", to_number="09121111111",
+                          message="test message!")
+    print(successful)
 
 
 send_email_test()

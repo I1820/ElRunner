@@ -19,7 +19,8 @@ def wait_for_data_test():
 
 def send_to_down_link_test():
     print("send_to_down_link_test:")
-    send_to_down_link(message=test_message, expected_ack_message="ACK", ack_timeout_seconds=1)
+    successful = send_to_down_link(message=test_message, expected_ack_message="ACK", ack_timeout_seconds=1)
+    print(successful)
 
 
 try:
