@@ -1,65 +1,45 @@
-import socket
+import httplib
+
+import jsonrpclib
 import sys
+from jsonrpclib.jsonrpc import SafeTransport
 
-from core.connection_config import receive_data_server_name, receive_data_server_port, send_data_server_name, \
-    send_data_server_port, debug
+from core.connection_config import server_name, server_port, debug
 
 
-def wait_for_data(data_received_function, read_bytes, ack_message, timeout_seconds):
-    # Create a TCP/IP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(timeout_seconds)
-    # Bind the socket to the address given on the command line
-    server_address = (receive_data_server_name, receive_data_server_port)
-    if debug:
-        print >> sys.stderr, 'starting up on %s port %s' % server_address
-    sock.bind(server_address)
-    sock.listen(1)
+class TimeoutTransport(SafeTransport):
+    timeout = 10.0
 
-    if debug:
-        print >> sys.stderr, 'waiting for a connection'
-    connection, client_address = sock.accept()
-    try:
+    def set_timeout(self, timeout):
+        self.timeout = timeout
+
+    def make_connection(self, host):
+        h = httplib.HTTPConnection(host, timeout=self.timeout)
+        return h
+
+
+transport = TimeoutTransport()
+server = jsonrpclib.Server('http://' + server_name + ':' + str(server_port),
+                           transport=transport)
+
+
+def wait_for_data(timeout_seconds):
+    transport.set_timeout(timeout_seconds)
+    response = server.wait_for_data()
+    if response:
+        return response
+    else:
         if debug:
-            print >> sys.stderr, 'client connected:', client_address
+            print >> sys.stderr, 'No Response Received!'
+        return None
 
-        data = connection.recv(read_bytes)
+
+def send_to_down_link(message, timeout_seconds):
+    transport.set_timeout(timeout_seconds)
+    response = server.send_to_down_link(message)
+    if response:
+        return response
+    else:
         if debug:
-            print >> sys.stderr, 'received "%s"' % data
-        if data:
-            data_received_function(data)
-            connection.sendall(ack_message)
-        else:
-            if debug:
-                print >> sys.stderr, 'No Data Received!'
-    finally:
-        connection.close()
-
-
-def send_to_down_link(message, expected_ack_message, ack_timeout_seconds):
-    # Create a TCP/IP socket
-    sock = socket.create_connection((send_data_server_name, send_data_server_port))
-    sock.settimeout(ack_timeout_seconds)
-    successful = False
-    try:
-        # Send data
-        if debug:
-            print >> sys.stderr, 'sending "%s"' % message
-        sock.sendall(message)
-
-        # Receive Acknowledge
-        data = sock.recv(len(expected_ack_message.encode('utf-8')))
-        if data != expected_ack_message:
-            print(sys.stderr, "Real and Expected Ack message are not equal. Real:[" + data + "] \
-                Expected:[" + expected_ack_message + "]")
-        else:
-            if debug:
-                print >> sys.stderr, 'received "%s"' % data
-            successful = True
-
-    finally:
-        if debug:
-            print >> sys.stderr, 'closing socket'
-        sock.close()
-
-    return successful
+            print >> sys.stderr, 'No Response Received!'
+        return None

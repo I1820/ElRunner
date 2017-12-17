@@ -4,16 +4,29 @@
 import datetime
 import socket
 
-from core.connection_actions import send_to_down_link, wait_for_data
+import jsonrpclib
+import thread
+
+from core import connection_actions
 from core.db_crud import create_one, read_many
+from core.rpc_server import start_server
 from core.time_actions import sleep
 
 w = 2
 num_recent_data = 5
 things = [{'thing_id': 'a', 'sensor_id': 'x'}, {'thing_id': 'a', 'sensor_id': 'y'}]
-packet_message = '{"thing_id":"b","sensor_id":"y","data":"200"}'
-ack_message = 'ACK'
+down_link_message = '{"thing_id":"b","sensor_id":"y","data":"200"}'
+server_ack_response = 'ACK'
 command_sent = False
+
+
+def wait_for_data():
+    return 'Data from Server'
+
+
+def send_to_down_link(message):
+    print('server got message: ' + message)
+    return server_ack_response
 
 
 def db_create_one(document):
@@ -23,8 +36,10 @@ def db_create_one(document):
 
 
 def read_from_db(partial_doc):
-    print("read one:")
+    print("read many:")
     documents = read_many(partial_doc).sort([("date", -1)]).limit(num_recent_data)
+    print("\n".join(str(doc) for doc in documents))
+    documents.rewind()
     if documents is not None:
         return documents
     else:
@@ -57,14 +72,9 @@ def print_command(data):
     print(data)
 
 
-# init_db()
+thread.start_new(start_server, (wait_for_data, send_to_down_link))
 
-# try:
-#     print("wait for data...")
-#     wait_for_data(data_received_function=print_command, read_bytes=len(packet_message.encode('utf-8')),
-#                   ack_message=ack_message, timeout_seconds=60)
-# except socket.timeout:
-#     print("wait for data: Timeout!")
+init_db()
 
 while True:
     things_cursors = list()
@@ -76,8 +86,13 @@ while True:
     if averages[0] > averages[1]:
         try:
             print("send to down link...")
-            send_to_down_link(message=packet_message, expected_ack_message=ack_message, ack_timeout_seconds=30)
-            command_sent = True
+            response = connection_actions.send_to_down_link(message=down_link_message, timeout_seconds=30)
+            print('Request:' + jsonrpclib.history.request)
+            if response:
+                print('Response:' + jsonrpclib.history.response)
+                command_sent = True
+            else:
+                print('No Response!')
         except socket.timeout:
             print("send to down link: Timeout!")
     if command_sent:

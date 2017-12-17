@@ -1,16 +1,29 @@
 # coding=utf-8
 # - اگر داده سنسور شماره x بر روی شی a آمد، یک ایمیل ارسل شده و این رخداد را اطلاع دهد
-import socket
 import json
+import socket
+import thread
 
-from core.connection_actions import wait_for_data, send_to_down_link
+import jsonrpclib
+
+from core import connection_actions
 from core.notification_actions import send_email
+from core.rpc_server import start_server
 
 thing_id = 'a'
 sensor_id = 'x'
-packet_message = '{"thing_id":"a","sensor_id":"x","data":"100"}'
-ack_message = 'ACK'
+server_data_response = '{"thing_id":"a","sensor_id":"x","data":"100"}'
+server_ack_response = 'ACK'
 received = False
+
+
+def wait_for_data():
+    return server_data_response
+
+
+def send_to_down_link(message):
+    print('server got message: ' + message)
+    return server_ack_response
 
 
 def action(data):
@@ -34,18 +47,19 @@ def action(data):
                receivers=receivers, message=message)
 
 
+thread.start_new(start_server, (wait_for_data, send_to_down_link))
+
 while True:
     try:
         print("wait for data...")
-        wait_for_data(data_received_function=action, read_bytes=len(packet_message.encode('utf-8')),
-                      ack_message=ack_message, timeout_seconds=30)
+        response = connection_actions.wait_for_data(timeout_seconds=30)
+        print('Request:' + jsonrpclib.history.request)
+        if response:
+            print('Response:' + jsonrpclib.history.response)
+            action(response)
+        else:
+            print('No Response!')
     except socket.timeout:
         print("wait for data: Timeout!")
     if received:
         break
-
-# try:
-#     print("send to down link...")
-#     send_to_down_link(message=packet_message, expected_ack_message=ack_message, ack_timeout_seconds=30)
-# except socket.timeout:
-#     print("send to down link: Timeout!")

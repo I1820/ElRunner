@@ -5,12 +5,17 @@ import socket
 
 import datetime
 
-from core.connection_actions import wait_for_data, send_to_down_link
+import jsonrpclib
+import thread
+
+from core import connection_actions
 from core.db_crud import create_one, read_one, update_one
+from core.rpc_server import start_server
 
 things_series = [{'thing_id': 'a', 'sensor_id': 'x'}, {'thing_id': 'b', 'sensor_id': 'y'}]
-packet_message = '{"thing_id":"b","sensor_id":"y","data":"200"}'
-ack_message = 'ACK'
+server_data_responses = ['{"thing_id":"a","sensor_id":"x","data":"200"}',
+                         '{"thing_id":"b","sensor_id":"y","data":"300"}']
+server_ack_response = 'ACK'
 db_sensor_document = dict(thing_id="b", sensor_id="y", data="50", user="Mike", tags=["iot", "temperature"],
                           date=datetime.datetime.utcnow())
 received = False
@@ -20,6 +25,15 @@ final_state = 2
 db_sensor_partial_doc = db_sensor_document.copy()
 for e in ['data', 'user', 'tags', 'date']:
     db_sensor_partial_doc.pop(e)
+
+
+def wait_for_data():
+    return server_data_responses[state]
+
+
+def send_to_down_link(message):
+    print('server got message: ' + message)
+    return server_ack_response
 
 
 def init_db():
@@ -70,20 +84,21 @@ def action(data):
         received = True
 
 
-# init_db()
+thread.start_new(start_server, (wait_for_data, send_to_down_link))
+
+init_db()
 
 while True:
     try:
         print("wait for data...")
-        wait_for_data(data_received_function=action, read_bytes=len(packet_message.encode('utf-8')),
-                      ack_message=ack_message, timeout_seconds=30)
+        response = connection_actions.wait_for_data(timeout_seconds=30)
+        print('Request:' + jsonrpclib.history.request)
+        if response:
+            print('Response:' + jsonrpclib.history.response)
+            action(response)
+        else:
+            print('No Response!')
     except socket.timeout:
         print("wait for data: Timeout!")
     if received:
         break
-
-# try:
-#     print("send to down link...")
-#     send_to_down_link(message=packet_message, expected_ack_message=ack_message, ack_timeout_seconds=30)
-# except socket.timeout:
-#     print("send to down link: Timeout!")
