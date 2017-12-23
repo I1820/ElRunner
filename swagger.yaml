@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  description: "This is a simple API"
+  description: "GoRunner HTTP API"
   version: "1.0.0"
   title: "GoRunner API"
   contact:
@@ -12,9 +12,8 @@ info:
 paths:
   /api/codec:
     post:
-      summary: "create encode/decoder"
-      description: "By passing in the appropriate options, you can search for\navailable\
-        \ inventory in the system\n"
+      summary: "Create encode/decoder"
+      description: ""
       operationId: "handleCodec"
       produces:
       - "text/plain"
