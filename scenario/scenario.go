@@ -30,6 +30,12 @@ func (e *Endpoint) WaitForData(args int, reply *string) error {
 	return nil
 }
 
+// About let you about who left us alone
+func (e Endpoint) About(args int, reply *string) error {
+	*reply = "18.20 is leaving us"
+	return nil
+}
+
 // Scenario represents rule engine scenario
 type Scenario struct {
 	r   runner.Runner
