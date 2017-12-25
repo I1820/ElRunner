@@ -43,7 +43,7 @@ func main() {
 		}
 	}()
 
-	codecs["isrc-sensor"], _ = codec.New([]byte(`
+	codecs["isrc-gateway"], _ = codec.New([]byte(`
 class ISRC(Codec, requirements=["cbor"]):
     def decode(self, data):
         return self.cbor.loads(data)
