@@ -3,7 +3,7 @@
 import datetime
 import json
 import socket
-import thread
+import _thread
 
 from core import connection_actions
 from core.db_crud import create_one, read_one, update_one
@@ -81,7 +81,7 @@ def action(data):
         received = True
 
 
-thread.start_new(start_server, (wait_for_data, send_to_down_link))
+_thread.start_new(start_server, (wait_for_data, send_to_down_link))
 
 init_db()
 

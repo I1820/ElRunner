@@ -2,7 +2,7 @@
 # - اگر داده سنسور شماره x بر روی شی a آمد، یک ایمیل ارسل شده و این رخداد را اطلاع دهد
 import json
 import socket
-import thread
+import _thread
 
 from core import connection_actions
 from core.notification_actions import send_email
@@ -46,7 +46,7 @@ def action(data):
                receivers=receivers, message=message)
 
 
-thread.start_new(start_server, (wait_for_data, send_to_down_link))
+_thread.start_new(start_server, (wait_for_data, send_to_down_link))
 
 while True:
     try:

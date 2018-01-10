@@ -1,5 +1,6 @@
 import socket
-import thread
+import _thread
+from time import sleep
 
 from core import connection_actions
 from core.rpc_server import start_server
@@ -49,7 +50,10 @@ def callback(response):
         print('No Response!')
 
 
-thread.start_new(start_server, (wait_for_data, send_to_down_link))
+_thread.start_new(start_server, (wait_for_data, send_to_down_link))
+
+# wait for server to load
+sleep(2)
 
 try:
     wait_for_data_test()

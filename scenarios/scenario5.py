@@ -3,7 +3,7 @@
 #  میانگین سنسور x از شی a را با میانگین سنسور y از شی a مقایسه کند و اگر بزرگتر بود دستور z را ارسال کند
 import datetime
 import socket
-import thread
+import _thread
 
 from core import connection_actions
 from core.db_crud import create_one, read_many
@@ -70,7 +70,7 @@ def print_command(data):
     print(data)
 
 
-thread.start_new(start_server, (wait_for_data, send_to_down_link))
+_thread.start_new(start_server, (wait_for_data, send_to_down_link))
 
 init_db()
 

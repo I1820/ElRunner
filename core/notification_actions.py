@@ -1,5 +1,6 @@
 import smtplib
-import urllib2
+from urllib.error import HTTPError
+from urllib.request import urlopen
 
 
 def send_email(host, port, username, password, sender, receivers, message):
@@ -25,13 +26,13 @@ def send_sms(username, password, from_number, to_number, message):
         .format(username, password, from_number, to_number, message).replace(" ", "%20")
     try:
         # Send GET request to send SMS with SMS Panel
-        data = urllib2.urlopen(url=url).read()
+        data = urlopen(url=url).read()
         if str(data) == '0':
             print("Error Sending SMS: check url and credentials")
         else:
             print("Successfully sent SMS")
             successful = True
-    except urllib2.HTTPError as e:
+    except HTTPError as e:
         print(e)
 
     return successful
