@@ -4,8 +4,6 @@ import json
 import socket
 import thread
 
-import jsonrpclib
-
 from core import connection_actions
 from core.notification_actions import send_email
 from core.rpc_server import start_server
@@ -29,6 +27,7 @@ def send_to_down_link(message):
 def action(data):
     print("action:")
     data_parsed_json = json.loads(data)
+
     if data_parsed_json["thing_id"] != thing_id or data_parsed_json["sensor_id"] != sensor_id:
         print("not expected thing and sensor! expected[" + thing_id + ":" + sensor_id + "] got[" +
               data_parsed_json["thing_id"] + ":" + data_parsed_json["sensor_id"] + "]")
@@ -42,7 +41,7 @@ def action(data):
               'To: To Person <ceitiotlabtest@gmail.com>\n' \
               'Subject: Rule Engine Notification\n\n' \
               'Data:' + data + '\n' \
-                               'Sent by Rule Engine. Scenario:1.'
+              'Sent by Rule Engine. Scenario:1.'
     send_email(host='smtp.gmail.com', port=587, username="ceitiotlabtest", password="ceit is the best", sender=sender,
                receivers=receivers, message=message)
 
@@ -53,10 +52,9 @@ while True:
     try:
         print("wait for data...")
         response = connection_actions.wait_for_data(timeout_seconds=30)
-        print('Request:' + jsonrpclib.history.request)
         if response:
-            print('Response:' + jsonrpclib.history.response)
-            action(response)
+            print('Response:' + str(response))
+            action(response['result'])
         else:
             print('No Response!')
     except socket.timeout:

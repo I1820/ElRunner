@@ -8,8 +8,6 @@ import socket
 
 import thread
 
-import jsonrpclib
-
 from core import connection_actions
 from core.db_crud import read_one, create_one, update_one
 from core.rpc_server import start_server
@@ -87,10 +85,9 @@ while True:
     try:
         print("wait for data...")
         response = connection_actions.wait_for_data(timeout_seconds=30)
-        print('Request:' + jsonrpclib.history.request)
         if response:
-            print('Response:' + jsonrpclib.history.response)
-            action(response)
+            print('Response:' + str(response))
+            action(response['result'])
         else:
             print('No Response!')
     except socket.timeout:

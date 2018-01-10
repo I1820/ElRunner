@@ -1,11 +1,7 @@
 import socket
-
 import thread
 
 from core import connection_actions
-from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
-
-from core.connection_config import server_port, server_name
 from core.rpc_server import start_server
 
 server_data_response = 'Test Message'
@@ -30,15 +26,23 @@ def response_received_function(data):
 def wait_for_data_test():
     print("wait_for_data_test:")
     response = connection_actions.wait_for_data(timeout_seconds=30)
-    if response:
-        response_received_function(response)
-    else:
-        print('No Response!')
+    callback(response)
+
+
+# def wait_for_data_async_test():
+#     print("wait_for_data_async_test:")
+#     if __name__ == '__main__':
+#         connection_actions.get_data_async(timeout_seconds=30, callback=callback)
 
 
 def send_to_down_link_test():
     print("send_to_down_link_test:")
     response = connection_actions.send_to_down_link(message=server_data_response, timeout_seconds=30)
+    callback(response)
+
+
+def callback(response):
+    print('callback:')
     if response:
         response_received_function(response)
     else:
@@ -56,3 +60,5 @@ try:
     send_to_down_link_test()
 except socket.timeout:
     print("send_to_down_link_test Timeout!")
+
+# wait_for_data_async_test()

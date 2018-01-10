@@ -3,8 +3,6 @@
 #  میانگین سنسور x از شی a را با میانگین سنسور y از شی a مقایسه کند و اگر بزرگتر بود دستور z را ارسال کند
 import datetime
 import socket
-
-import jsonrpclib
 import thread
 
 from core import connection_actions
@@ -87,9 +85,8 @@ while True:
         try:
             print("send to down link...")
             response = connection_actions.send_to_down_link(message=down_link_message, timeout_seconds=30)
-            print('Request:' + jsonrpclib.history.request)
             if response:
-                print('Response:' + jsonrpclib.history.response)
+                print('Response:' + str(response))
                 command_sent = True
             else:
                 print('No Response!')

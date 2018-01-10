@@ -1,11 +1,8 @@
 # coding=utf-8
 # - اگر اول داده سنسور x از شی a آمد، بعد داده سنسور y از شی b آمد میانگین آنها را در پایگاه داده ذخیره کند.
+import datetime
 import json
 import socket
-
-import datetime
-
-import jsonrpclib
 import thread
 
 from core import connection_actions
@@ -92,10 +89,9 @@ while True:
     try:
         print("wait for data...")
         response = connection_actions.wait_for_data(timeout_seconds=30)
-        print('Request:' + jsonrpclib.history.request)
         if response:
-            print('Response:' + jsonrpclib.history.response)
-            action(response)
+            print('Response:' + str(response))
+            action(response['result'])
         else:
             print('No Response!')
     except socket.timeout:

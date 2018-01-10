@@ -1,3 +1,5 @@
-jsonrpclib
+json-rpc
+werkzeug
+requests
 pymongo
 geopy

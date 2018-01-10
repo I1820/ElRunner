@@ -1,10 +1,19 @@
-from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
+from jsonrpc import JSONRPCResponseManager, dispatcher
+from werkzeug.serving import run_simple
+from werkzeug.wrappers import Request, Response
 
 from core.connection_config import server_name, server_port
 
 
 def start_server(wait_for_data, send_to_down_link):
-    server = SimpleJSONRPCServer((server_name, server_port))
-    server.register_function(wait_for_data)
-    server.register_function(send_to_down_link)
-    server.serve_forever()
+    @Request.application
+    def application(request):
+        # Dispatcher is dictionary {<method_name>: callable}
+        dispatcher["wait_for_data"] = wait_for_data
+        dispatcher["send_to_down_link"] = send_to_down_link
+
+        response = JSONRPCResponseManager.handle(request.data, dispatcher)
+        return Response(response.json, mimetype='application/json')
+
+    run_simple(server_name, server_port, application)
+

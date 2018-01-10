@@ -1,45 +1,39 @@
-import httplib
-
-import jsonrpclib
+import json
 import sys
-from jsonrpclib.jsonrpc import SafeTransport
+
+import requests
 
 from core.connection_config import server_name, server_port, debug
 
 
-class TimeoutTransport(SafeTransport):
-    timeout = 10.0
-
-    def set_timeout(self, timeout):
-        self.timeout = timeout
-
-    def make_connection(self, host):
-        h = httplib.HTTPConnection(host, timeout=self.timeout)
-        return h
-
-
-transport = TimeoutTransport()
-server = jsonrpclib.Server('http://' + server_name + ':' + str(server_port),
-                           transport=transport)
+url = 'http://{}:{}/'.format(server_name, server_port)
+headers = {'content-type': 'application/json'}
+payload = dict(method='method', params=[], jsonrpc='2.0', id=0)
 
 
 def wait_for_data(timeout_seconds):
-    transport.set_timeout(timeout_seconds)
-    response = server.wait_for_data()
+    request_payload = payload.copy()
+    request_payload['method'] = 'wait_for_data'
+    request_payload['params'] = []
+    request_payload['id'] = 0
+    response = requests.post(url, data=json.dumps(request_payload), headers=headers, timeout=timeout_seconds).json()
     if response:
         return response
     else:
         if debug:
-            print >> sys.stderr, 'No Response Received!'
+            print(sys.stderr, 'No Response Received!')
         return None
 
 
 def send_to_down_link(message, timeout_seconds):
-    transport.set_timeout(timeout_seconds)
-    response = server.send_to_down_link(message)
+    request_payload = payload.copy()
+    request_payload['method'] = 'send_to_down_link'
+    request_payload['params'] = [message]
+    request_payload['id'] = 1
+    response = requests.post(url, data=json.dumps(request_payload), headers=headers, timeout=timeout_seconds).json()
     if response:
         return response
     else:
         if debug:
-            print >> sys.stderr, 'No Response Received!'
+            print(sys.stderr, 'No Response Received!')
         return None
