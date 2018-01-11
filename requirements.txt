@@ -1,5 +1,6 @@
 json-rpc
 werkzeug
 requests
+requests-threads
 pymongo
 geopy
