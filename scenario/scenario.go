@@ -48,8 +48,13 @@ func New() *Scenario {
 
 	s.rpc = rpc.NewServer()
 	s.rpc.Register(new(Endpoint))
-	h := jsonrpc2.HTTPHandler(s.rpc)
-	go http.ListenAndServe("127.0.0.1:1373", h)
 
 	return s
+}
+
+// Start runs scenario server
+func (s *Scenario) Start() error {
+	h := jsonrpc2.HTTPHandler(s.rpc)
+
+	return http.ListenAndServe("127.0.0.1:1373", h)
 }
