@@ -9,11 +9,10 @@ def start_server(wait_for_data, send_to_down_link):
     @Request.application
     def application(request):
         # Dispatcher is dictionary {<method_name>: callable}
-        dispatcher["wait_for_data"] = wait_for_data
-        dispatcher["send_to_down_link"] = send_to_down_link
+        dispatcher["Endpoint.WaitForData"] = wait_for_data
+        dispatcher["Endpoint.SendToDownLink"] = send_to_down_link
 
         response = JSONRPCResponseManager.handle(request.data, dispatcher)
         return Response(response.json, mimetype='application/json')
 
     run_simple(server_name, server_port, application)
-
