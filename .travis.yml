@@ -3,9 +3,9 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
 # services needed
 services: mongodb
 # command to run tests
 script:
-  - python test.py
+  - pytest -s test
