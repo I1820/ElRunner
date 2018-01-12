@@ -18,7 +18,7 @@ async def wait_for_data(timeout):
         session.headers = headers
         response = await session.post(url, json=request_payload,
                                       timeout=timeout)
-        return response.json()
+        return await response.json()
 
 
 async def send_to_down_link(message, timeout):
@@ -31,4 +31,4 @@ async def send_to_down_link(message, timeout):
         session.headers = headers
         response = await session.post(url, json=request_payload,
                                       timeout=timeout)
-        return response.json()
+        return await response.json()
