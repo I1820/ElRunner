@@ -1,8 +1,8 @@
-# coding=utf-8
 # - اگر داده سنسور شماره x بر روی شی a آمد، یک ایمیل ارسل شده و این رخداد را اطلاع دهد
 import json
 import socket
 import _thread
+import asyncio
 
 from core import connection_actions
 from core.notification_actions import send_email
@@ -28,7 +28,8 @@ def action(data):
     print("action:")
     data_parsed_json = json.loads(data)
 
-    if data_parsed_json["thing_id"] != thing_id or data_parsed_json["sensor_id"] != sensor_id:
+    if data_parsed_json["thing_id"] != thing_id or \
+            data_parsed_json["sensor_id"] != sensor_id:
         print("not expected thing and sensor! expected[" + thing_id + ":" + sensor_id + "] got[" +
               data_parsed_json["thing_id"] + ":" + data_parsed_json["sensor_id"] + "]")
         return
@@ -51,7 +52,8 @@ _thread.start_new(start_server, (wait_for_data, send_to_down_link))
 while True:
     try:
         print("wait for data...")
-        response = connection_actions.wait_for_data(timeout_seconds=30)
+        response = asyncio.ensure_future(
+                connection_actions.wait_for_data(timeout=30))
         if response:
             print('Response:' + str(response))
             action(response['result'])
