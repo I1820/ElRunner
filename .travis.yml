@@ -11,3 +11,7 @@ jobs:
       python: 3.6
       before_install:
         - cd runtime.py
+      install:
+        - pip install -r dev-requirements.txt
+      script:
+        - flake8 --statistics --verbose *.py
