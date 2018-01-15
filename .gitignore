@@ -166,3 +166,6 @@ fabric.properties
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+
+# Generated Outputs
+log.txt
