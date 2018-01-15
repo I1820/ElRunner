@@ -6,7 +6,6 @@
 #
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
-import subprocess
 import abc
 import importlib
 
