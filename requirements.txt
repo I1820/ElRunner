@@ -1,7 +1,11 @@
 pytest
 pylint
+
 aiohttp
+
 json-rpc
 werkzeug
+
 pymongo
+
 geopy
