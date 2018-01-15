@@ -2,14 +2,12 @@ jobs:
   include:
     - stage: test
       language: go
-      go:
-        - 1.8
-        - master
+      go: 1.8
       before_install:
         - sudo apt-get -m update || true
         - sudo apt-get install -y python3-setuptools
         - cd runtime.py && sudo python3 setup.py install && cd ..
     - language: python
-      python: "3.6"
+      python: 3.6
       before_install:
         - cd runtime.py
