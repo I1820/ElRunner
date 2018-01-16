@@ -31,7 +31,7 @@ def start_server(wait_for_data, send_to_down_link):
         response = JSONRPCResponseManager.handle(request.data, dispatcher)
         return Response(response.json, mimetype='application/json')
 
-    run_simple(scenario.RPC_SERVER, scenario.PRC_PORT, application)
+    run_simple(scenario.RPC_SERVER, scenario.RPC_PORT, application)
 
 
 class TestScenario(scenario.Scenario):
@@ -44,31 +44,32 @@ def rpc():
     thread = threading.Thread(target=start_server,
                               daemon=True,
                               args=(wait_for_data, send_to_down_link))
+    thread.start()
+    # wait for server to load
+    time.sleep(2)
+    print("RPC is ready")
+
     return thread
 
 
 @pytest.fixture(scope="session")
-def scenario():
+def ts():
     s = TestScenario()
     return s
 
 
-def test_rpc_server(rpc):
-    rpc.start()
-    # wait for server to load
-    time.sleep(2)
-
-
 @pytest.mark.asyncio
-async def test_wait_for_data(scenario):
-    response = await scenario.wait_for_data(timeout=30)
+@pytest.mark.usefixtures("rpc")
+async def test_wait_for_data(ts):
+    response = await ts.wait_for_data(timeout=30)
     print(response)
     assert response['result'] == 'Test Message'
 
 
 @pytest.mark.asyncio
-async def test_send_to_down_link(scenario):
-    response = await scenario.send_to_down_link(
+@pytest.mark.usefixtures("rpc")
+async def test_send_to_down_link(ts):
+    response = await ts.send_to_down_link(
         message=SERVER_DATA_RESPONSE, timeout=30)
     print(response)
     assert response['result'] == 'OK'

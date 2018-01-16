@@ -8,9 +8,9 @@ class TestScenario(scenario.Scenario):
         pass
 
 
-def test_sleep(scenario):
-    scenario.sleep(seconds=1)
-    scenario.sleep(seconds=0.1)
+def test_sleep(ts):
+    ts.sleep(seconds=1)
+    ts.sleep(seconds=0.1)
 
 
 def action_function():
@@ -19,11 +19,11 @@ def action_function():
 
 
 @pytest.fixture(scope="session")
-def scenario():
+def ts():
     s = TestScenario()
     return s
 
 
-def test_schedule(scenario):
-    scenario.schedule(delay_seconds=1, action_function=action_function)
-    scenario.schedule(delay_seconds=0.5, action_function=action_function)
+def test_schedule(ts):
+    ts.schedule(delay_seconds=1, action_function=action_function)
+    ts.schedule(delay_seconds=0.5, action_function=action_function)
