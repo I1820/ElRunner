@@ -15,9 +15,12 @@ its provides runtime python library [runtime.py] for you application in order to
 GoRunner can decode/encode your data with your given codec in python.
 
 ```python
-class ISRC(Codec, requirements=["cbor"]):
+from codec import Codec
+import cbor
+
+class ISRC(Codec):
     def decode(self, data):
-        return self.cbor.loads(data)
+        return cbor.loads(data)
     def encode(self, data):
         pass
 ```
