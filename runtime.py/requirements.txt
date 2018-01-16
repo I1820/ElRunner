@@ -1,14 +1,16 @@
+# Main
 wheel
 
+# runtime.py
 click
 
+# User Packages
+cbor
+
+# Analyze
 pylint
 
+# Scenario
 aiohttp
-
-json-rpc
-werkzeug
-
 pymongo
-
 geopy
