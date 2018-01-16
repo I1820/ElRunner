@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 jobs:
   include:
     - stage: test
