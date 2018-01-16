@@ -3,7 +3,10 @@ import time
 import pytest
 import scenario
 
-from core.rpc_server import start_server
+from jsonrpc import JSONRPCResponseManager, dispatcher
+from werkzeug.serving import run_simple
+from werkzeug.wrappers import Request, Response
+
 
 SERVER_DATA_RESPONSE = 'Test Message'
 SERVER_ACK_RESPONSE = 'OK'
@@ -18,7 +21,20 @@ def send_to_down_link(message):
     return SERVER_ACK_RESPONSE
 
 
-class TestScenario(scenario.Scenario, requirements=[]):
+def start_server(wait_for_data, send_to_down_link):
+    @Request.application
+    def application(request):
+        # Dispatcher is dictionary {<method_name>: callable}
+        dispatcher["Endpoint.WaitForData"] = wait_for_data
+        dispatcher["Endpoint.SendToDownLink"] = send_to_down_link
+
+        response = JSONRPCResponseManager.handle(request.data, dispatcher)
+        return Response(response.json, mimetype='application/json')
+
+    run_simple(scenario.RPC_SERVER, scenario.PRC_PORT, application)
+
+
+class TestScenario(scenario.Scenario):
     def run():
         pass
 
@@ -28,10 +44,6 @@ def rpc():
     thread = threading.Thread(target=start_server,
                               daemon=True,
                               args=(wait_for_data, send_to_down_link))
-    thread.start()
-    # wait for server to load
-    time.sleep(2)
-
     return thread
 
 
@@ -41,15 +53,21 @@ def scenario():
     return s
 
 
+def test_rpc_server(rpc):
+    rpc.start()
+    # wait for server to load
+    time.sleep(2)
+
+
 @pytest.mark.asyncio
-async def test_wait_for_data(rpc, scenario):
+async def test_wait_for_data(scenario):
     response = await scenario.wait_for_data(timeout=30)
     print(response)
     assert response['result'] == 'Test Message'
 
 
 @pytest.mark.asyncio
-async def test_send_to_down_link(rpc, scenario):
+async def test_send_to_down_link(scenario):
     response = await scenario.send_to_down_link(
         message=SERVER_DATA_RESPONSE, timeout=30)
     print(response)
