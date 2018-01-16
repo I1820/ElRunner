@@ -1,3 +1,1 @@
-from scenario.scenario import Scenario
-
-__all__ = [Scenario]
+from scenario.scenario import Scenario, RPC_SERVER, RPC_PORT
