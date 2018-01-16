@@ -38,7 +38,9 @@ setup(
         author='Parham Alvani',
         author_email='parham.alvani@gmail.com',
 
-        py_modules=['codec', 'main'],
+        package_dir={'': 'src'},
+        packages=['codec'],
+        py_modules=['main'],
 
         # List run-time dependencies here.  These will be installed by pip when
         # your project is installed.
