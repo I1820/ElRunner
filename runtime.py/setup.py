@@ -1,4 +1,3 @@
-'setup module'
 # In The Name Of God
 # ========================================
 # [] File Name : setup.py
@@ -7,6 +6,10 @@
 #
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
+'''
+setup module for runtime.py
+'''
+
 # To use a consistent encoding
 from os import path
 # Always prefer setuptools over distutils
