@@ -10,8 +10,19 @@
 from setuptools import setup
 # To use a consistent encoding
 from os import path
+# parse requirements.txt
+from pip.req import parse_requirements
 
 here = path.abspath(path.dirname(__file__))
+
+# parse_requirements() returns generator of pip.req.InstallRequirement objects
+install_reqs = parse_requirements(path.join(here, 'requirements.txt'),
+                                  session='hack')
+
+# reqs is a list of requirement
+# e.g. ['django==1.5.1', 'mezzanine==1.4.6']
+reqs = [str(ir.req) for ir in install_reqs]
+
 
 setup(
         name='runtime.py',
@@ -20,14 +31,14 @@ setup(
         # For a discussion on single-sourcing
         # the version across setup.py and the project code, see
         # https://packaging.python.org/en/latest/single_source_version.html
-        version='0.1.0',
+        version='0.2.0',
 
 
         # Author details
         author='Parham Alvani',
-        author_email='pypa-dev@googlegroups.com',
+        author_email='parham.alvani@gmail.com',
 
-        py_modules=["main", "codec"],
+        py_modules=reqs,
 
         # List run-time dependencies here.  These will be installed by pip when
         # your project is installed.
