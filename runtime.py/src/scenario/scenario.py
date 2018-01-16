@@ -8,6 +8,8 @@
 # =======================================
 import abc
 import aiohttp
+import time
+import threading
 
 
 RPC_SERVER = '127.0.0.1'
@@ -18,6 +20,12 @@ PAYLOAD = {'jsonrpc': '2.0'}
 
 
 class Scenario(metaclass=abc.ABCMeta):
+    def sleep(self, seconds):
+        time.sleep(seconds)
+
+    def schedule(self, delay_seconds, action_function, args=()):
+        threading.Timer(delay_seconds, action_function, args).start()
+
     async def wait_for_data(self, timeout):
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.WaitForData'
