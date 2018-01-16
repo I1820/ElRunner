@@ -16,4 +16,4 @@ jobs:
         - pip install -r dev-requirements.txt
       script:
         - flake8 --statistics --verbose *.py
-        - pytest -s test
+        - pytest -s src/test
