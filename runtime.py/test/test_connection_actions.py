@@ -1,8 +1,8 @@
 import threading
 import time
 import pytest
+import scenario
 
-from core import connection_actions
 from core.rpc_server import start_server
 
 SERVER_DATA_RESPONSE = 'Test Message'
@@ -18,6 +18,11 @@ def send_to_down_link(message):
     return SERVER_ACK_RESPONSE
 
 
+class TestScenario(scenario.Scenario, requirements=[]):
+    def run():
+        pass
+
+
 @pytest.fixture(scope="session")
 def rpc():
     thread = threading.Thread(target=start_server,
@@ -30,16 +35,22 @@ def rpc():
     return thread
 
 
+@pytest.fixture(scope="session")
+def scenario():
+    s = TestScenario()
+    return s
+
+
 @pytest.mark.asyncio
-async def test_wait_for_data(rpc):
-    response = await connection_actions.wait_for_data(timeout=30)
+async def test_wait_for_data(rpc, scenario):
+    response = await scenario.wait_for_data(timeout=30)
     print(response)
     assert response['result'] == 'Test Message'
 
 
 @pytest.mark.asyncio
-async def test_send_to_down_link(rpc):
-    response = await connection_actions.send_to_down_link(
+async def test_send_to_down_link(rpc, scenario):
+    response = await scenario.send_to_down_link(
         message=SERVER_DATA_RESPONSE, timeout=30)
     print(response)
     assert response['result'] == 'OK'
