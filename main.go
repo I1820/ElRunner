@@ -1,3 +1,13 @@
+/*
+ * +===============================================
+ * | Author:        Parham Alvani <parham.alvani@gmail.com>
+ * |
+ * | Creation Date: 17-01-2018
+ * |
+ * | File Name:     main.go
+ * +===============================================
+ */
+
 package main
 
 import (
