@@ -6,6 +6,7 @@ jobs:
       before_install:
         - sudo apt-get -m update || true
         - sudo apt-get install -y python3-setuptools
+        - sudo apt-get install -y python3-pip
         - cd runtime.py && sudo python3 setup.py install && cd ..
     - language: python
       python: 3.6
