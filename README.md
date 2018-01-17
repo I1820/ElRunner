@@ -8,7 +8,9 @@
 GoRunner runs Python3 code when specific events come, but it ensure you, you will have one instance of your code in running state.
 its provides runtime python library [runtime.py] for you application in order to have required packages and ...
 
-![GoRunner Architecture](https://raw.githubusercontent.com/aiotrc/GoRunner/master/assets/GoRunner.png)
+<p align = "center">
+  <img alt="GoRunner Architecture" src="assets/GoRunner.png">
+</p>
 
 ## Environment Variables
 - Project ID
