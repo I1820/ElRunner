@@ -11,30 +11,19 @@
 package scenario
 
 import (
-	"fmt"
-	"os"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/powerman/rpc-codec/jsonrpc2"
 )
 
-func TestMain(m *testing.M) {
-	s := New()
-
-	go func() {
-		err := s.Start()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	}()
-
-	os.Exit(m.Run())
-}
-
 func TestAbout(t *testing.T) {
+	h := jsonrpc2.HTTPHandler(New().rpc)
+	s := httptest.NewServer(h)
+	defer s.Close()
+
 	var about string
-	c := jsonrpc2.NewHTTPClient("http://127.0.0.1:1373")
+	c := jsonrpc2.NewHTTPClient(s.URL)
 	err := c.Client.Call("Endpoint.About", nil, &about)
 	if err != nil {
 		t.Fatalf("Call Endpoint.About: %s", err)
