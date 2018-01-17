@@ -14,7 +14,9 @@ import "testing"
 
 func TestHelloDeocder(t *testing.T) {
 	code := []byte(`
-class ISRC(Codec, requirements=[]):
+from codec import Codec
+
+class ISRC(Codec):
     def decode(self, data):
         return data.decode('ascii')
     def encode(self, data):
@@ -36,7 +38,9 @@ class ISRC(Codec, requirements=[]):
 
 func TestHelloEncoder(t *testing.T) {
 	code := []byte(`
-class ISRC(Codec, requirements=[]):
+from codec import Codec
+
+class ISRC(Codec):
     def decode(self, data):
         pass
     def encode(self, data):
