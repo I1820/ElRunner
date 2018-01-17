@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"io"
 	"os/exec"
+	"strings"
 	"testing"
 	"time"
 )
@@ -79,7 +80,13 @@ func TestPython(t *testing.T) {
 	}, 100)
 	go r.Start()
 
-	t.Log(r.Output())
+	o, err := r.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.HasPrefix(o, "Hello from python") {
+		t.Fatalf("Invalid message from python: %q do not have prefix \"Hello form python\"", o)
+	}
 
 	r.Stop()
 }
