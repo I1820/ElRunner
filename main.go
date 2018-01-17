@@ -25,11 +25,13 @@ import (
 
 var codecs map[string]codec.Codec
 
-func main() {
-	fmt.Println("GoRunner by Parham Alvani")
-
+// init initiates global variables
+func init() {
 	codecs = make(map[string]codec.Codec)
+}
 
+// handle registers apis and create http handler
+func handle() http.Handler {
 	r := gin.Default()
 
 	api := r.Group("/api")
@@ -40,9 +42,15 @@ func main() {
 		api.POST("/codec/:id", codecHandler)
 	}
 
+	return r
+}
+
+func main() {
+	fmt.Println("GoRunner AIoTRC @ 2017")
+
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: r,
+		Handler: handle(),
 	}
 
 	go func() {
@@ -52,14 +60,6 @@ func main() {
 			log.Fatal("Listen Error:", err)
 		}
 	}()
-
-	codecs["isrc-platform"], _ = codec.New([]byte(`
-class ISRC(Codec, requirements=["cbor"]):
-    def decode(self, data):
-        return self.cbor.loads(data)
-    def encode(self, data):
-        return self.cbor.dumps(data)
-	`), "isrc-sensor")
 
 	// Wait for interrupt signal to gracefully shutdown the server with
 	// a timeout of 5 seconds.
