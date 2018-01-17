@@ -43,6 +43,7 @@ type Scenario struct {
 }
 
 // New creates instance of Scenario
+// instance contains rpc server that is not running, so Start must call.
 func New() *Scenario {
 	s := new(Scenario)
 
