@@ -73,7 +73,7 @@ def run_pylint(path=None, ignore=None, msg_template=None, log_file_path=None):
     """
     # set default parameters if not set
     if path is None:
-        path = 'scenario/'
+        path = 'scenarios/'
     if msg_template is None:
         msg_template = "'{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}'"
     if log_file_path is None:
