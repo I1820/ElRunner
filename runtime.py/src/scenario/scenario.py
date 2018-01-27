@@ -27,6 +27,11 @@ class Scenario(metaclass=abc.ABCMeta):
         threading.Timer(delay_seconds, action_function, args).start()
 
     async def wait_for_data(self, timeout):
+        """
+        Requests data from server.
+        :param timeout: Timeout time until response (data) in seconds.
+        :return: Response that may contain data as json.
+        """
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.WaitForData'
         request_payload['params'] = []
@@ -39,6 +44,12 @@ class Scenario(metaclass=abc.ABCMeta):
             return await response.json()
 
     async def send_to_down_link(self, message, timeout):
+        """
+        Send data containing commands to server.
+        :param message: Message data to be sent to server.
+        :param timeout: Timeout time until response (acknowledge) in seconds.
+        :return: Response that shows whether message is received or not.
+        """
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.SendToDownLink'
         request_payload['params'] = [message]

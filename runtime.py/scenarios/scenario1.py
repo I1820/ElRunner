@@ -1,4 +1,5 @@
 # - اگر داده سنسور شماره x بر روی شی a آمد، یک ایمیل ارسل شده و این رخداد را اطلاع دهد
+
 import json
 import socket
 import _thread
