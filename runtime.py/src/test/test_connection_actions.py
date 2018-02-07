@@ -40,7 +40,7 @@ class TestScenario(scenario.Scenario):
 
 
 @pytest.fixture(scope="session")
-def rpc(wait_for_data, send_to_down_link):
+def rpc():
     thread = threading.Thread(target=start_server,
                               daemon=True,
                               args=(wait_for_data, send_to_down_link))
@@ -71,7 +71,7 @@ async def test_wait_for_data(ts):
 @pytest.mark.usefixtures("rpc")
 async def test_send_to_down_link(ts):
     response = await ts.send_to_down_link(
-        message=SERVER_DATA_RESPONSE, timeout=30)
+            message=SERVER_DATA_RESPONSE, timeout=30)
     print(response)
     if not response['result'] == 'OK':
         raise AssertionError()
