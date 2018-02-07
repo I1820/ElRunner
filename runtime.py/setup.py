@@ -43,7 +43,7 @@ setup(
     author_email='parham.alvani@gmail.com',
 
     package_dir={'': 'src'},
-    packages=['codec'],
+    packages=['codec', 'analyze'],
     py_modules=['main'],
 
     # List run-time dependencies here.  These will be installed by pip when
