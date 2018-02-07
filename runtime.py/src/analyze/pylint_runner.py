@@ -37,9 +37,10 @@ def pylint_check(path, output_format, ignore=None, msg_template=None):
     :param msg_template:
     :return:
     """
-    pylint_options = '{} -j 10 --rcfile={} --output-format={}'.format(path,
-                                                                      config_file_path,
-                                                                      output_format.value)
+    pylint_options = '{} -j 10 --rcfile={} \
+            --output-format={}'.format(path,
+                                       config_file_path,
+                                       output_format.value)
     if ignore is not None:
         pylint_options += ' --ignore={}'.format(ignore)
     if msg_template is not None:
@@ -79,10 +80,11 @@ def run_pylint(path=None, ignore=None, msg_template=None, log_file_path=None):
     if log_file_path is None:
         log_file_path = default_log_file_path
 
-    standard_output, err_output = pylint_check(path=path,
-                                               output_format=OutputFormat.parseable,
-                                               ignore=ignore,
-                                               msg_template=msg_template)
+    standard_output, err_output = \
+        pylint_check(path=path,
+                     output_format=OutputFormat.parseable,
+                     ignore=ignore,
+                     msg_template=msg_template)
     # log outputs in file
     log(err_output + '\n' + standard_output, log_file_path)
 
