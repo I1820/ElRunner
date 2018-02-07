@@ -21,15 +21,12 @@ def run(target, job):
     '''
     run given target in provided environment
     '''
-    try:
-        g = runpy.run_path(target, run_name='ucodec')
-        for value in g.values():
-            if isinstance(value, type) and issubclass(value, Codec) and \
-                    value.__module__ == 'ucodec':
-                codec = value
-    except Exception as e:
-        print('Target Error: ', e)
-        return
+    g = runpy.run_path(target, run_name='ucodec')
+    for value in g.values():
+        if isinstance(value, type) and issubclass(value, Codec) and \
+                value.__module__ == 'ucodec':
+            codec = value
+
     if job == 'decode':
         s = input()
         d = codec().decode(base64.b64decode(s))
@@ -38,6 +35,7 @@ def run(target, job):
         s = input()
         e = codec().encode(s)
         print(base64.b64encode(e).decode('ascii'))
+    return 0
 
 
 def main():
