@@ -36,6 +36,29 @@ class ISRC(Codec):
 	d.Stop()
 }
 
+func TestFaultyDecoder(t *testing.T) {
+	code := []byte(`
+from codec import Codec
+
+class ISRC(Codec):
+    def decode(self, data):
+        khar
+    def encode(self, data):
+        pass
+	`)
+	d, err := New(code, "hi")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Decode([]byte("Hi")); err != nil {
+		t.Log(err)
+	} else {
+		t.Fatal("There is no error?!")
+	}
+	d.Stop()
+
+}
+
 func TestHelloEncoder(t *testing.T) {
 	code := []byte(`
 from codec import Codec
