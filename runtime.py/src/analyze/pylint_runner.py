@@ -94,6 +94,17 @@ def run_pylint(path=None, ignore=None, msg_template=None, log_file_path=None):
     return status
 
 
+def run_pylint_json(path=None, ignore=None):
+    # set default parameters if not set
+    if path is None:
+        path = 'scenarios/'
+
+    standard_output, err_output = pylint_check(path=path,
+                                               output_format=OutputFormat.json,
+                                               ignore=ignore)
+
+    return standard_output
+
 def get_status(messages_json):
     """
     Computes status code from messages json input.
