@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/runtime.py/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/runtime.py" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.6.4 (C:\Program Files (x86)\Python\Python36-32\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">

@@ -11,6 +11,7 @@ import aiohttp
 import time
 import threading
 
+import async_timeout
 
 RPC_SERVER = '127.0.0.1'
 RPC_PORT = 1373
@@ -26,11 +27,11 @@ class Scenario(metaclass=abc.ABCMeta):
     def schedule(self, delay_seconds, action_function, args=()):
         threading.Timer(delay_seconds, action_function, args).start()
 
-    async def wait_for_data(self, timeout):
+    async def wait_for_data(self, future, timeout):
         """
         Requests data from server.
+        :param future: Contains response that may contain data as json.
         :param timeout: Timeout time until response (data) in seconds.
-        :return: Response that may contain data as json.
         """
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.WaitForData'
@@ -39,11 +40,13 @@ class Scenario(metaclass=abc.ABCMeta):
 
         async with aiohttp.ClientSession() as session:
             session.headers = HEADERS
-            response = await session.post(URL, json=request_payload,
-                                          timeout=timeout)
-            return await response.json()
+            with async_timeout.timeout(timeout):
+                async with session.post(URL, json=request_payload,
+                                        timeout=timeout) as response:
+                    future.set_result(await response.json())
 
-    async def send_to_down_link(self, message, timeout):
+
+    async def send_to_down_link(self, future, message, timeout):
         """
         Send data containing commands to server.
         :param message: Message data to be sent to server.
@@ -62,5 +65,5 @@ class Scenario(metaclass=abc.ABCMeta):
             return await response.json()
 
     @abc.abstractmethod
-    def run(self, data=None):
+    def run(self):
         pass
