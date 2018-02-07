@@ -30,7 +30,6 @@ class Scenario(metaclass=abc.ABCMeta):
     async def wait_for_data(self, timeout):
         """
         Requests data from server.
-        :param future: Contains response that may contain data as json.
         :param timeout: Timeout time until response (data) in seconds.
         """
         request_payload = PAYLOAD.copy()
