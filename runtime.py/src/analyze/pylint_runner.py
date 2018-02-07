@@ -6,7 +6,7 @@ import os
 from pylint import epylint as lint
 
 config_file_path = "'" + os.path.dirname(os.path.realpath(__file__)) + os.sep \
-        + 'pylintrc' + "'"
+                   + 'pylintrc' + "'"
 default_log_file_path = 'log.txt'
 message_type_set = {'convention', 'warning', 'error', 'fatal'}
 
@@ -105,6 +105,7 @@ def run_pylint_json(path=None, ignore=None):
 
     return standard_output
 
+
 def get_status(messages_json):
     """
     Computes status code from messages json input.
@@ -119,6 +120,6 @@ def get_status(messages_json):
         message_type = message['type']
         # check if message type is worse than current status
         if message_type in message_type_set and \
-                Status[message_type].value > status.value:
+                        Status[message_type].value > status.value:
             status = Status[message_type]
     return status
