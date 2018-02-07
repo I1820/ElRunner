@@ -114,12 +114,12 @@ def get_status(messages_json):
     From best to worst: Status.no_error, Status.convention,
     Status.warning, Status.error, Status.fatal
     """
-    status = Status.no_error
     messages = json.loads(messages_json)
+    status = Status.no_error
     for message in messages:
         message_type = message['type']
         # check if message type is worse than current status
         if message_type in message_type_set and \
-                        Status[message_type].value > status.value:
+                Status[message_type].value > status.value:
             status = Status[message_type]
     return status
