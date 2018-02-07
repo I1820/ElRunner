@@ -27,7 +27,7 @@ class Scenario(metaclass=abc.ABCMeta):
     def schedule(self, delay_seconds, action_function, args=()):
         threading.Timer(delay_seconds, action_function, args).start()
 
-    async def wait_for_data(self, future, timeout):
+    async def wait_for_data(self, timeout):
         """
         Requests data from server.
         :param future: Contains response that may contain data as json.
@@ -43,10 +43,9 @@ class Scenario(metaclass=abc.ABCMeta):
             with async_timeout.timeout(timeout):
                 async with session.post(URL, json=request_payload,
                                         timeout=timeout) as response:
-                    future.set_result(await response.json())
+                    return await response.json()
 
-
-    async def send_to_down_link(self, future, message, timeout):
+    async def send_to_down_link(self, message, timeout):
         """
         Send data containing commands to server.
         :param message: Message data to be sent to server.
