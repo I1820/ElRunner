@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/rpc"
+	"os"
 
 	"github.com/aiotrc/GoRunner/runner"
 	"github.com/powerman/rpc-codec/jsonrpc2"
@@ -64,5 +65,15 @@ func (s *Scenario) Start() error {
 
 // Code creates or replaces scenario beacuase
 // there is only on scenario
-func (s *Scenario) Code() {
+func (s *Scenario) Code(code []byte, id string) error {
+	f, err := os.Create(fmt.Sprintf("/tmp/scenario-%s.py", id))
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if _, err = f.Write(code); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -20,7 +20,7 @@ import (
 
 // Lint lints given python code with pylint
 func Lint(code []byte) (string, error) {
-	f, err := os.Create(fmt.Sprintf("/tmp/%d.py", time.Now().Unix()))
+	f, err := os.Create(fmt.Sprintf("/tmp/linter-%d.py", time.Now().Unix()))
 	if err != nil {
 		return "", err
 	}

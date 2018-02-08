@@ -63,7 +63,7 @@ func (c *codec) ID() string {
 
 // New creates encoder/decoder based on given data
 func New(code []byte, id string) (Codec, error) {
-	f, err := os.Create(fmt.Sprintf("/tmp/%s.py", id))
+	f, err := os.Create(fmt.Sprintf("/tmp/codec-%s.py", id))
 	if err != nil {
 		return nil, err
 	}
@@ -79,9 +79,9 @@ func New(code []byte, id string) (Codec, error) {
 			// command
 			switch e.(type) {
 			case DecodeEvent:
-				cmd = exec.Command("runtime.py", "--job", "decode", fmt.Sprintf("/tmp/%s.py", id))
+				cmd = exec.Command("runtime.py", "--job", "decode", f.Name())
 			case EncodeEvent:
-				cmd = exec.Command("runtime.py", "--job", "encode", fmt.Sprintf("/tmp/%s.py", id))
+				cmd = exec.Command("runtime.py", "--job", "encode", f.Name())
 			default:
 				return "", nil
 			}
