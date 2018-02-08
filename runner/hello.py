@@ -12,12 +12,12 @@ Hello module just for saying hello from python to go
 import time
 import base64
 
-# Input
-s = input()
-s = base64.b64decode(s).decode('ascii')
+if __name__ == '__main__':
+    # Input
+    DATA = base64.b64decode(input()).decode('ascii')
 
-# Thinking ...
-time.sleep(1)
+    # Thinking ...
+    time.sleep(1)
 
-# Output
-print("hello from python", s)
+    # Output
+    print("hello from python", DATA)
