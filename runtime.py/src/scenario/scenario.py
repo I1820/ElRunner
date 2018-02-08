@@ -63,5 +63,5 @@ class Scenario(metaclass=abc.ABCMeta):
             return await response.json()
 
     @abc.abstractmethod
-    def run(self):
+    def run(self, data=None):
         pass
