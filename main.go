@@ -128,6 +128,7 @@ func decodeHandler(c *gin.Context) {
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 	} else {
+		scr.Data(parsed)
 		c.String(http.StatusOK, parsed)
 	}
 }
