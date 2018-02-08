@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/aiotrc/GoRunner/codec"
+	"github.com/aiotrc/GoRunner/linter"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,6 +41,7 @@ func handle() http.Handler {
 		api.POST("/encode/:id", encodeHandler)
 		api.GET("/about", aboutHandler)
 		api.POST("/codec/:id", codecHandler)
+		api.POST("/lint", lintHandler)
 	}
 
 	return r
@@ -139,4 +141,19 @@ func codecHandler(c *gin.Context) {
 	codecs[id] = codec
 
 	c.String(http.StatusOK, id)
+}
+
+func lintHandler(c *gin.Context) {
+	data, err := c.GetRawData()
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	jsn, err := linter.Lint(data)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	c.String(http.StatusOK, jsn)
 }
