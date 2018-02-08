@@ -98,7 +98,7 @@ func encodeHandler(c *gin.Context) {
 
 	encoder, ok := codecs[id]
 	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("\"%s\" does not exit on GoRunner", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("%q does not exit on GoRunner", id)})
 		return
 	}
 
@@ -120,7 +120,7 @@ func decodeHandler(c *gin.Context) {
 
 	decoder, ok := codecs[id]
 	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("\"%s\" does not exit on GoRunner", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("%q does not exit on GoRunner", id)})
 		return
 	}
 
