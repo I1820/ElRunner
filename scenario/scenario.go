@@ -80,7 +80,11 @@ func (s *Scenario) Code(code []byte, id string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			return
+		}
+	}()
 	if _, err = f.Write(code); err != nil {
 		return err
 	}
@@ -102,7 +106,9 @@ func (s *Scenario) Code(code []byte, id string) error {
 			if _, err := io.WriteString(stdin, e.Data()); err != nil {
 				return "", err
 			}
-			stdin.Close()
+			if err := stdin.Close(); err != nil {
+				return "", err
+			}
 
 			// run
 			if _, err := cmd.Output(); err != nil {

@@ -67,7 +67,11 @@ func New(code []byte, id string) (Codec, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			return
+		}
+	}()
 	if _, err = f.Write(code); err != nil {
 		return nil, err
 	}
@@ -94,7 +98,9 @@ func New(code []byte, id string) (Codec, error) {
 			if _, err := io.WriteString(stdin, e.Data()); err != nil {
 				return "", err
 			}
-			stdin.Close()
+			if err := stdin.Close(); err != nil {
+				return "", err
+			}
 
 			// stdout
 			out, err := cmd.Output()

@@ -47,7 +47,11 @@ func TestAbout(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
@@ -69,7 +73,11 @@ func TestCodec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
@@ -85,7 +93,11 @@ func TestCodec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
@@ -101,7 +113,11 @@ func TestCodec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
 	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Fatal(err)
