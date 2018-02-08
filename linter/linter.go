@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 	"time"
 )
 
@@ -28,14 +29,15 @@ func Lint(code []byte) (string, error) {
 		return "", err
 	}
 
-	cmd := exec.Command("pylint", "--output-format", "json", "-j", "2", "-E", f.Name())
+	cmd := exec.Command("pylint", "--output-format", "json", "-j", "2", f.Name())
 
 	out, err := cmd.Output()
 	if err != nil {
 		if err, ok := err.(*exec.ExitError); ok {
-			return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
+			if err.Sys().(syscall.WaitStatus).ExitStatus() == 32 {
+				return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
+			}
 		}
-		return "", err
 	}
 
 	return string(out), nil
