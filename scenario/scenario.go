@@ -12,6 +12,7 @@ package scenario
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/rpc"
 	"os"
@@ -64,6 +65,11 @@ func (s *Scenario) Start() error {
 	return http.ListenAndServe("127.0.0.1:1373", h)
 }
 
+// Data new data is comming
+func (s *Scenario) Data(d string) {
+	s.r.DataEvent(d)
+}
+
 // Code creates or replaces scenario beacuase
 // there is only on scenario
 func (s *Scenario) Code(code []byte, id string) error {
@@ -80,8 +86,18 @@ func (s *Scenario) Code(code []byte, id string) error {
 		Run: func(e runner.Event) (string, error) {
 			cmd := exec.Command("runtime.py", "--job", "rule", f.Name())
 
-			_, err := cmd.Output()
+			// stdin
+			stdin, err := cmd.StdinPipe()
 			if err != nil {
+				return "", err
+			}
+			if _, err := io.WriteString(stdin, e.Data()); err != nil {
+				return "", err
+			}
+			stdin.Close()
+
+			// run
+			if _, err := cmd.Output(); err != nil {
 				if err, ok := err.(*exec.ExitError); ok {
 					return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
 				}
