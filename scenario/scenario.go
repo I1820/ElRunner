@@ -42,6 +42,7 @@ func (e Endpoint) About(args int, reply *string) error {
 // Scenario represents rule engine scenario
 type Scenario struct {
 	r   runner.Runner
+	e   bool
 	rpc *rpc.Server
 }
 
@@ -67,7 +68,9 @@ func (s *Scenario) Start() error {
 
 // Data new data is comming
 func (s *Scenario) Data(d string) {
-	s.r.DataEvent(d)
+	if s.e {
+		s.r.DataEvent(d)
+	}
 }
 
 // Code creates or replaces scenario beacuase
@@ -82,6 +85,10 @@ func (s *Scenario) Code(code []byte, id string) error {
 		return err
 	}
 
+	if s.e {
+		s.r.Stop()
+	}
+	s.e = true
 	s.r = runner.New(&runner.Task{
 		Run: func(e runner.Event) (string, error) {
 			cmd := exec.Command("runtime.py", "--job", "rule", f.Name())
@@ -91,6 +98,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 			if err != nil {
 				return "", err
 			}
+			fmt.Println(e.Data())
 			if _, err := io.WriteString(stdin, e.Data()); err != nil {
 				return "", err
 			}
@@ -99,7 +107,8 @@ func (s *Scenario) Code(code []byte, id string) error {
 			// run
 			if _, err := cmd.Output(); err != nil {
 				if err, ok := err.(*exec.ExitError); ok {
-					return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
+					fmt.Printf("%s: %s\n", err.Error(), err.Stderr)
+					return "", nil
 				}
 				return "", err
 			}
@@ -108,6 +117,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 		},
 		Interval: 0,
 	}, 1024)
+	go s.r.Start()
 
 	return nil
 }
