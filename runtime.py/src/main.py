@@ -12,6 +12,7 @@ import base64
 import runpy
 
 from codec import Codec
+from scenario import Scenario
 
 
 @click.command()
@@ -27,6 +28,12 @@ def run(target, job):
                 value.__module__ == 'ucodec':
             codec = value
 
+    g = runpy.run_path(target, run_name='uscenario')
+    for value in g.values():
+        if isinstance(value, type) and issubclass(value, Scenario) and \
+                value.__module__ == 'uscenario':
+            scenario = value
+
     if job == 'decode':
         s = input()
         d = codec().decode(base64.b64decode(s))
@@ -35,6 +42,9 @@ def run(target, job):
         s = input()
         e = codec().encode(s)
         print(base64.b64encode(e).decode('ascii'))
+    if job == 'rule':
+        s = input()
+        scenario().run(s)
 
 
 def main():
