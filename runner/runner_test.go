@@ -65,8 +65,12 @@ func TestPython(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			io.WriteString(stdin, base64.StdEncoding.EncodeToString([]byte(e.Data())))
-			stdin.Close()
+			if _, err := io.WriteString(stdin, base64.StdEncoding.EncodeToString([]byte(e.Data()))); err != nil {
+				t.Fatal(err)
+			}
+			if err := stdin.Close(); err != nil {
+				t.Fatal(err)
+			}
 
 			out, err := cmd.Output()
 			if err != nil {
