@@ -51,6 +51,10 @@ func handle() http.Handler {
 		api.POST("/lint", lintHandler)
 	}
 
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "404 Not Found"})
+	})
+
 	return r
 }
 
