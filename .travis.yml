@@ -21,9 +21,10 @@ jobs:
         - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
 
         - sudo apt-get -m update || true
+        - sudo apt-get install -y python3.5
         - sudo apt-get install -y python3-setuptools
         - sudo apt-get install -y python3-pip
-        - cd runtime.py && sudo python3.6 setup.py install && cd ..
+        - cd runtime.py && sudo python3.5 setup.py install && cd ..
       install:
         - dep ensure
       script:
