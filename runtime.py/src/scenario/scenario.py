@@ -13,6 +13,7 @@ import threading
 import smtplib
 from urllib.error import HTTPError
 from urllib.request import urlopen
+from pymongo import MongoClient
 
 import async_timeout
 
@@ -21,6 +22,15 @@ RPC_PORT = 1373
 URL = 'http://{}:{}/'.format(RPC_SERVER, RPC_PORT)
 HEADERS = {'content-type': 'application/json'}
 PAYLOAD = {'jsonrpc': '2.0'}
+
+DB_IP = "localhost"
+DB_PORT = 27017
+DB_NAME = "datadb"
+DB_COLLECTION = "datacollection"
+
+client = MongoClient(DB_IP, DB_PORT)
+db = client[DB_NAME]
+collection = db[DB_COLLECTION]
 
 
 class Scenario(metaclass=abc.ABCMeta):
@@ -117,6 +127,74 @@ class Scenario(metaclass=abc.ABCMeta):
             print(e)
 
         return successful
+
+    def create_one(self, document):
+        """
+        Create a single document in database.
+        :param document: Documents as a python dictionary
+        :return: Created document id in database
+        """
+        document_id = collection.insert_one(document).inserted_id
+        return document_id
+
+    def create_many(self, documents_list):
+        """
+        Create a list of documents in database.
+        :param documents_list: Documents as a list of python dictionaries.
+        :return: A list containing created documents ids.
+        """
+        documents_id_list = collection.insert_many(documents_list).inserted_ids
+        return documents_id_list
+
+    def read_one(self, partial_document):
+        """
+        Read a single document from database.
+        :param partial_document: A dictionary specifying the query to be performed.
+        :return: A single document, or ``None`` if no matching document is found.
+        """
+        return collection.find_one(partial_document)
+
+    def read_many(self, partial_document):
+        """
+        Read a list of documents from database.
+        :param partial_document: A dictionary specifying the query to be performed.
+        :return: A Cursor object containing requested documents.
+        """
+        return collection.find(partial_document)
+
+    def update_one(self, partial_document, update_instructions):
+        """
+        Update a single document from database.
+        :param partial_document: A query as a dictionary that matches the document to update.
+        :param update_instructions: The modifications to apply.
+        :return: An UpdateResult object containing update results.
+        """
+        return collection.update_one(partial_document, update_instructions)
+
+    def update_many(self, partial_document, update_instructions):
+        """
+        Update one or more documents that match the partial_document.
+        :param partial_document: A query that matches the documents to update.
+        :param update_instructions: The modifications to apply.
+        :return: An UpdateResult object containing update results.
+        """
+        return collection.update_many(partial_document, update_instructions)
+
+    def delete_one(self, partial_document):
+        """
+        Delete a single document matching the partial_document.
+        :param partial_document: A query that matches the document to delete.
+        :return: A DeleteResult object containing delete results.
+        """
+        return collection.delete_one(partial_document)
+
+    def delete_many(self, partial_document):
+        """
+        Delete one or more documents matching the partial_document.
+        :param partial_document: A query that matches the documents to delete.
+        :return: A DeleteResult object containing delete results.
+        """
+        return collection.delete_many(partial_document)
 
     @abc.abstractmethod
     def run(self, data=None):
