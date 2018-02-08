@@ -48,7 +48,9 @@ func New() *Scenario {
 	s := new(Scenario)
 
 	s.rpc = rpc.NewServer()
-	s.rpc.Register(new(Endpoint))
+	if err := s.rpc.Register(new(Endpoint)); err != nil {
+		panic(err)
+	}
 
 	return s
 }
