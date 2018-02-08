@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"os/exec"
 
 	"github.com/aiotrc/GoRunner/runner"
 	"github.com/powerman/rpc-codec/jsonrpc2"
@@ -74,6 +75,23 @@ func (s *Scenario) Code(code []byte, id string) error {
 	if _, err = f.Write(code); err != nil {
 		return err
 	}
+
+	s.r = runner.New(&runner.Task{
+		Run: func(e runner.Event) (string, error) {
+			cmd := exec.Command("runtime.py", "--job", "rule", f.Name())
+
+			_, err := cmd.Output()
+			if err != nil {
+				if err, ok := err.(*exec.ExitError); ok {
+					return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
+				}
+				return "", err
+			}
+
+			return "", nil
+		},
+		Interval: 0,
+	}, 1024)
 
 	return nil
 }
