@@ -14,4 +14,3 @@ pylint
 aiohttp
 pymongo
 geopy
-smtplib
