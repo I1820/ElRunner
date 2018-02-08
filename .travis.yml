@@ -3,6 +3,7 @@ jobs:
     - stage: test
       language: go
       go: 1.9
+      dist: trusty
       env:
         - DEP_VERSION="0.3.2"
       before_install:
@@ -20,8 +21,8 @@ jobs:
         - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
 
         - sudo apt-get -m update || true
-        - sudo apt-get install -y python3-setuptools
-        - sudo apt-get install -y python3-pip
+        - sudo apt-get install -y python3.6-setuptools
+        - sudo apt-get install -y python3.6-pip
         - cd runtime.py && sudo python3 setup.py install && cd ..
       install:
         - dep ensure
