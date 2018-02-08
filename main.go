@@ -156,5 +156,5 @@ func lintHandler(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, jsn)
+	c.Data(http.StatusOK, "application/json", []byte(jsn))
 }
