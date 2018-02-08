@@ -21,14 +21,17 @@ import (
 
 	"github.com/aiotrc/GoRunner/codec"
 	"github.com/aiotrc/GoRunner/linter"
+	"github.com/aiotrc/GoRunner/scenario"
 	"github.com/gin-gonic/gin"
 )
 
 var codecs map[string]codec.Codec
+var scr *scenario.Scenario
 
 // init initiates global variables
 func init() {
 	codecs = make(map[string]codec.Codec)
+	scr = scenario.New()
 }
 
 // handle registers apis and create http handler
@@ -39,8 +42,12 @@ func handle() http.Handler {
 	{
 		api.POST("/decode/:id", decodeHandler)
 		api.POST("/encode/:id", encodeHandler)
+
 		api.GET("/about", aboutHandler)
+
 		api.POST("/codec/:id", codecHandler)
+		api.POST("/scenario/:id", scenarioHandler)
+
 		api.POST("/lint", lintHandler)
 	}
 
@@ -134,6 +141,10 @@ func codecHandler(c *gin.Context) {
 	}
 
 	codec, err := codec.New(data, id)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	if codecs[id] != nil {
 		codecs[id].Stop()
@@ -157,4 +168,20 @@ func lintHandler(c *gin.Context) {
 	}
 
 	c.Data(http.StatusOK, "application/json", []byte(jsn))
+}
+
+func scenarioHandler(c *gin.Context) {
+	id := c.Param("id")
+	data, err := c.GetRawData()
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := scr.Code(data, id); err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.String(http.StatusOK, id)
 }
