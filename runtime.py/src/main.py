@@ -10,6 +10,7 @@
 import click
 import base64
 import runpy
+import json
 
 from codec import Codec
 from scenario import Scenario
@@ -44,7 +45,7 @@ def run(target, job):
         print(base64.b64encode(e).decode('ascii'))
     if job == 'rule':
         s = input()
-        scenario().run(s)
+        scenario().run(json.loads(s))
 
 
 def main():
