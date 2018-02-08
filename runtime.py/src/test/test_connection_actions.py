@@ -35,12 +35,16 @@ def start_server(wait_for_data, send_to_down_link):
 
 
 class TestScenario(scenario.Scenario):
-    def run(self):
+    def run(self, data=None):
         pass
 
 
 @pytest.fixture(scope="session")
 def rpc():
+    run_rpc_server(wait_for_data, send_to_down_link)
+
+
+def run_rpc_server(wait_for_data, send_to_down_link):
     thread = threading.Thread(target=start_server,
                               daemon=True,
                               args=(wait_for_data, send_to_down_link))
