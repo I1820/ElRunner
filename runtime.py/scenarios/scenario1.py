@@ -49,13 +49,13 @@ def action(data):
 
 
 class Scenario1(Scenario):
-    def run(self):
+    def run(self, data=None):
         while True:
             try:
                 print("wait for data...")
                 loop = asyncio.get_event_loop()
                 future = asyncio.Future()
-                loop.run_until_complete(scenario_1.wait_for_data(future, timeout=30))
+                loop.run_until_complete(scenario_1.wait_for_data(timeout=30))
                 loop.close()
                 response = future.result()
                 if response:
