@@ -50,9 +50,6 @@ class Scenario1(Scenario):
                    sender=sender,
                    receivers=receivers, message=message)
 
-    async def wait_for_data_wrapper(self, future, timeout):
-        future.set_result(await self.wait_for_data(timeout))
-
     def run(self, data=None):
         while True:
             try:
