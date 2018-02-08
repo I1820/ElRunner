@@ -61,3 +61,8 @@ func (s *Scenario) Start() error {
 
 	return http.ListenAndServe("127.0.0.1:1373", h)
 }
+
+// Code creates or replaces scenario beacuase
+// there is only on scenario
+func (s *Scenario) Code() {
+}
