@@ -77,8 +77,6 @@ class Scenario(metaclass=abc.ABCMeta):
                                           timeout=timeout)
             return await response.json()
 
-    def send_email(self, host, port, username, password, sender,
-                   receivers, message):
     async def wait_for_data_wrapper(self, future, timeout):
         future.set_result(await self.wait_for_data(timeout))
 
