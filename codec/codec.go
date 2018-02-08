@@ -91,7 +91,9 @@ func New(code []byte, id string) (Codec, error) {
 			if err != nil {
 				return "", err
 			}
-			io.WriteString(stdin, e.Data())
+			if _, err := io.WriteString(stdin, e.Data()); err != nil {
+				return "", err
+			}
 			stdin.Close()
 
 			// stdout
