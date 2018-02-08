@@ -153,6 +153,7 @@ func lintHandler(c *gin.Context) {
 	jsn, err := linter.Lint(data)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.String(http.StatusOK, jsn)
