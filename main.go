@@ -92,13 +92,13 @@ func encodeHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	encoder, ok := codecs[id]
 	if !ok {
-		c.String(http.StatusNotFound, fmt.Sprintf("\"%s\" does not exit on GoRunner", id))
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("\"%s\" does not exit on GoRunner", id)})
 		return
 	}
 
@@ -114,19 +114,19 @@ func decodeHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	decoder, ok := codecs[id]
 	if !ok {
-		c.String(http.StatusNotFound, fmt.Sprintf("\"%s\" does not exit on GoRunner", id))
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("\"%s\" does not exit on GoRunner", id)})
 		return
 	}
 
 	parsed, err := decoder.Decode(data)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
 		scr.Data(parsed)
 		c.String(http.StatusOK, parsed)
@@ -137,13 +137,13 @@ func codecHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	codec, err := codec.New(data, id)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -158,13 +158,13 @@ func codecHandler(c *gin.Context) {
 func lintHandler(c *gin.Context) {
 	data, err := c.GetRawData()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	jsn, err := linter.Lint(data)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -175,12 +175,12 @@ func scenarioHandler(c *gin.Context) {
 	id := c.Param("id")
 	data, err := c.GetRawData()
 	if err != nil {
-		c.String(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := scr.Code(data, id); err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
