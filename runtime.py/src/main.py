@@ -12,21 +12,15 @@ import base64
 import runpy
 
 from codec import Codec
-from analyze import run_pylint_json
 
 
 @click.command()
 @click.argument('target', type=click.Path())
-@click.option('--job', type=click.Choice(['decode', 'encode', 'rule', 'lint']))
+@click.option('--job', type=click.Choice(['decode', 'encode', 'rule']))
 def run(target, job):
     '''
     run given target in provided environment
     '''
-    if job == 'lint':
-        r = run_pylint_json(target)
-        print(r)
-        return
-
     g = runpy.run_path(target, run_name='ucodec')
     for value in g.values():
         if isinstance(value, type) and issubclass(value, Codec) and \
