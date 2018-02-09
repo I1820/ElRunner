@@ -25,12 +25,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var codecs map[string]codec.Codec
+var codecs map[string]*codec.Codec
 var scr *scenario.Scenario
 
 // init initiates global variables
 func init() {
-	codecs = make(map[string]codec.Codec)
+	codecs = make(map[string]*codec.Codec)
 	scr = scenario.New()
 }
 
