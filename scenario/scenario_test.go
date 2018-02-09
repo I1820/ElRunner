@@ -134,3 +134,43 @@ class ISRC(Scenario):
 
 	fmt.Println(string(data))
 }
+
+func TestEmailScenario(t *testing.T) {
+	code := []byte(`
+from scenario import Scenario
+
+
+class S1(Scenario):
+    def run(self, data):
+        sender = 'ceitiotlabtest@gmail.com'
+        receivers = ['parham.alvani@gmail.com']
+
+        message = 'From: From Person <ceitiotlabtest@gmail.com>\n' \
+                  'To: To Person <ceitiotlabtest@gmail.com>\n' \
+                  'Subject: Rule Engine Notification\n\n' \
+                  'Data:' + str(data) + '\n' \
+                                        'Sent by Rule Engine. Scenario:1.'
+        self.send_email(host='smtp.gmail.com', port=587,
+                        username="ceitiotlabtest",
+                        password="ceit is the best",
+                        sender=sender,
+                        receivers=receivers, message=message)
+	`)
+
+	s := New()
+
+	h := jsonrpc2.HTTPHandler(s.rpc)
+	srv := httptest.NewServer(h)
+	defer srv.Close()
+
+	if err := s.Code(code, "Email"); err != nil {
+		t.Fatal(err)
+	}
+	defer s.Stop()
+
+	s.Data("{\"Hello\": 10}")
+
+	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
+		t.Fatalf("Runs error: %s", err)
+	}
+}
