@@ -71,11 +71,11 @@ class Scenario(metaclass=abc.ABCMeta):
         request_payload['id'] = self.counter
         self.counter += 1
 
-        async with aiohttp.ClientSession() as session:
-            session.headers = HEADERS
+        async with aiohttp.ClientSession(headers=HEADERS) as session:
             response = await session.post(URL, json=request_payload,
                                           timeout=timeout)
-            return await response.json()
+            json = await response.json()
+            return json['result']
 
     def send_email(self, host, port, username, password, sender,
                    receivers, message):

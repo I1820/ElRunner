@@ -67,7 +67,7 @@ def ts():
 async def test_wait_for_data(ts):
     response = await ts.wait_for_data(timeout=30)
     print(response)
-    if not response['result'] == 'Test Message':
+    if not response == 'Test Message':
         raise AssertionError()
 
 
@@ -77,5 +77,5 @@ async def test_send_to_down_link(ts):
     response = await ts.send_to_down_link(
             message=SERVER_DATA_RESPONSE, timeout=30)
     print(response)
-    if not response['result'] == 'OK':
+    if not response == 'OK':
         raise AssertionError()
