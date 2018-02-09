@@ -49,33 +49,33 @@ func (r *Runner) Event(e Event) {
 	r.evs <- e
 }
 
-func (r *Runner) interval(i time.Duration) {
-	for {
-		time.Sleep(i)
-		r.evs <- &IntervalEvent{
-			time: time.Now(),
-		}
-	}
-
-}
-
 // Start starts runner and it must be call in new goroutine
 func (r *Runner) Start() {
+	var t <-chan time.Time
 	if r.task.Interval > 0 {
-		go r.interval(r.task.Interval)
+		t = time.Tick(time.Second * 10)
 	}
 	for {
 		select {
 		case ev := <-r.evs:
-			s, e := r.task.Run(ev)
-			if s != "" || e != nil {
+			// channel is close let's go back
+			if ev == nil {
+				return
+			}
+
+			s, err := r.task.Run(ev)
+			if s != "" || err != nil {
 				r.out <- &output{
 					s: s,
-					e: e,
+					e: err,
 				}
 			}
 		case <-r.stp:
 			break
+		case t := <-t:
+			r.evs <- &IntervalEvent{
+				time: t,
+			}
 		}
 	}
 }
