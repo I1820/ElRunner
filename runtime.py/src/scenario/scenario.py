@@ -20,7 +20,7 @@ from pymongo import MongoClient
 RPC_SERVER = '127.0.0.1'
 RPC_PORT = 1373
 URL = 'http://{}:{}/'.format(RPC_SERVER, RPC_PORT)
-HEADERS = {'content-type': 'application/json'}
+HEADERS = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 PAYLOAD = {'jsonrpc': '2.0'}
 
 DB_IP = "localhost"
@@ -49,15 +49,14 @@ class Scenario(metaclass=abc.ABCMeta):
         """
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.WaitForData'
-        request_payload['params'] = []
         request_payload['id'] = self.counter
         self.counter += 1
 
-        async with aiohttp.ClientSession() as session:
-            session.headers = HEADERS
+        async with aiohttp.ClientSession(headers=HEADERS) as session:
             response = await session.post(URL, json=request_payload,
                                           timeout=timeout)
-            return await response.json()
+            json = await response.json()
+            return json['result']
 
     async def send_to_down_link(self, message, timeout):
         """
