@@ -11,6 +11,7 @@
 package scenario
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http/httptest"
 	"os"
@@ -42,8 +43,9 @@ from scenario import Scenario
 
 class ISRC(Scenario):
     def run(self, data):
-        f = open('/tmp/hello', 'w')
+        f = open('/tmp/hello', 'w+')
         f.write(str(data))
+        f.close()
 	`)
 
 	s := New()
@@ -59,7 +61,7 @@ class ISRC(Scenario):
 
 	s.Data("{\"Hello\": 10}")
 
-	if _, err := s.r.OutputBoundedWait(10 * time.Millisecond); err != nil {
+	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
 		t.Fatalf("Runs error: %s", err)
 	}
 
@@ -76,4 +78,59 @@ class ISRC(Scenario):
 	if string(data) != "{'Hello': 10}" {
 		t.Fatal("%q != {'Hello': 10}", string(data))
 	}
+}
+
+func TestRPCScenario(t *testing.T) {
+	code := []byte(`
+import asyncio
+from scenario import Scenario
+
+class ISRC(Scenario):
+    def run(self, data):
+        f = open('/tmp/rpc', 'w+')
+        f.write(str(data))
+        f.write('\n')
+
+        loop = asyncio.get_event_loop()
+        t = asyncio.ensure_future(self.wait_for_data(timeout=1000))
+        loop.run_until_complete(t)
+        loop.close()
+        response = t.result()
+        if response is not None:
+            f.write(str(response))
+        else:
+            f.write(str(t.done()))
+        f.close()
+	`)
+
+	s := New()
+	go func() {
+		if err := s.Start(); err != nil {
+			t.Fatal(err)
+		}
+	}()
+
+	if err := s.Code(code, "RPC"); err != nil {
+		t.Fatal(err)
+	}
+	defer s.Stop()
+
+	s.Data("{\"Hello\": 10}")
+	s.Data("{\"Hello\": 9}")
+
+	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
+		t.Fatalf("Runs error: %s", err)
+	}
+
+	f, err := os.Open("/tmp/rpc")
+	if err != nil {
+		t.Fatalf("Could not open /tmp/rpc: %s", err)
+	}
+
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		t.Fatalf("Could not read /tmp/rpc: %s", err)
+	}
+
+	fmt.Println(string(data))
 }
