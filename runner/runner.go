@@ -53,7 +53,7 @@ func (r *Runner) Event(e Event) {
 func (r *Runner) Start() {
 	var t <-chan time.Time
 	if r.task.Interval > 0 {
-		t = time.Tick(time.Second * 10)
+		t = time.Tick(r.task.Interval)
 	}
 	for {
 		select {
@@ -98,4 +98,16 @@ func (r *Runner) Stop() {
 func (r *Runner) Output() (string, error) {
 	o := <-r.out
 	return o.s, o.e
+}
+
+// OutputBoundedWait returns last output from output queue in given duration
+// or returns nil
+func (r *Runner) OutputBoundedWait(d time.Duration) (string, error) {
+	t := time.Tick(d)
+	select {
+	case <-t:
+		return "", nil
+	case o := <-r.out:
+		return o.s, o.e
+	}
 }
