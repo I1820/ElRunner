@@ -21,22 +21,15 @@ import (
 )
 
 // Codec provides Encoder/Decoder binded functions
-type Codec interface {
-	Decode([]byte) (string, error)
-	Encode(string) ([]byte, error)
-	ID() string
-	Stop()
-}
-
-type codec struct {
-	r runner.Runner
+type Codec struct {
+	r *runner.Runner
 	i string
 }
 
 // Decode sends base64 coded data into stdin of
 // user codec script and reads string represntation of json data object
 // from its stdout
-func (c *codec) Decode(r []byte) (string, error) {
+func (c *Codec) Decode(r []byte) (string, error) {
 	c.r.Event(DecodeEvent(base64.StdEncoding.EncodeToString(r)))
 	return c.r.Output()
 }
@@ -44,7 +37,7 @@ func (c *codec) Decode(r []byte) (string, error) {
 // Encode sends string represntation of json data object into stdin of
 // user codec script and reads base64 coded data
 // from its stdout
-func (c *codec) Encode(p string) ([]byte, error) {
+func (c *Codec) Encode(p string) ([]byte, error) {
 	c.r.Event(EncodeEvent(p))
 	s, e := c.r.Output()
 	if e != nil {
@@ -53,16 +46,18 @@ func (c *codec) Encode(p string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
 }
 
-func (c *codec) Stop() {
+// Stop stops codec runner
+func (c *Codec) Stop() {
 	c.r.Stop()
 }
 
-func (c *codec) ID() string {
+// ID returns codec identification
+func (c *Codec) ID() string {
 	return c.i
 }
 
 // New creates encoder/decoder based on given data
-func New(code []byte, id string) (Codec, error) {
+func New(code []byte, id string) (*Codec, error) {
 	f, err := os.Create(fmt.Sprintf("/tmp/codec-%s.py", id))
 	if err != nil {
 		return nil, err
@@ -117,7 +112,7 @@ func New(code []byte, id string) (Codec, error) {
 	}, 1)
 	go runner.Start()
 
-	return &codec{
+	return &Codec{
 		r: runner,
 		i: id,
 	}, nil
