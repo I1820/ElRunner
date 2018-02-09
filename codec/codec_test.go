@@ -30,7 +30,7 @@ class ISRC(Codec):
 	if err != nil {
 		t.Fatal(err)
 	}
-	if r != "Hi\n" {
+	if r != "\"Hi\"\n" {
 		t.Fatalf("Invalid Decode Result %q", r)
 	}
 	d.Stop()
