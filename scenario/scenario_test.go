@@ -76,7 +76,7 @@ class ISRC(Scenario):
 	}
 
 	if string(data) != "{'Hello': 10}" {
-		t.Fatal("%q != {'Hello': 10}", string(data))
+		t.Fatalf("%q != {'Hello': 10}", string(data))
 	}
 }
 
