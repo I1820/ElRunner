@@ -12,16 +12,9 @@ package runner
 
 import "time"
 
-// Runner binded functions
-type Runner interface {
-	Start()
-	Stop()
-	Output() (string, error)
-	DataEvent(string)
-	Event(Event)
-}
-
-type runner struct {
+// Runner runs your task on sepecific events and stores
+// outputs
+type Runner struct {
 	task *Task
 	evs  chan Event
 	out  chan *output
@@ -29,8 +22,8 @@ type runner struct {
 }
 
 // New creates new runner based on given task
-func New(t *Task, backlog int) Runner {
-	return &runner{
+func New(t *Task, backlog int) *Runner {
+	return &Runner{
 		task: t,
 		evs:  make(chan Event, backlog),
 		out:  make(chan *output, backlog),
@@ -38,17 +31,25 @@ func New(t *Task, backlog int) Runner {
 	}
 }
 
-func (r *runner) DataEvent(data string) {
+// Trigger runner and gets its last event
+// it blocks until one event come
+func (r *Runner) Trigger() Event {
+	return <-r.evs
+}
+
+// DataEvent push data event (string) into runner events
+func (r *Runner) DataEvent(data string) {
 	r.evs <- &DataEvent{
 		data,
 	}
 }
 
-func (r *runner) Event(e Event) {
+// Event push event into runner events
+func (r *Runner) Event(e Event) {
 	r.evs <- e
 }
 
-func (r *runner) interval(i time.Duration) {
+func (r *Runner) interval(i time.Duration) {
 	for {
 		time.Sleep(i)
 		r.evs <- &IntervalEvent{
@@ -58,7 +59,8 @@ func (r *runner) interval(i time.Duration) {
 
 }
 
-func (r *runner) Start() {
+// Start starts runner and it must be call in new goroutine
+func (r *Runner) Start() {
 	if r.task.Interval > 0 {
 		go r.interval(r.task.Interval)
 	}
@@ -78,7 +80,8 @@ func (r *runner) Start() {
 	}
 }
 
-func (r *runner) Stop() {
+// Stop stops runner and you cann't run it again
+func (r *Runner) Stop() {
 	t := time.NewTimer(time.Second * 10)
 	select {
 	case r.stp <- 1:
@@ -86,9 +89,13 @@ func (r *runner) Stop() {
 	case <-t.C:
 		break
 	}
+	close(r.evs)
+	close(r.out)
+	close(r.stp)
 }
 
-func (r *runner) Output() (string, error) {
+// Output returns last output from output queue
+func (r *Runner) Output() (string, error) {
 	o := <-r.out
 	return o.s, o.e
 }
