@@ -24,12 +24,13 @@ import (
 
 // Endpoint for scenario communication
 type Endpoint struct {
+	s *Scenario
 }
 
 // WaitForData waits for things incomming data
 func (e *Endpoint) WaitForData(args int, reply *string) error {
-	fmt.Println("Helloooooo")
-	*reply = "YesYes"
+	d := e.s.r.Trigger()
+	*reply = d.Data()
 	return nil
 }
 
@@ -41,7 +42,7 @@ func (e Endpoint) About(args int, reply *string) error {
 
 // Scenario represents rule engine scenario
 type Scenario struct {
-	r   runner.Runner
+	r   *runner.Runner
 	e   bool
 	rpc *rpc.Server
 }
@@ -52,7 +53,7 @@ func New() *Scenario {
 	s := new(Scenario)
 
 	s.rpc = rpc.NewServer()
-	if err := s.rpc.Register(new(Endpoint)); err != nil {
+	if err := s.rpc.Register(&Endpoint{s: s}); err != nil {
 		panic(err)
 	}
 
