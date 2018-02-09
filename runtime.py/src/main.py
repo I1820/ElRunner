@@ -38,7 +38,7 @@ def run(target, job):
     if job == 'decode':
         s = input()
         d = codec().decode(base64.b64decode(s))
-        print(d)
+        print(json.dumps(d))
     if job == 'encode':
         s = input()
         e = codec().encode(s)
