@@ -123,7 +123,7 @@ func TestCodec(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(body) != herTextName+"\n" {
+	if string(body) != "\""+herTextName+"\"\n" {
 		t.Fatalf("%q != %q", string(body), herTextName)
 	}
 }
