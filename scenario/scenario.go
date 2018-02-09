@@ -67,6 +67,13 @@ func (s *Scenario) Start() error {
 	return http.ListenAndServe("127.0.0.1:1373", h)
 }
 
+// Stop stops scenario
+func (s *Scenario) Stop() {
+	if s.e {
+		s.r.Stop()
+	}
+}
+
 // Data new data is comming
 func (s *Scenario) Data(d string) {
 	if s.e {
@@ -103,7 +110,6 @@ func (s *Scenario) Code(code []byte, id string) error {
 			if err != nil {
 				return "", err
 			}
-			fmt.Println(e.Data())
 			if _, err := io.WriteString(stdin, e.Data()); err != nil {
 				return "", err
 			}
@@ -114,8 +120,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 			// run
 			if _, err := cmd.Output(); err != nil {
 				if err, ok := err.(*exec.ExitError); ok {
-					fmt.Printf("%s: %s\n", err.Error(), err.Stderr)
-					return "", nil
+					return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
 				}
 				return "", err
 			}
