@@ -25,8 +25,8 @@ PAYLOAD = {'jsonrpc': '2.0'}
 
 DB_IP = "localhost"
 DB_PORT = 27017
-DB_NAME = "datadb"
-DB_COLLECTION = "datacollection"
+DB_NAME = "isrc"
+DB_COLLECTION = "parsed"
 
 client = MongoClient(DB_IP, DB_PORT)
 db = client[DB_NAME]
