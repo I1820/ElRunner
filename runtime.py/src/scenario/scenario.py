@@ -30,7 +30,10 @@ class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
     def __init__(self):
-        self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
+        try:
+            self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
+        except KeyError:
+            self.redis = None
 
     @staticmethod
     def sleep(seconds):
