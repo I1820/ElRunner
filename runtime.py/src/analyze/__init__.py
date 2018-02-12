@@ -1,1 +1,0 @@
-from analyze.pylint_runner import run_pylint_json
