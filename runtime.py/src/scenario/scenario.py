@@ -7,16 +7,12 @@
 # [] Created By : Parham Alvani <parham.alvani@gmail.com>
 # =======================================
 import abc
-import aiohttp
 import time
 import threading
 import smtplib
-import redis
 import os
-
-from urllib.error import HTTPError
-from urllib.request import urlopen
-
+import redis
+import aiohttp
 
 # RPC requirements
 RPC_SERVER = '127.0.0.1'
@@ -78,7 +74,8 @@ class Scenario(metaclass=abc.ABCMeta):
             json = await response.json()
             return json['result']
 
-    def send_email(self, host, port, username, password, sender,
+    @staticmethod
+    def send_email(host, port, username, password, sender,
                    receivers, message):
         """
         Send email using given host to some receivers.
@@ -101,37 +98,8 @@ class Scenario(metaclass=abc.ABCMeta):
             smtp_obj.quit()
             print("Successfully sent email")
             successful = True
-        except smtplib.SMTPException as e:
-            print(e)
-
-        return successful
-
-    def send_sms(self, username, password, from_number, to_number, message):
-        """
-        Send SMS message to a cell phone using SMS panel.
-        :param username: SMS panel username.
-        :param password: SMS panel password.
-        :param from_number: Sender panel number.
-        :param to_number: Receiver phone number.
-        :param message: Message body to be sent.
-        :return: True if SMS is sent or False otherwise.
-        """
-        successful = False
-        # Use payam-resan.com sms panel url format to send SMS
-        url = "http://www.payam-resan.com/APISend.aspx?Username={0}&Password={1}'\
-            '&From={2}&To={3}&Text={4}" \
-            .format(username, password, from_number, to_number, message)\
-            .replace(" ", "%20")
-        try:
-            # Send GET request to send SMS with SMS Panel
-            data = urlopen(url=url).read()
-            if str(data) == '0':
-                print("Error Sending SMS: check url and credentials")
-            else:
-                print("Successfully sent SMS")
-                successful = True
-        except HTTPError as e:
-            print(e)
+        except smtplib.SMTPException as exception:
+            print(exception)
 
         return successful
 
