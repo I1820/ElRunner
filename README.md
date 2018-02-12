@@ -15,6 +15,7 @@ its provides runtime python library [runtime.py] for you application in order to
 ## Environment Variables
 - Project ID
 - User ID
+- Redis Host
 
 ## Decode/Encode
 GoRunner can decode/encode your data with your given codec in python.
