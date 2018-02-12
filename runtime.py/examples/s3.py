@@ -7,7 +7,7 @@ class S3(Scenario):
         if v is None:
             self.redis.set("Her", 0)
         else:
-            self.redis.set("Her", v + 1)
+            self.redis.set("Her", int(v) + 1)
 
         f = open('/tmp/redis', 'w+')
         f.write(str(v))
