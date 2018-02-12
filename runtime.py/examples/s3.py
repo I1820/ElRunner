@@ -2,7 +2,7 @@ from scenario import Scenario
 
 
 class S3(Scenario):
-    def run(self, data):
+    def run(self, data=None):
         v = self.redis.get("Her")
         if v is None:
             self.redis.set("Her", 0)

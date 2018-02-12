@@ -4,7 +4,7 @@ from scenario import Scenario
 
 
 class ISRC(Scenario):
-    def run(self, data):
+    def run(self, data=None):
         f = open('/tmp/rpc', 'w+')
         f.write(str(data))
         f.write('\n')

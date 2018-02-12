@@ -2,7 +2,7 @@ from scenario import Scenario
 
 
 class S1(Scenario):
-    def run(self, data):
+    def run(self, data=None):
         sender = 'ceitiotlabtest@gmail.com'
         receivers = ['parham.alvani@gmail.com']
 
