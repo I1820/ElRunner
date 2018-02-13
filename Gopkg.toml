@@ -28,3 +28,11 @@
 [[constraint]]
   branch = "master"
   name = "github.com/powerman/rpc-codec"
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.4"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/weekface/mgorus"

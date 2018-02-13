@@ -32,6 +32,12 @@
   revision = "f48fde47c18678cf6598875e97042ab0ec205790"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
+  version = "v1.0.4"
+
+[[projects]]
   name = "github.com/ugorji/go"
   packages = ["codec"]
   revision = "9831f2c3ac1068a78f50999a30db84270f647af6"
@@ -39,8 +45,20 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/weekface/mgorus"
+  packages = ["."]
+  revision = "83720e22971a8301c5b2738c9364accd3d9eb13a"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "9de5f2eaf759b4c4550b3db39fed2e9e5f86f45c"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = ["unix","windows"]
   revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [[projects]]
@@ -51,6 +69,12 @@
 
 [[projects]]
   branch = "v2"
+  name = "gopkg.in/mgo.v2"
+  packages = [".","bson","internal/json","internal/sasl","internal/scram"]
+  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+
+[[projects]]
+  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
@@ -58,6 +82,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aa57da6619905f44d6e1e833919612d1f16a556ba8089fff99bb871c25cdcc3e"
+  inputs-digest = "ca54135c09ee4a9cba5df400f84afc3077d2023f8fcf29203766386cba14444d"
   solver-name = "gps-cdcl"
   solver-version = 1
