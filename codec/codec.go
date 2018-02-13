@@ -18,6 +18,7 @@ import (
 	"os/exec"
 
 	"github.com/aiotrc/GoRunner/runner"
+	log "github.com/sirupsen/logrus"
 )
 
 // Codec provides Encoder/Decoder binded functions
@@ -110,6 +111,12 @@ func New(code []byte, id string) (*Codec, error) {
 		},
 		Interval: 0,
 	}, 1)
+	runner.ErrHandler = func(err error) {
+		log.WithFields(log.Fields{
+			"Project": id,
+		}).Error(err)
+	}
+
 	go runner.Start()
 
 	return &Codec{
