@@ -20,6 +20,7 @@ import (
 
 	"github.com/aiotrc/GoRunner/runner"
 	"github.com/powerman/rpc-codec/jsonrpc2"
+	log "github.com/sirupsen/logrus"
 )
 
 // Endpoint for scenario communication
@@ -129,6 +130,12 @@ func (s *Scenario) Code(code []byte, id string) error {
 		},
 		Interval: 0,
 	}, 1024)
+	s.r.ErrHandler = func(err error) {
+		log.WithFields(log.Fields{
+			"Project": id,
+		}).Error(err)
+	}
+
 	go s.r.Start()
 
 	return nil
