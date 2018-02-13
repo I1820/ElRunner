@@ -13,12 +13,15 @@ package runner
 import "time"
 
 // Runner runs your task on sepecific events and stores
-// outputs
+// outputs. ErrHandler calls on each run that have error
+// in another thread so write it in async mode.
 type Runner struct {
 	task *Task
 	evs  chan Event
 	out  chan *output
 	stp  chan int
+
+	ErrHandler func(error)
 }
 
 // New creates new runner based on given task
@@ -28,6 +31,8 @@ func New(t *Task, backlog int) *Runner {
 		evs:  make(chan Event, backlog),
 		out:  make(chan *output, backlog),
 		stp:  make(chan int),
+
+		ErrHandler: func(err error) {},
 	}
 }
 
@@ -68,6 +73,9 @@ func (r *Runner) Start() {
 				r.out <- &output{
 					s: s,
 					e: err,
+				}
+				if err != nil {
+					go r.ErrHandler(err)
 				}
 			}
 		case <-r.stp:
