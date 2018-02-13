@@ -13,7 +13,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,6 +22,8 @@ import (
 	"github.com/aiotrc/GoRunner/linter"
 	"github.com/aiotrc/GoRunner/scenario"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/weekface/mgorus"
 )
 
 var codecs map[string]*codec.Codec
@@ -60,6 +61,15 @@ func handle() http.Handler {
 
 func main() {
 	fmt.Println("GoRunner AIoTRC @ 2017")
+
+	// Initiate logger
+	// TODO: using environment variables
+	hooker, err := mgorus.NewHooker("localhost:27017", "isrc", "errors")
+	if err == nil {
+		log.AddHook(hooker)
+	} else {
+		fmt.Printf("Logrus MongoDB Hook error: %s", err)
+	}
 
 	srv := &http.Server{
 		Addr:    ":8080",
