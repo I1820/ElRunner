@@ -70,6 +70,7 @@ func main() {
 	hooker, err := mgorus.NewHooker(mongoURL, "isrc", "errors")
 	if err == nil {
 		log.AddHook(hooker)
+		log.Infof("Logrus MongoDB Hook is %s", mongoURL)
 	} else {
 		log.Errorf("Logrus MongoDB Hook error: %s", err)
 	}
