@@ -72,7 +72,7 @@ func main() {
 		log.AddHook(hooker)
 		log.Infof("Logrus MongoDB Hook is %s", mongoURL)
 	} else {
-		log.Errorf("Logrus MongoDB Hook error: %s", err)
+		log.Errorf("Logrus MongoDB Hook %q error: %s", mongoURL, err)
 	}
 
 	srv := &http.Server{
