@@ -113,7 +113,10 @@ func New(code []byte, id string) (*Codec, error) {
 	}, 1)
 	runner.ErrHandler = func(err error) {
 		log.WithFields(log.Fields{
-			"Project": id,
+			"code":      id,
+			"job":       "codec",
+			"project":   os.Getenv("NAME"),
+			"component": "gorunner",
 		}).Error(err)
 	}
 
