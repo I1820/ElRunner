@@ -132,7 +132,10 @@ func (s *Scenario) Code(code []byte, id string) error {
 	}, 1024)
 	s.r.ErrHandler = func(err error) {
 		log.WithFields(log.Fields{
-			"Project": id,
+			"code":      id,
+			"job":       "rule",
+			"project":   os.Getenv("NAME"),
+			"component": "gorunner",
 		}).Error(err)
 	}
 
