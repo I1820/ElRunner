@@ -16,6 +16,7 @@ its provides runtime python library [runtime.py] for you application in order to
 - Project ID
 - User ID
 - Redis Host
+- Mongo Host
 
 ## Decode/Encode
 GoRunner can decode/encode your data with your given codec in python.
