@@ -63,12 +63,15 @@ func main() {
 	fmt.Println("GoRunner AIoTRC @ 2017")
 
 	// Initiate logger
-	// TODO: using environment variables
-	hooker, err := mgorus.NewHooker("localhost:27017", "isrc", "errors")
+	mongoURL := os.Getenv("MONGO_URL")
+	if mongoURL == "" {
+		mongoURL = "localhost:27017"
+	}
+	hooker, err := mgorus.NewHooker(mongoURL, "isrc", "errors")
 	if err == nil {
 		log.AddHook(hooker)
 	} else {
-		fmt.Printf("Logrus MongoDB Hook error: %s", err)
+		log.Errorf("Logrus MongoDB Hook error: %s", err)
 	}
 
 	srv := &http.Server{
