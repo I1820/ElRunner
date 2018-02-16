@@ -7,6 +7,7 @@ RUN go get -v && go build -v -o /GoRunner
 
 # Final stage
 FROM python:3-alpine
+EXPOSE 8080/tcp
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
 COPY runtime.py /app/runtime.py
