@@ -41,7 +41,7 @@ def run(target, job):
         print(json.dumps(d))
     if job == 'encode':
         s = input()
-        e = codec().encode(s)
+        e = codec().encode(json.loads(s))
         print(base64.b64encode(e).decode('ascii'))
     if job == 'rule':
         s = input()
