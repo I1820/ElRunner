@@ -73,7 +73,7 @@ class ISRC(Codec):
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := d.Encode("Hi")
+	r, err := d.Encode("\"Hi\"")
 	if err != nil {
 		t.Fatal(err)
 	}
