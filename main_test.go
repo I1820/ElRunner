@@ -88,7 +88,7 @@ func TestCodec(t *testing.T) {
 	}
 
 	// Encode her name
-	resp, err = http.Post(fmt.Sprintf("%s/api/encode/%s", s.URL, id), "text/plain", bytes.NewBufferString(herTextName))
+	resp, err = http.Post(fmt.Sprintf("%s/api/encode/%s", s.URL, id), "text/plain", bytes.NewBufferString("\""+herTextName+"\""))
 	if err != nil {
 		t.Fatal(err)
 	}
