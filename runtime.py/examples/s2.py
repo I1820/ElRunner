@@ -3,7 +3,7 @@ import asyncio
 from scenario import Scenario
 
 
-class ISRC(Scenario):
+class S2(Scenario):
     def run(self, data=None):
         f = open('/tmp/rpc', 'w+')
         f.write(str(data))
