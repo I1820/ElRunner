@@ -75,6 +75,8 @@ func main() {
 		log.Errorf("Logrus MongoDB Hook %q error: %s", mongoURL, err)
 	}
 
+	go scr.Start()
+
 	srv := &http.Server{
 		Addr:    ":8080",
 		Handler: handle(),
