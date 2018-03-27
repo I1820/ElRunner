@@ -11,6 +11,7 @@ import click
 import base64
 import runpy
 import json
+import traceback
 
 from codec import Codec
 from scenario import Scenario
@@ -49,4 +50,7 @@ def run(target, job):
 
 
 def main():
-    run()
+    try:
+        run()
+    except Exception:
+        traceback.print_exc()
