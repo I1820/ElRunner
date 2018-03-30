@@ -12,6 +12,7 @@ import base64
 import runpy
 import json
 import traceback
+import sys
 
 from codec import Codec
 from scenario import Scenario
@@ -54,3 +55,4 @@ def main():
         run()
     except Exception:
         traceback.print_exc()
+        sys.exit(1)
