@@ -46,12 +46,16 @@ type Scenario struct {
 	r   *runner.Runner
 	e   bool
 	rpc *rpc.Server
+
+	Enable bool
 }
 
 // New creates instance of Scenario
 // instance contains rpc server that is not running, so Start must call.
 func New() *Scenario {
 	s := new(Scenario)
+
+	s.Enable = true
 
 	s.rpc = rpc.NewServer()
 	if err := s.rpc.Register(&Endpoint{s: s}); err != nil {
