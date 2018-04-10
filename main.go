@@ -48,6 +48,8 @@ func handle() http.Handler {
 
 		api.POST("/codec/:id", codecHandler)
 		api.POST("/scenario/:id", scenarioHandler)
+		api.GET("/scenario/:id/deactivate", scenarioDeactivateHandler)
+		api.GET("/scenario/:id/activate", scenarioActivateHandler)
 
 		api.POST("/lint", lintHandler)
 	}
@@ -150,7 +152,9 @@ func decodeHandler(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
-		scr.Data(parsed)
+		if scr.Enable {
+			scr.Data(parsed)
+		}
 		c.Data(http.StatusOK, "application/json", []byte(parsed))
 	}
 }
@@ -205,6 +209,22 @@ func scenarioHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	c.String(http.StatusOK, id)
+}
+
+func scenarioActivateHandler(c *gin.Context) {
+	id := c.Param("id")
+
+	scr.Enable = true
+
+	c.String(http.StatusOK, id)
+}
+
+func scenarioDeactivateHandler(c *gin.Context) {
+	id := c.Param("id")
+
+	scr.Enable = false
 
 	c.String(http.StatusOK, id)
 }
