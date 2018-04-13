@@ -2,7 +2,6 @@
 [![Travis branch](https://img.shields.io/travis/aiotrc/GoRunner/master.svg?style=flat-square)](https://travis-ci.org/aiotrc/GoRunner)
 [![Docker Pulls](https://img.shields.io/docker/pulls/aiotrc/gorunner.svg?style=flat-square)]()
 [![Codacy grade](https://img.shields.io/codacy/grade/b0b53df0a7264498a760232425be52e4.svg?style=flat-square)](https://www.codacy.com/app/1995parham/GoRunner?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aiotrc/GoRunner&amp;utm_campaign=Badge_Grade)
-[![Postman](https://img.shields.io/badge/postman-documentation-orange.svg?style=flat-square)](https://documenter.getpostman.com/view/3119716/isrc-runner/7TGkuix)
 
 ## Introduction
 GoRunner runs Python3 code when specific events come, but it ensure you, you will have one instance of your code in running state.
