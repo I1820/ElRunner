@@ -80,9 +80,11 @@ func (s *Scenario) Stop() {
 }
 
 // Data new data is comming
-func (s *Scenario) Data(d string) {
+func (s *Scenario) Data(d string, t string) {
 	if s.e {
-		s.r.DataEvent(d)
+		s.r.DataEvent(d, map[string]string{
+			"thing": t,
+		})
 	}
 }
 
@@ -108,7 +110,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 	s.e = true
 	s.r = runner.New(&runner.Task{
 		Run: func(e runner.Event) (string, error) {
-			cmd := exec.Command("runtime.py", "--job", "rule", f.Name())
+			cmd := exec.Command("runtime.py", "--job", "rule", "--id", e.Env("thing"), f.Name())
 
 			// stdin
 			stdin, err := cmd.StdinPipe()
