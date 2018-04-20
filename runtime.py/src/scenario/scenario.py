@@ -25,7 +25,8 @@ PAYLOAD = {'jsonrpc': '2.0'}
 class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
-    def __init__(self):
+    def __init__(self, id):
+        self.id = id
         try:
             self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
         except KeyError:
