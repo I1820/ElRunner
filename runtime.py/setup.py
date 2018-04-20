@@ -13,7 +13,7 @@ setup module for runtime.py
 # To use a consistent encoding
 from os import path
 # Always prefer setuptools over distutils
-from distutils.core import setup
+from setuptools import setup
 # parse requirements.txt
 from pip.req import parse_requirements
 
@@ -35,7 +35,7 @@ setup(
     # For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2.0',
+    version='0.3.0',
 
 
     # Author details
