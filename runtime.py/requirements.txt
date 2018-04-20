@@ -1,18 +1,1 @@
-# Main
-wheel
-
-# runtime.py
-click
-
-# User Packages
-cbor
-
-# Analyze
-pylint
-
-# Scenario
-aiohttp
-pymongo
-geopy
-redis
-kavenegar
+-e .
