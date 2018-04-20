@@ -13,6 +13,7 @@ import smtplib
 import os
 import redis
 import aiohttp
+import pymongo
 
 # RPC requirements
 RPC_SERVER = '127.0.0.1'
@@ -31,6 +32,11 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
         except KeyError:
             self.redis = None
+
+        try:
+            self.mongo = pymongo.MongoClient()
+        except Exception:
+            self.mongo = None
 
     @staticmethod
     def sleep(seconds):
