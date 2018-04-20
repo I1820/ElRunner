@@ -13,7 +13,7 @@ setup module for runtime.py
 # To use a consistent encoding
 from os import path
 # Always prefer setuptools over distutils
-from setuptools import setup
+from distutils.core import setup
 # parse requirements.txt
 from pip.req import parse_requirements
 
