@@ -21,7 +21,8 @@ from scenario import Scenario
 @click.command()
 @click.argument('target', type=click.Path())
 @click.option('--job', type=click.Choice(['decode', 'encode', 'rule']))
-def run(target, job):
+@click.option('--id', type=str, default="")
+def run(target, job, id):
     '''
     run given target in provided environment
     '''
@@ -47,7 +48,7 @@ def run(target, job):
         print(base64.b64encode(e).decode('ascii'))
     if job == 'rule':
         s = input()
-        scenario().run(json.loads(s))
+        scenario(id).run(json.loads(s))
 
 
 def main():
