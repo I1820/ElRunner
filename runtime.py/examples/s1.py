@@ -6,9 +6,9 @@ class S1(Scenario):
         sender = 'ceitiotlabtest@gmail.com'
         receivers = ['parham.alvani@gmail.com']
 
-        message = 'From: From Person <ceitiotlabtest@gmail.com>\n' \
-                  'To: To Person <ceitiotlabtest@gmail.com>\n' \
-                  'Subject: Rule Engine Notification\n\n' \
+        message = 'From: From AIoTRC <ceitiotlabtest@gmail.com>\n' \
+                  'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
+                  'Subject: Rule Engine Notification [Thing: self.id]\n\n' \
                   'Data:' + str(data) + '\n' \
                                         'Sent by Rule Engine. Scenario:1.'
         self.send_email(host='smtp.gmail.com', port=587,
