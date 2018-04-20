@@ -23,6 +23,7 @@ const (
 type Event interface {
 	Type() int
 	Data() string
+	Env(key string) string
 }
 
 // IntervalEvent occurs when user specific interval finishes
@@ -40,9 +41,15 @@ func (i *IntervalEvent) Data() string {
 	return i.time.Format(time.RFC3339)
 }
 
+// Env returns value of given key
+func (i *IntervalEvent) Env(key string) string {
+	return ""
+}
+
 // DataEvent occurs when new data comes from push service
 type DataEvent struct {
 	data string
+	e    map[string]string
 }
 
 // Type returns type of event
@@ -53,4 +60,9 @@ func (d *DataEvent) Type() int {
 // Data returns data associated with event
 func (d *DataEvent) Data() string {
 	return d.data
+}
+
+// Env returns value of given key
+func (d *DataEvent) Env(key string) string {
+	return d.e[key]
 }

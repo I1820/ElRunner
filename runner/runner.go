@@ -43,9 +43,18 @@ func (r *Runner) Trigger() Event {
 }
 
 // DataEvent push data event (string) into runner events
-func (r *Runner) DataEvent(data string) {
+func (r *Runner) DataEvent(data string, envs ...map[string]string) {
+	e := make(map[string]string)
+
+	for _, env := range envs {
+		for k, v := range env {
+			e[k] = v
+		}
+	}
+
 	r.evs <- &DataEvent{
 		data,
+		e,
 	}
 }
 
