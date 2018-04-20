@@ -20,7 +20,7 @@ def action_function():
 
 @pytest.fixture(scope="session")
 def ts():
-    s = TestScenario()
+    s = TestScenario("")
     return s
 
 

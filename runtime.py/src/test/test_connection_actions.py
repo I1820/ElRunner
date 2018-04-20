@@ -58,7 +58,7 @@ def run_rpc_server(wait_for_data, send_to_down_link):
 
 @pytest.fixture(scope="session")
 def ts():
-    s = TestScenario()
+    s = TestScenario("")
     return s
 
 
