@@ -38,10 +38,15 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
+        # Main
         "wheel",
+        # runtime.py
         "click",
+        # User Packages
         "cbor",
+        # Analyze
         "pylint",
+        # Scenario
         "aiohttp",
         "pymongo",
         "geopy",
