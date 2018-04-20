@@ -59,7 +59,7 @@ class ISRC(Scenario):
 	}
 	defer s.Stop()
 
-	s.Data("{\"Hello\": 10}")
+	s.Data("{\"Hello\": 10}", "Parham")
 
 	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
 		t.Fatalf("Runs error: %s", err)
@@ -115,8 +115,8 @@ class ISRC(Scenario):
 	}
 	defer s.Stop()
 
-	s.Data("{\"Hello\": 10}")
-	s.Data("{\"Hello\": 9}")
+	s.Data("{\"Hello\": 10}", "Parham")
+	s.Data("{\"Hello\": 9}", "Parham")
 
 	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
 		t.Fatalf("Runs error: %s", err)
@@ -168,7 +168,7 @@ class S1(Scenario):
 	}
 	defer s.Stop()
 
-	s.Data("{\"Hello\": 10}")
+	s.Data("{\"Hello\": 10}", "Parham")
 
 	if _, err := s.r.OutputBoundedWait(1 * time.Second); err != nil {
 		t.Fatalf("Runs error: %s", err)
