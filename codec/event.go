@@ -25,6 +25,11 @@ func (d DecodeEvent) Type() int {
 	return runner.UserEventType
 }
 
+// Env returns value of given key
+func (d DecodeEvent) Env(key string) string {
+	return ""
+}
+
 // EncodeEvent generates for encode call
 type EncodeEvent string
 
@@ -36,4 +41,9 @@ func (e EncodeEvent) Data() string {
 // Type returns type of event
 func (e EncodeEvent) Type() int {
 	return runner.UserEventType
+}
+
+// Env returns value of given key
+func (e EncodeEvent) Env(key string) string {
+	return ""
 }
