@@ -23,6 +23,12 @@ HEADERS = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 PAYLOAD = {'jsonrpc': '2.0'}
 
 
+# Data Mongo
+DATA_MONGO = '127.0.0.1'
+
+# Thing Mongo
+
+
 class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
@@ -34,9 +40,9 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = None
 
         try:
-            self.mongo = pymongo.MongoClient()
+            self.data_db = pymongo.MongoClient(DATA_MONGO)
         except Exception:
-            self.mongo = None
+            self.data_db = None
 
     @staticmethod
     def sleep(seconds):
@@ -45,6 +51,9 @@ class Scenario(metaclass=abc.ABCMeta):
     @staticmethod
     def schedule(delay_seconds, action_function, args=()):
         threading.Timer(delay_seconds, action_function, args).start()
+
+    def find_data(self):
+        pass
 
     async def wait_for_data(self, timeout):
         """
