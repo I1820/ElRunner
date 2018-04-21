@@ -13,6 +13,7 @@ import runpy
 import json
 import traceback
 import sys
+import contextlib
 
 from codec import Codec
 from scenario import Scenario
@@ -40,11 +41,14 @@ def run(target, job, id):
 
     if job == 'decode':
         s = input()
-        d = codec().decode(base64.b64decode(s))
+        with contextlib.redirect_stdout(sys.stderr):
+            d = codec().decode(base64.b64decode(s))
         print(json.dumps(d))
     if job == 'encode':
+        print("Hello")
         s = input()
-        e = codec().encode(json.loads(s))
+        with contextlib.redirect_stdout(sys.stderr):
+            e = codec().encode(json.loads(s))
         print(base64.b64encode(e).decode('ascii'))
     if job == 'rule':
         s = input()
