@@ -20,7 +20,7 @@ jobs:
         - sudo apt-get -m update || true
         - sudo apt-get install -y python3.6
         - sudo apt-get install -y python3-setuptools
-        - cd runtime.py && sudo python3.6 -m pip install -r requirements.txt && cd ..
+        - cd runtime.py && sudo python3.6 setup.py install && cd ..
       install:
         - dep ensure
       script:
