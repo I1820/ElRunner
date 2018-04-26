@@ -45,7 +45,6 @@ def run(target, job, id):
             d = codec().decode(base64.b64decode(s))
         print(json.dumps(d))
     if job == 'encode':
-        print("Hello")
         s = input()
         with contextlib.redirect_stdout(sys.stderr):
             e = codec().encode(json.loads(s))
