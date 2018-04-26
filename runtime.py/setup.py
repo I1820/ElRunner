@@ -54,6 +54,16 @@ setup(
         "kavenegar",
     ],
 
+    setup_requires=[
+        'pytest-runner',
+    ],
+
+    tests_require=[
+        'json-rpc',
+        'werkzeug',
+        'pytest-asyncio',
+    ],
+
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform
     # support and allow
