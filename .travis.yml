@@ -37,7 +37,7 @@ jobs:
       before_install:
         - cd runtime.py
       install:
-        - pip3 install -r dev-requirements
+        - pip3 install -r dev-requirements.txt
       script:
         - python3 setup.py test
         - flake8 --statistics --verbose *.py
