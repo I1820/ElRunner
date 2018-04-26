@@ -170,3 +170,5 @@ pip-selfcheck.json
 # Generated Outputs
 log.txt
 
+# pytest
+.pytest_cache
