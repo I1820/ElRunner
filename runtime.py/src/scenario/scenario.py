@@ -47,8 +47,12 @@ class Scenario(metaclass=abc.ABCMeta):
         threading.Timer(delay_seconds, action_function, args).start()
 
     def find_data(self, thingid):
+        """
+        Finds given thing data in database
+        :param thingid: Array of things identifiers
+        """
         return self.data_db.find_many({
-            'thingid': thingid,
+            'thingid': {"$in": thingid},
             'project': os.environ['NAME'],
         })
 
