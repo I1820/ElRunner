@@ -145,8 +145,8 @@ class S1(Scenario):
         sender = 'ceitiotlabtest@gmail.com'
         receivers = ['parham.alvani@gmail.com']
 
-        message = 'From: From Person <ceitiotlabtest@gmail.com>\n' \
-                  'To: To Person <ceitiotlabtest@gmail.com>\n' \
+        message = 'From: From Travis CI <ceitiotlabtest@gmail.com>\n' \
+                  'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
                   'Subject: Rule Engine Notification\n\n' \
                   'Data:' + str(data) + '\n' \
                                         'Sent by Rule Engine. Scenario:1.'
