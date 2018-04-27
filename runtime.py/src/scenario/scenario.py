@@ -23,12 +23,6 @@ HEADERS = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 PAYLOAD = {'jsonrpc': '2.0'}
 
 
-# Data Mongo
-DATA_MONGO = '127.0.0.1'
-
-# Thing Mongo
-
-
 class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
@@ -40,7 +34,7 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = None
 
         try:
-            self.data_db = pymongo.MongoClient(DATA_MONGO)
+            self.data_db = pymongo.MongoClient(os.environ['MONGO_URL'])
         except Exception:
             self.data_db = None
 
@@ -52,8 +46,11 @@ class Scenario(metaclass=abc.ABCMeta):
     def schedule(delay_seconds, action_function, args=()):
         threading.Timer(delay_seconds, action_function, args).start()
 
-    def find_data(self):
-        pass
+    def find_data(self, thingid):
+        return self.data_db.find_many({
+            'thingid': thingid,
+            'project': os.environ['NAME'],
+        })
 
     async def wait_for_data(self, timeout):
         """
