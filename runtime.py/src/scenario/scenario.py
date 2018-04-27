@@ -34,7 +34,7 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = None
 
         try:
-            self.data_db = pymongo.MongoClient(os.environ['MONGO_URL'])
+            self.data_db = pymongo.MongoClient(os.environ['MONGO_URL']).isrc
         except Exception:
             self.data_db = None
 
@@ -51,7 +51,7 @@ class Scenario(metaclass=abc.ABCMeta):
         Finds given thing data in database
         :param thingid: Array of things identifiers
         """
-        return self.data_db.find_many({
+        return self.data_db.parsed.find_many({
             'thingid': {"$in": thingid},
             'project': os.environ['NAME'],
         })
