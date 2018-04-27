@@ -136,6 +136,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 		},
 		Interval: 0,
 	}, 1024)
+
 	s.r.ErrHandler = func(err error) {
 		log.WithFields(log.Fields{
 			"code":      id,
