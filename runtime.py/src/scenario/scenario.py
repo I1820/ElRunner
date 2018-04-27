@@ -51,7 +51,7 @@ class Scenario(metaclass=abc.ABCMeta):
         Finds given thing data in database
         :param thingid: Array of things identifiers
         """
-        return self.data_db.parsed.find_many({
+        return self.data_db.parsed.find({
             'thingid': {"$in": thingid},
             'project': os.environ['NAME'],
         })
