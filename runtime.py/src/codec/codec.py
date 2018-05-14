@@ -10,6 +10,12 @@ import abc
 
 
 class Codec(metaclass=abc.ABCMeta):
+    thing_location = ''
+
+    @staticmethod
+    def create_location(lat, lng):
+        return {'loc': [lat, lng]}
+
     @abc.abstractmethod
     def decode(self, data):
         pass
