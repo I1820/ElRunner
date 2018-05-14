@@ -43,6 +43,8 @@ def run(target, job, id):
         s = input()
         with contextlib.redirect_stdout(sys.stderr):
             d = codec().decode(base64.b64decode(s))
+        if codec.thing_location != '':
+            d['_location'] = d[codec.thing_location]
         print(json.dumps(d))
     if job == 'encode':
         s = input()
