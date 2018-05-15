@@ -39,6 +39,12 @@ def run(target, job, id):
                 value.__module__ == 'uscenario':
             scenario = value
 
+    if (job == 'decode' or job == 'encode') and 'codec' not in locals():
+        raise Exception("Invalid codec class")
+
+    if job == 'scenario' and 'scenario' not in locals():
+        raise Exception("Invalid scenario class")
+
     if job == 'decode':
         s = input()
         with contextlib.redirect_stdout(sys.stderr):
