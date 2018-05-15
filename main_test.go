@@ -25,7 +25,9 @@ var (
 	herTextName = "Kiana"
 	herCborName = []byte{0x65, 0x4B, 0x69, 0x61, 0x6E, 0x61}
 
-	code = `
+	locationCbor = []byte{0xA3, 0x63, 0x6C, 0x61, 0x74, 0x0A, 0x63, 0x6C, 0x6E, 0x67, 0x0A, 0x6B, 0x74, 0x65, 0x6D, 0x70, 0x65, 0x72, 0x61, 0x74, 0x75, 0x72, 0x65, 0x18, 0x1E}
+
+	codecOne = `
 from codec import Codec
 import cbor
 
@@ -34,6 +36,25 @@ class ISRC(Codec):
         return cbor.loads(data)
     def encode(self, data):
         return cbor.dumps(data)
+`
+	codecTwo = `
+from codec import Codec
+import cbor
+
+class ISRC(Codec):
+    thing_location = 'loc'
+
+    def decode(self, data):
+        print("Hello")
+        d = cbor.loads(data)
+        print(d)
+
+        d['loc'] = self.create_location(d['lat'], d['lng'])
+
+        return d
+    def encode(self, data):
+        return cbor.dumps(data)
+
 `
 )
 
@@ -62,13 +83,13 @@ func TestAbout(t *testing.T) {
 	}
 }
 
-func TestCodec(t *testing.T) {
+func TestCodec1(t *testing.T) {
 	h := handle()
 	s := httptest.NewServer(h)
 	defer s.Close()
 
 	// Upload codec
-	resp, err := http.Post(fmt.Sprintf("%s/api/codec/%s", s.URL, id), "text/plain", bytes.NewBufferString(code))
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec/%s", s.URL, id), "text/plain", bytes.NewBufferString(codecOne))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -125,5 +146,47 @@ func TestCodec(t *testing.T) {
 
 	if string(body) != "\""+herTextName+"\"\n" {
 		t.Fatalf("%q != %q", string(body), herTextName)
+	}
+}
+
+func TestCodec2(t *testing.T) {
+	h := handle()
+	s := httptest.NewServer(h)
+	defer s.Close()
+
+	// Upload codec
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec/%s", s.URL, id), "text/plain", bytes.NewBufferString(codecTwo))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(body) != id {
+		t.Fatalf("%q != %q", string(body), id)
+	}
+
+	// Decode location
+	resp, err = http.Post(fmt.Sprintf("%s/api/decode/%s", s.URL, id), "text/plain", bytes.NewBuffer(locationCbor))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			return
+		}
+	}()
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
