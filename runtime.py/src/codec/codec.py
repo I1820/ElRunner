@@ -14,7 +14,10 @@ class Codec(metaclass=abc.ABCMeta):
 
     @staticmethod
     def create_location(lat, lng):
-        return {'loc': [lat, lng]}
+        return {
+            'type': 'Point',
+            'coordinates': [lat, lng]
+        }
 
     @abc.abstractmethod
     def decode(self, data):
