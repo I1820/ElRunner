@@ -46,7 +46,7 @@ func handle() http.Handler {
 
 		api.GET("/about", aboutHandler)
 
-		api.POST("/codec/:id", codecHandler)
+		api.POST("/codec", codecHandler)
 		api.POST("/scenario/:id", scenarioHandler)
 		api.GET("/scenario/:id/deactivate", scenarioDeactivateHandler)
 		api.GET("/scenario/:id/activate", scenarioActivateHandler)
@@ -160,16 +160,17 @@ func decodeHandler(c *gin.Context) {
 }
 
 func codecHandler(c *gin.Context) {
-	id := c.Param("id")
-	data, err := c.GetRawData()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	c.Header("Content-Type", "application/json")
+
+	var json codeReq
+	if err := c.BindJSON(&json); err != nil {
 		return
 	}
+	id := json.ID
 
-	codec, err := codec.New(data, id)
+	codec, err := codec.New([]byte(json.Code), id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
@@ -178,7 +179,7 @@ func codecHandler(c *gin.Context) {
 	}
 	codecs[id] = codec
 
-	c.String(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
 func lintHandler(c *gin.Context) {
@@ -198,19 +199,20 @@ func lintHandler(c *gin.Context) {
 }
 
 func scenarioHandler(c *gin.Context) {
-	id := c.Param("id")
-	data, err := c.GetRawData()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	c.Header("Content-Type", "application/json")
+
+	var json codeReq
+	if err := c.BindJSON(&json); err != nil {
+		return
+	}
+	id := json.ID
+
+	if err := scr.Code([]byte(json.Code), id); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	if err := scr.Code(data, id); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.String(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
 func scenarioActivateHandler(c *gin.Context) {

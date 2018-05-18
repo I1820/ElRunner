@@ -12,6 +12,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -89,7 +90,15 @@ func TestCodec1(t *testing.T) {
 	defer s.Close()
 
 	// Upload codec
-	resp, err := http.Post(fmt.Sprintf("%s/api/codec/%s", s.URL, id), "text/plain", bytes.NewBufferString(codecOne))
+	json, err := json.Marshal(codeReq{
+		ID:   id,
+		Code: codecOne,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "text/plain", bytes.NewBuffer(json))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,7 +113,7 @@ func TestCodec1(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(body) != id {
+	if string(body) != "\""+id+"\"" {
 		t.Fatalf("%q != %q", string(body), id)
 	}
 
@@ -155,7 +164,15 @@ func TestCodec2(t *testing.T) {
 	defer s.Close()
 
 	// Upload codec
-	resp, err := http.Post(fmt.Sprintf("%s/api/codec/%s", s.URL, id), "text/plain", bytes.NewBufferString(codecTwo))
+	json, err := json.Marshal(codeReq{
+		ID:   id,
+		Code: codecTwo,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "text/plain", bytes.NewBuffer(json))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -170,7 +187,7 @@ func TestCodec2(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if string(body) != id {
+	if string(body) != "\""+id+"\"" {
 		t.Fatalf("%q != %q", string(body), id)
 	}
 
