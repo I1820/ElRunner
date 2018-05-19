@@ -121,7 +121,7 @@ func encodeHandler(c *gin.Context) {
 
 	data, err := c.GetRawData()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
