@@ -23,8 +23,8 @@ import (
 var (
 	id = "isrc-sensor"
 
-	herTextName = "Kiana"
-	herCborName = []byte{0x65, 0x4B, 0x69, 0x61, 0x6E, 0x61}
+	herTextName = "Shamin"
+	herCborName = []byte{0x66, 0x53, 0x68, 0x61, 0x6D, 0x69, 0x6E}
 
 	locationCbor = []byte{0xA3, 0x63, 0x6C, 0x61, 0x74, 0x0A, 0x63, 0x6C, 0x6E, 0x67, 0x0A, 0x6B, 0x74, 0x65, 0x6D, 0x70, 0x65, 0x72, 0x61, 0x74, 0x75, 0x72, 0x65, 0x18, 0x1E}
 
@@ -90,7 +90,7 @@ func TestCodec1(t *testing.T) {
 	defer s.Close()
 
 	// Upload codec
-	json, err := json.Marshal(codeReq{
+	jsc, err := json.Marshal(codeReq{
 		ID:   id,
 		Code: codecOne,
 	})
@@ -98,7 +98,7 @@ func TestCodec1(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "text/plain", bytes.NewBuffer(json))
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "application/json", bytes.NewBuffer(jsc))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func TestCodec1(t *testing.T) {
 	}
 
 	// Encode her name
-	resp, err = http.Post(fmt.Sprintf("%s/api/encode/%s", s.URL, id), "text/plain", bytes.NewBufferString("\""+herTextName+"\""))
+	resp, err = http.Post(fmt.Sprintf("%s/api/encode/%s", s.URL, id), "application/json", bytes.NewBufferString("\""+herTextName+"\""))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,12 +133,22 @@ func TestCodec1(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if !bytes.Equal(body, herCborName) {
+	var jse []byte
+	if err := json.Unmarshal(body, &jse); err != nil {
+		t.Fatal(err)
+	}
+
+	if !bytes.Equal(jse, herCborName) {
 		t.Fatalf("%q != %q", body, herCborName)
 	}
 
 	// Decode her name
-	resp, err = http.Post(fmt.Sprintf("%s/api/decode/%s", s.URL, id), "text/plain", bytes.NewBuffer(herCborName))
+	jsd, err := json.Marshal(herCborName)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err = http.Post(fmt.Sprintf("%s/api/decode/%s", s.URL, id), "application/json", bytes.NewBuffer(jsd))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -164,7 +174,7 @@ func TestCodec2(t *testing.T) {
 	defer s.Close()
 
 	// Upload codec
-	json, err := json.Marshal(codeReq{
+	jsc, err := json.Marshal(codeReq{
 		ID:   id,
 		Code: codecTwo,
 	})
@@ -172,7 +182,7 @@ func TestCodec2(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "text/plain", bytes.NewBuffer(json))
+	resp, err := http.Post(fmt.Sprintf("%s/api/codec", s.URL), "application/json", bytes.NewBuffer(jsc))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,7 +202,12 @@ func TestCodec2(t *testing.T) {
 	}
 
 	// Decode location
-	resp, err = http.Post(fmt.Sprintf("%s/api/decode/%s", s.URL, id), "text/plain", bytes.NewBuffer(locationCbor))
+	jsd, err := json.Marshal(locationCbor)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err = http.Post(fmt.Sprintf("%s/api/decode/%s", s.URL, id), "application/json", bytes.NewBuffer(jsd))
 	if err != nil {
 		t.Fatal(err)
 	}
