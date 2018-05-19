@@ -39,6 +39,12 @@ func init() {
 func handle() http.Handler {
 	r := gin.Default()
 
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "404 Not Found"})
+	})
+
+	r.Use(gin.ErrorLogger())
+
 	api := r.Group("/api")
 	{
 		api.POST("/decode/:id", decodeHandler)
@@ -47,16 +53,12 @@ func handle() http.Handler {
 		api.GET("/about", aboutHandler)
 
 		api.POST("/codec", codecHandler)
-		api.POST("/scenario/:id", scenarioHandler)
+		api.POST("/scenario", scenarioHandler)
 		api.GET("/scenario/:id/deactivate", scenarioDeactivateHandler)
 		api.GET("/scenario/:id/activate", scenarioActivateHandler)
 
 		api.POST("/lint", lintHandler)
 	}
-
-	r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "404 Not Found"})
-	})
 
 	return r
 }
@@ -113,7 +115,10 @@ func aboutHandler(c *gin.Context) {
 }
 
 func encodeHandler(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
 	id := c.Param("id")
+
 	data, err := c.GetRawData()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -122,35 +127,37 @@ func encodeHandler(c *gin.Context) {
 
 	encoder, ok := codecs[id]
 	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("%q does not exit on GoRunner", id)})
+		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
 		return
 	}
 
 	parsed, err := encoder.Encode(string(data))
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
-		c.Data(http.StatusOK, "application/octet-stream", parsed)
+		c.JSON(http.StatusOK, parsed)
 	}
 }
 
 func decodeHandler(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
 	id := c.Param("id")
-	data, err := c.GetRawData()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	var json []byte
+	if err := c.BindJSON(&json); err != nil {
 		return
 	}
 
 	decoder, ok := codecs[id]
 	if !ok {
-		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("%q does not exit on GoRunner", id)})
+		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
 		return
 	}
 
-	parsed, err := decoder.Decode(data)
+	parsed, err := decoder.Decode(json)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
 		if scr.Enable {
 			scr.Data(parsed, id)
@@ -220,7 +227,7 @@ func scenarioActivateHandler(c *gin.Context) {
 
 	scr.Enable = true
 
-	c.String(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
 
 func scenarioDeactivateHandler(c *gin.Context) {
@@ -228,5 +235,5 @@ func scenarioDeactivateHandler(c *gin.Context) {
 
 	scr.Enable = false
 
-	c.String(http.StatusOK, id)
+	c.JSON(http.StatusOK, id)
 }
