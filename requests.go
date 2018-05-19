@@ -10,6 +10,7 @@
 
 package main
 
+// scenario, codec request payload
 type codeReq struct {
 	ID   string `json:"id" binding:"required"`
 	Code string `json:"code" binding:"required"`
