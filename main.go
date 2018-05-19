@@ -190,15 +190,16 @@ func codecHandler(c *gin.Context) {
 }
 
 func lintHandler(c *gin.Context) {
-	data, err := c.GetRawData()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	c.Header("Content-Type", "application/json")
+
+	var code string
+	if err := c.BindJSON(&code); err != nil {
 		return
 	}
 
-	jsn, err := linter.Lint(data)
+	jsn, err := linter.Lint(code)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
