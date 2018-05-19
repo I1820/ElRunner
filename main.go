@@ -197,7 +197,7 @@ func lintHandler(c *gin.Context) {
 		return
 	}
 
-	jsn, err := linter.Lint(code)
+	jsn, err := linter.Lint([]byte(code))
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
