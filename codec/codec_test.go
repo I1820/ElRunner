@@ -10,7 +10,11 @@
 
 package codec
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestHelloDeocder(t *testing.T) {
 	code := []byte(`
@@ -21,18 +25,15 @@ class ISRC(Codec):
         return data.decode('ascii')
     def encode(self, data):
         pass
-	`)
+`)
 	d, err := New(code, "hi")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, err)
+
 	r, err := d.Decode([]byte("Hi"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if r != "\"Hi\"\n" {
-		t.Fatalf("Invalid Decode Result %q", r)
-	}
+	assert.NoError(t, err)
+
+	assert.Equalf(t, "\"Hi\"\n", r, "Invalid Decode Result %q", r)
+
 	d.Stop()
 }
 
@@ -45,18 +46,14 @@ class ISRC(Codec):
         khar
     def encode(self, data):
         pass
-	`)
+`)
 	d, err := New(code, "hi")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := d.Decode([]byte("Hi")); err != nil {
-		t.Log(err)
-	} else {
-		t.Fatal("There is no error?!")
-	}
-	d.Stop()
+	assert.NoError(t, err)
 
+	_, err = d.Decode([]byte("Hi"))
+	assert.Error(t, err)
+
+	d.Stop()
 }
 
 func TestHelloEncoder(t *testing.T) {
@@ -68,18 +65,14 @@ class ISRC(Codec):
         pass
     def encode(self, data):
         return data.encode('ascii')
-	`)
+`)
 	d, err := New(code, "hi")
-	if err != nil {
-		t.Fatal(err)
-	}
-	r, err := d.Encode("\"Hi\"")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(r) != "Hi" {
-		t.Fatalf("Invalid Decode Result %q", r)
-	}
-	d.Stop()
+	assert.NoError(t, err)
 
+	r, err := d.Encode("\"Hi\"")
+	assert.NoError(t, err)
+
+	assert.Equalf(t, "Hi", string(r), "Invalid Encode Result %q", r)
+
+	d.Stop()
 }
