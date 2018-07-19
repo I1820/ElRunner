@@ -127,7 +127,7 @@ func encodeHandler(c *gin.Context) {
 
 	encoder, ok := codecs[id]
 	if !ok {
-		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
+		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exist on GoRunner", id))
 		return
 	}
 
@@ -151,7 +151,7 @@ func decodeHandler(c *gin.Context) {
 
 	decoder, ok := codecs[id]
 	if !ok {
-		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
+		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exist on GoRunner", id))
 		return
 	}
 
