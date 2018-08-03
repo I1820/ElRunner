@@ -6,7 +6,7 @@ WORKDIR $GOPATH/src/github.com/aiotrc/GoRunner
 RUN go get -v && go build -v -o /GoRunner
 
 # Final stage
-FROM python:3-alpine
+FROM python:3.6-alpine
 EXPOSE 8080/tcp
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
