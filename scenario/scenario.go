@@ -87,7 +87,8 @@ func (s *Scenario) Deactivate() {
 
 // Data new data is comming
 func (s *Scenario) Data(d string, t string) {
-	ctx, _ := context.WithTimeout(context.TODO(), 100*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.TODO(), 100*time.Millisecond)
+	defer cancel()
 	if s.enable {
 		s.runner.DataEvent(ctx, d, map[string]string{
 			"thing": t,

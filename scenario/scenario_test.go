@@ -57,7 +57,8 @@ class ISRC(Scenario):
 
 	s.Data("{\"Hello\": 10}", "Parham")
 
-	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
 	_, err := s.runner.Output(ctx)
 	assert.NoError(t, err)
 
@@ -156,7 +157,8 @@ class S1(Scenario):
 
 	s.Data("{\"Hello\": 10}", "Parham")
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	_, err := s.runner.Output(ctx)
 	assert.NoError(t, err)
 }
