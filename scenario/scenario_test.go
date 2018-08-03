@@ -50,10 +50,10 @@ class ISRC(Scenario):
 	srv := httptest.NewServer(h)
 	defer srv.Close()
 
-	if err := s.Code(code, "Hello"); err != nil {
+	if err := s.Activate(code, "Hello"); err != nil {
 		t.Fatal(err)
 	}
-	defer s.Stop()
+	defer s.Deactivate()
 
 	s.Data("{\"Hello\": 10}", "Parham")
 
@@ -104,8 +104,8 @@ class ISRC(Scenario):
 		assert.NoError(t, s.Start())
 	}()
 
-	assert.NoError(t, s.Code(code, "RPC"))
-	defer s.Stop()
+	assert.NoError(t, s.Activate(code, "RPC"))
+	defer s.Deactivate()
 
 	s.Data("{\"Hello\": 10}", "Parham")
 	s.Data("{\"Hello\": 9}", "Parham")
@@ -151,8 +151,8 @@ class S1(Scenario):
 	srv := httptest.NewServer(h)
 	defer srv.Close()
 
-	assert.NoError(t, s.Code(code, "Email"))
-	defer s.Stop()
+	assert.NoError(t, s.Activate(code, "Email"))
+	defer s.Deactivate()
 
 	s.Data("{\"Hello\": 10}", "Parham")
 

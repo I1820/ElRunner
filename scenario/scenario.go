@@ -49,7 +49,7 @@ type Scenario struct {
 	runner *runner.Runner
 	rpc    *rpc.Server
 
-	Enable bool
+	enable bool
 }
 
 // New creates instance of Scenario
@@ -72,27 +72,33 @@ func (s *Scenario) Start() error {
 	return http.ListenAndServe("127.0.0.1:1373", h)
 }
 
-// Stop stops scenario
+// Stop scenario server and runner
 func (s *Scenario) Stop() {
-	if s.Enable {
+	// TODO stop json rpc
+}
+
+// Deactivate scenario runner not its server
+func (s *Scenario) Deactivate() {
+	if s.enable {
 		s.runner.Stop()
 	}
-	s.Enable = false
+	s.enable = false
 }
 
 // Data new data is comming
 func (s *Scenario) Data(d string, t string) {
 	ctx, _ := context.WithTimeout(context.TODO(), 100*time.Millisecond)
-	if s.Enable {
+	if s.enable {
 		s.runner.DataEvent(ctx, d, map[string]string{
 			"thing": t,
 		})
 	}
 }
 
-// Code creates or replaces scenario beacuase
-// there is only one scenario is here
-func (s *Scenario) Code(code []byte, id string) error {
+// Activate creates or replaces user scenario beacuase
+// there is only one scenario is here with id
+// it starts runner too
+func (s *Scenario) Activate(code []byte, id string) error {
 	f, err := os.Create(fmt.Sprintf("/tmp/scenario-%s.py", id))
 	if err != nil {
 		return err
@@ -106,13 +112,32 @@ func (s *Scenario) Code(code []byte, id string) error {
 		return err
 	}
 
-	if s.Enable {
+	s.startRunner(id)
+
+	return nil
+}
+
+// ActivateWithoutCode just check user scenario existence
+// and starts runner
+func (s *Scenario) ActivateWithoutCode(id string) error {
+	_, err := os.Stat(fmt.Sprintf("/tmp/scenario-%s.py", id))
+	if err != nil {
+		return err
+	}
+
+	s.startRunner(id)
+
+	return nil
+}
+
+func (s *Scenario) startRunner(id string) {
+	if s.enable {
 		s.runner.Stop()
 	}
-	s.Enable = true
+	s.enable = true
 	s.runner = runner.New(&runner.Task{
 		Run: func(e runner.Event) (string, error) {
-			cmd := exec.Command("runtime.py", "--job", "rule", "--id", e.Env("thing"), f.Name())
+			cmd := exec.Command("runtime.py", "--job", "rule", "--id", e.Env("thing"), fmt.Sprintf("/tmp/scenario-%s.py", id))
 
 			// stdin
 			stdin, err := cmd.StdinPipe()
@@ -149,6 +174,4 @@ func (s *Scenario) Code(code []byte, id string) error {
 	}
 
 	go s.runner.Start()
-
-	return nil
 }
