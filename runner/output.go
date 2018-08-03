@@ -11,6 +11,6 @@
 package runner
 
 type output struct {
-	s string
-	e error
+	output string
+	err    error
 }

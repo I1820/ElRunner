@@ -13,6 +13,7 @@ package runner
 import "time"
 
 // Task represents single task must run on the runner
+// Run function is called on every event
 type Task struct {
 	Run      func(ev Event) (string, error)
 	Interval time.Duration
