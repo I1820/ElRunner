@@ -157,9 +157,7 @@ func decodeHandler(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
-		if scr.Enable {
-			scr.Data(parsed, id)
-		}
+		scr.Data(parsed, id)
 		c.Data(http.StatusOK, "application/json", []byte(parsed))
 	}
 }
