@@ -26,12 +26,10 @@ import (
 	"github.com/weekface/mgorus"
 )
 
-var codecs map[string]*codec.Codec
 var scr *scenario.Scenario
 
 // init initiates global variables
 func init() {
-	codecs = make(map[string]*codec.Codec)
 	scr = scenario.New()
 }
 
@@ -125,13 +123,13 @@ func encodeHandler(c *gin.Context) {
 		return
 	}
 
-	encoder, ok := codecs[id]
-	if !ok {
+	encoder, err := codec.NewWithoutCode(id)
+	if err != nil {
 		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
 		return
 	}
 
-	parsed, err := encoder.Encode(string(data))
+	parsed, err := encoder.Encode(c, string(data))
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
@@ -149,13 +147,13 @@ func decodeHandler(c *gin.Context) {
 		return
 	}
 
-	decoder, ok := codecs[id]
-	if !ok {
+	decoder, err := codec.NewWithoutCode(id)
+	if err != nil {
 		c.AbortWithError(http.StatusNotFound, fmt.Errorf("%s does not exit on GoRunner", id))
 		return
 	}
 
-	parsed, err := decoder.Decode(json)
+	parsed, err := decoder.Decode(c, json)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
@@ -175,16 +173,11 @@ func codecHandler(c *gin.Context) {
 	}
 	id := json.ID
 
-	codec, err := codec.New([]byte(json.Code), id)
+	_, err := codec.New([]byte(json.Code), id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-
-	if codecs[id] != nil {
-		codecs[id].Stop()
-	}
-	codecs[id] = codec
 
 	c.JSON(http.StatusOK, id)
 }
