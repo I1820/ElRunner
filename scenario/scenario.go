@@ -11,12 +11,14 @@
 package scenario
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/rpc"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/aiotrc/GoRunner/runner"
 	"github.com/powerman/rpc-codec/jsonrpc2"
@@ -80,8 +82,9 @@ func (s *Scenario) Stop() {
 
 // Data new data is comming
 func (s *Scenario) Data(d string, t string) {
+	ctx, _ := context.WithTimeout(context.TODO(), 100*time.Millisecond)
 	if s.Enable {
-		s.runner.DataEvent(d, map[string]string{
+		s.runner.DataEvent(ctx, d, map[string]string{
 			"thing": t,
 		})
 	}

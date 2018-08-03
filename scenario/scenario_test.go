@@ -11,7 +11,7 @@
 package scenario
 
 import (
-	"fmt"
+	"context"
 	"io/ioutil"
 	"net/http/httptest"
 	"os"
@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/powerman/rpc-codec/jsonrpc2"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAbout(t *testing.T) {
@@ -28,13 +29,8 @@ func TestAbout(t *testing.T) {
 
 	var about string
 	c := jsonrpc2.NewHTTPClient(s.URL)
-	err := c.Client.Call("Endpoint.About", nil, &about)
-	if err != nil {
-		t.Fatalf("Call Endpoint.About: %s", err)
-	}
-	if about != "18.20 is leaving us" {
-		t.Fatalf("who leaving us?! %q", about)
-	}
+	assert.NoError(t, c.Client.Call("Endpoint.About", nil, &about))
+	assert.Equal(t, about, "18.20 is leaving us")
 }
 
 func TestHelloScenario(t *testing.T) {
@@ -61,9 +57,9 @@ class ISRC(Scenario):
 
 	s.Data("{\"Hello\": 10}", "Parham")
 
-	if _, err := s.runner.OutputBoundedWait(1 * time.Second); err != nil {
-		t.Fatalf("Runs error: %s", err)
-	}
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	_, err := s.runner.Output(ctx)
+	assert.NoError(t, err)
 
 	f, err := os.Open("/tmp/hello")
 	if err != nil {
@@ -105,34 +101,26 @@ class ISRC(Scenario):
 
 	s := New()
 	go func() {
-		if err := s.Start(); err != nil {
-			t.Fatal(err)
-		}
+		assert.NoError(t, s.Start())
 	}()
 
-	if err := s.Code(code, "RPC"); err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, s.Code(code, "RPC"))
 	defer s.Stop()
 
 	s.Data("{\"Hello\": 10}", "Parham")
 	s.Data("{\"Hello\": 9}", "Parham")
 
-	if _, err := s.runner.OutputBoundedWait(1 * time.Second); err != nil {
-		t.Fatalf("Runs error: %s", err)
-	}
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	_, err := s.runner.Output(ctx)
+	assert.NoError(t, err)
 
 	f, err := os.Open("/tmp/rpc")
-	if err != nil {
-		t.Fatalf("Could not open /tmp/rpc: %s", err)
-	}
+	assert.NoError(t, err)
 
 	data, err := ioutil.ReadAll(f)
-	if err != nil {
-		t.Fatalf("Could not read /tmp/rpc: %s", err)
-	}
+	assert.NoError(t, err)
 
-	fmt.Println(string(data))
+	t.Log(string(data))
 }
 
 func TestEmailScenario(t *testing.T) {
@@ -163,14 +151,12 @@ class S1(Scenario):
 	srv := httptest.NewServer(h)
 	defer srv.Close()
 
-	if err := s.Code(code, "Email"); err != nil {
-		t.Fatal(err)
-	}
+	assert.NoError(t, s.Code(code, "Email"))
 	defer s.Stop()
 
 	s.Data("{\"Hello\": 10}", "Parham")
 
-	if _, err := s.runner.OutputBoundedWait(1 * time.Second); err != nil {
-		t.Fatalf("Runs error: %s", err)
-	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	_, err := s.runner.Output(ctx)
+	assert.NoError(t, err)
 }
