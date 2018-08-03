@@ -28,6 +28,9 @@ func Lint(code []byte) (string, error) {
 		if err := f.Close(); err != nil {
 			return
 		}
+		if err := os.Remove(f.Name()); err != nil {
+			return
+		}
 	}()
 	if _, err = f.Write(code); err != nil {
 		return "", err
