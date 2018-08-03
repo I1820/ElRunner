@@ -11,6 +11,7 @@
 package codec
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,15 +27,23 @@ class ISRC(Codec):
     def encode(self, data):
         pass
 `)
-	d, err := New(code, "hi")
+	d, err := New(code, "hello")
 	assert.NoError(t, err)
 
-	r, err := d.Decode([]byte("Hi"))
+	r, err := d.Decode(context.Background(), []byte("Hi"))
 	assert.NoError(t, err)
 
 	assert.Equalf(t, "\"Hi\"\n", r, "Invalid Decode Result %q", r)
+}
 
-	d.Stop()
+func TestPersistHelloDecoder(t *testing.T) {
+	d, err := NewWithoutCode("hello")
+	assert.NoError(t, err)
+
+	r, err := d.Decode(context.Background(), []byte("Hi"))
+	assert.NoError(t, err)
+
+	assert.Equalf(t, "\"Hi\"\n", r, "Invalid Decode Result %q", r)
 }
 
 func TestFaultyDecoder(t *testing.T) {
@@ -47,16 +56,14 @@ class ISRC(Codec):
     def encode(self, data):
         pass
 `)
-	d, err := New(code, "hi")
+	d, err := New(code, "fault")
 	assert.NoError(t, err)
 
-	_, err = d.Decode([]byte("Hi"))
+	_, err = d.Decode(context.Background(), []byte("Hi"))
 	assert.Error(t, err)
-
-	d.Stop()
 }
 
-func TestHelloEncoder(t *testing.T) {
+func TestHiEncoder(t *testing.T) {
 	code := []byte(`
 from codec import Codec
 
@@ -69,10 +76,8 @@ class ISRC(Codec):
 	d, err := New(code, "hi")
 	assert.NoError(t, err)
 
-	r, err := d.Encode("\"Hi\"")
+	r, err := d.Encode(context.Background(), "\"Hi\"")
 	assert.NoError(t, err)
 
 	assert.Equalf(t, "Hi", string(r), "Invalid Encode Result %q", r)
-
-	d.Stop()
 }
