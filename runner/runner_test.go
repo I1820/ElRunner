@@ -118,3 +118,25 @@ func TestPython(t *testing.T) {
 
 	r.Stop()
 }
+
+func TestTimeout(t *testing.T) {
+	r := New(&Task{
+		Run: func(e Event) (string, error) {
+			if e.Type() != DataEventType {
+				t.Fatal("Invalid Event Type")
+			}
+			t.Log(string(e.Data()))
+			return "", nil
+		},
+		Interval: 0,
+	}, 100)
+
+	go r.Start()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+	_, err := r.Output(ctx)
+	assert.Error(t, err)
+
+	r.Stop()
+}
