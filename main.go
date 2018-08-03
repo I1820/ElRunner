@@ -31,6 +31,8 @@ var scr *scenario.Scenario
 // init initiates global variables
 func init() {
 	scr = scenario.New()
+	if err := scr.ActivateWithoutCode("main"); err != nil {
+	}
 }
 
 // handle registers apis and create http handler
@@ -206,7 +208,7 @@ func scenarioHandler(c *gin.Context) {
 	}
 	id := json.ID
 
-	if err := scr.Code([]byte(json.Code), id); err != nil {
+	if err := scr.Activate([]byte(json.Code), "main"); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
@@ -217,7 +219,10 @@ func scenarioHandler(c *gin.Context) {
 func scenarioActivateHandler(c *gin.Context) {
 	id := c.Param("id")
 
-	scr.Enable = true
+	if err := scr.ActivateWithoutCode("main"); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
 	c.JSON(http.StatusOK, id)
 }
@@ -225,7 +230,7 @@ func scenarioActivateHandler(c *gin.Context) {
 func scenarioDeactivateHandler(c *gin.Context) {
 	id := c.Param("id")
 
-	scr.Enable = false
+	scr.Deactivate()
 
 	c.JSON(http.StatusOK, id)
 }
