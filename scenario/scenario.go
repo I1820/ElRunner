@@ -30,7 +30,8 @@ type Endpoint struct {
 
 // WaitForData waits for things incomming data
 func (e *Endpoint) WaitForData(args int, reply *string) error {
-	d := e.s.r.Trigger()
+	// manually read data from channel beacuse runner is in blocking section
+	d := e.s.runner.Trigger()
 	*reply = d.Data()
 	return nil
 }
@@ -43,9 +44,8 @@ func (e Endpoint) About(args int, reply *string) error {
 
 // Scenario represents rule engine scenario
 type Scenario struct {
-	r   *runner.Runner
-	e   bool
-	rpc *rpc.Server
+	runner *runner.Runner
+	rpc    *rpc.Server
 
 	Enable bool
 }
@@ -54,8 +54,6 @@ type Scenario struct {
 // instance contains rpc server that is not running, so Start must call.
 func New() *Scenario {
 	s := new(Scenario)
-
-	s.Enable = true
 
 	s.rpc = rpc.NewServer()
 	if err := s.rpc.Register(&Endpoint{s: s}); err != nil {
@@ -74,22 +72,23 @@ func (s *Scenario) Start() error {
 
 // Stop stops scenario
 func (s *Scenario) Stop() {
-	if s.e {
-		s.r.Stop()
+	if s.Enable {
+		s.runner.Stop()
 	}
+	s.Enable = false
 }
 
 // Data new data is comming
 func (s *Scenario) Data(d string, t string) {
-	if s.e {
-		s.r.DataEvent(d, map[string]string{
+	if s.Enable {
+		s.runner.DataEvent(d, map[string]string{
 			"thing": t,
 		})
 	}
 }
 
 // Code creates or replaces scenario beacuase
-// there is only on scenario
+// there is only one scenario is here
 func (s *Scenario) Code(code []byte, id string) error {
 	f, err := os.Create(fmt.Sprintf("/tmp/scenario-%s.py", id))
 	if err != nil {
@@ -104,11 +103,11 @@ func (s *Scenario) Code(code []byte, id string) error {
 		return err
 	}
 
-	if s.e {
-		s.r.Stop()
+	if s.Enable {
+		s.runner.Stop()
 	}
-	s.e = true
-	s.r = runner.New(&runner.Task{
+	s.Enable = true
+	s.runner = runner.New(&runner.Task{
 		Run: func(e runner.Event) (string, error) {
 			cmd := exec.Command("runtime.py", "--job", "rule", "--id", e.Env("thing"), f.Name())
 
@@ -124,7 +123,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 				return "", err
 			}
 
-			// run
+			// run and wait (blocking section)
 			if _, err := cmd.Output(); err != nil {
 				if err, ok := err.(*exec.ExitError); ok {
 					return "", fmt.Errorf("%s: %s", err.Error(), err.Stderr)
@@ -137,7 +136,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 		Interval: 0,
 	}, 1024)
 
-	s.r.ErrHandler = func(err error) {
+	s.runner.ErrHandler = func(err error) {
 		log.WithFields(log.Fields{
 			"code":      id,
 			"job":       "rule",
@@ -146,7 +145,7 @@ func (s *Scenario) Code(code []byte, id string) error {
 		}).Error(err)
 	}
 
-	go s.r.Start()
+	go s.runner.Start()
 
 	return nil
 }
