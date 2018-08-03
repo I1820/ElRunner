@@ -11,5 +11,6 @@ EXPOSE 8080/tcp
 WORKDIR /app
 COPY --from=build-env /GoRunner /app/
 COPY runtime.py /app/runtime.py
+RUN apk update && apk add musl
 RUN cd /app/runtime.py && python3 setup.py install
 ENTRYPOINT ["./GoRunner"]
