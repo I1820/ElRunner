@@ -18,9 +18,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/aiotrc/GoRunner/codec"
-	"github.com/aiotrc/GoRunner/linter"
-	"github.com/aiotrc/GoRunner/scenario"
+	"github.com/I1820/ElRunner/codec"
+	"github.com/I1820/ElRunner/linter"
+	"github.com/I1820/ElRunner/scenario"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/weekface/mgorus"
