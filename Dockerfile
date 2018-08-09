@@ -1,15 +1,15 @@
 # Build stage
 FROM golang:alpine AS build-env
-COPY . $GOPATH/src/github.com/aiotrc/GoRunner
+COPY . $GOPATH/src/github.com/I1820/ElRunner
 RUN apk update && apk add git
-WORKDIR $GOPATH/src/github.com/aiotrc/GoRunner
-RUN go get -v && go build -v -o /GoRunner
+WORKDIR $GOPATH/src/github.com/I1820/ElRunner
+RUN go get -v && go build -v -o /ElRunner
 
 # Final stage
 FROM alpine:latest
 EXPOSE 8080/tcp
 WORKDIR /app
-COPY --from=build-env /GoRunner /app/
+COPY --from=build-env /ElRunner /app/
 COPY runtime.py /app/runtime.py
 # Install python stuffs
 RUN apk update && apk add ca-certificates && update-ca-certificates
