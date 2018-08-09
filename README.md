@@ -1,7 +1,7 @@
 # ElRunner
 
-[![Travis branch](https://img.shields.io/travis/aiotrc/GoRunner/master.svg?style=flat-square)](https://travis-ci.org/aiotrc/GoRunner)
-[![Docker Pulls](https://img.shields.io/docker/pulls/aiotrc/gorunner.svg?style=flat-square)]()
+[![Travis branch](https://img.shields.io/travis/I1820/ElRunner/master.svg?style=flat-square)](https://travis-ci.org/aiotrc/GoRunner)
+[![Docker Pulls](https://img.shields.io/docker/pulls/i1820/elrunner.svg?style=flat-square)]()
 
 ## Introduction
 
