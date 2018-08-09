@@ -7,11 +7,13 @@
  * |
  * | Creation Date: 03-08-2018
  * |
- * | File Name:     index.js
+ * | File Name:     runtime.js
  * +===============================================
  */
 
 const program = require('commander')
+const I1820 = require('../lib/i1820')
+const readlineSync = require('readline-sync')
 
 program
   .version('1.0.0')
@@ -20,6 +22,15 @@ program
   .parse(process.argv)
 
 // console.log(program.job)
-const uscript = require(program.target)
+const UI1820 = require(program.target)
 
-uscript.sayHello()
+let ui1820 = new UI1820()
+
+if (ui1820 instanceof I1820) {
+  let line = readlineSync.question()
+  let i = Buffer.from(line, 'base64')
+  let o = ui1820.decode(i)
+  console.log(JSON.stringify(o))
+} else {
+  console.log('Please corrects your script')
+}
