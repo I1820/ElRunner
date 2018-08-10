@@ -7,6 +7,11 @@ RUN go get -v && go build -v -o /ElRunner
 
 # Final stage
 FROM alpine:latest
+
+# Metadata
+LABEL org.i1820.build-date=$BUILD_DATE
+LABEL maintainer="Parham Alvani <parham.alvani@gmail.com>"
+
 EXPOSE 8080/tcp
 WORKDIR /app
 COPY --from=build-env /ElRunner /app/
