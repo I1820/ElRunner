@@ -64,7 +64,7 @@ func handle() http.Handler {
 }
 
 func main() {
-	fmt.Println("GoRunner AIoTRC @ 2017")
+	fmt.Println("ElRunner I1820 @ 2018")
 
 	// Initiate logger
 	mongoURL := os.Getenv("MONGO_URL")
