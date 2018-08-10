@@ -26,4 +26,4 @@ RUN cd /app/runtime.py && python3 setup.py install
 # Remove python stuffs
 RUN apk del build-base python3-dev && \
             rm -rf /var/cache/apk/*
-ENTRYPOINT ["./GoRunner"]
+ENTRYPOINT ["./ElRunner"]
