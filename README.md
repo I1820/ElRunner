@@ -1,6 +1,7 @@
 # ElRunner
 
 [![Travis branch](https://img.shields.io/travis/I1820/ElRunner/master.svg?style=flat-square)](https://travis-ci.org/aiotrc/GoRunner)
+[![Maintainability](https://api.codeclimate.com/v1/badges/581d84707830162ab4a8/maintainability)](https://codeclimate.com/github/I1820/ElRunner/maintainability)
 [![Docker Pulls](https://img.shields.io/docker/pulls/i1820/elrunner.svg?style=flat-square)]()
 
 ## Introduction
