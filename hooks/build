@@ -5,4 +5,4 @@ docker build \
         --build-arg "BUILD_DATE=$BUILD_DATE" \
         --build-arg "BUILD_COMMIT=$COMMIT_MSG" \
         --build-arg "BUILD_COMMIT_MSG=$SOURCE_COMMIT" \
-        -t $IMAGE_NAME .
+        -f $DOCKERFILE_PATH -t $IMAGE_NAME .
