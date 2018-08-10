@@ -1,5 +1,5 @@
 # ElRunner
-
+[![Go Report](https://goreportcard.com/badge/github.com/I1820/ElRunner?style=flat-square)](https://goreportcard.com/report/github.com/I1820/ElRunner)
 [![Travis branch](https://img.shields.io/travis/I1820/ElRunner/master.svg?style=flat-square)](https://travis-ci.org/I1820/ElRunner)
 [![Maintainability](https://api.codeclimate.com/v1/badges/581d84707830162ab4a8/maintainability)](https://codeclimate.com/github/I1820/ElRunner/maintainability)
 [![Docker Pulls](https://img.shields.io/docker/pulls/i1820/elrunner.svg?style=flat-square)]()
