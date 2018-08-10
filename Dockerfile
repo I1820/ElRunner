@@ -9,8 +9,10 @@ RUN go get -v && go build -v -o /ElRunner
 FROM alpine:latest
 
 # Metadata
-LABEL org.i1820.build-date=$BUILD_DATE
 LABEL maintainer="Parham Alvani <parham.alvani@gmail.com>"
+LABEL org.i1820.build-date=$BUILD_DATE
+LABEL org.i1820.build-commit-sha=$BUILD_COMMIT
+LABEL org.i1820.build-commit-msg=$BUILD_COMMIT_MSG
 
 EXPOSE 8080/tcp
 WORKDIR /app
