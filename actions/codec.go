@@ -14,6 +14,7 @@
 package actions
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -78,4 +79,15 @@ func (CodecsResource) Create(c buffalo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, r.JSON(id))
+}
+
+// Show shows uploaded codec code. This function is mapped
+// to the path GET /codecs/{codec_id}
+func (CodecsResource) Show(c buffalo.Context) error {
+	b, err := ioutil.ReadFile(fmt.Sprintf("/tmp/codec-%s.py", c.Param("codec_id")))
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	return c.Render(http.StatusOK, r.JSON(string(b)))
 }
