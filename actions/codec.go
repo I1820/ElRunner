@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 
 	"github.com/I1820/ElRunner/codec"
@@ -90,4 +91,14 @@ func (CodecsResource) Show(c buffalo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, r.JSON(string(b)))
+}
+
+// Destroy removes uploaded codec. This function is mapped
+// to the path DELETE /codecs/{codec_id}
+func (CodecsResource) Destroy(c buffalo.Context) error {
+	if err := os.Remove(fmt.Sprintf("/tmp/codec-%s.py", c.Param("codec_id"))); err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	return c.Render(http.StatusOK, r.JSON(c.Param("codec_id")))
 }
