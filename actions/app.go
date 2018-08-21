@@ -78,6 +78,8 @@ func App() *buffalo.App {
 		{
 			cr := CodecsResource{}
 			api.Resource("/codecs", cr)
+			api.POST("/codecs/{codec_id}/decode", cr.Decode)
+			api.POST("/codecs/{codec_id}/encode", cr.Encode)
 		}
 	}
 
