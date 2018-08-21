@@ -23,14 +23,14 @@ jobs:
         - sudo python3.6 -m pip install -U pip setuptools
         - cd runtime.py && sudo python3.6 setup.py install && cd ..
       install:
+        - go get github.com/gobuffalo/buffalo/buffalo
         - dep ensure
+
       script:
         - go vet -v $PKGS                   # go vet is the official Go static analyzer
         - errcheck -verbose $PKGS           # Check for unchecked errors
         - golint -set_exit_status $PKGS     # One last linter
-
-        # Run all the tests
-        - go test -v $PKGS
+        - buffalo test
 
     - language: python
       python: 3.6
