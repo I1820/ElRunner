@@ -16,7 +16,6 @@ package actions
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -24,7 +23,6 @@ import (
 
 	"github.com/I1820/ElRunner/codec"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/render"
 )
 
 // scenario, codec request payload
@@ -155,8 +153,5 @@ func (CodecsResource) Decode(c buffalo.Context) error {
 		return c.Error(http.StatusInternalServerError, err)
 	}
 
-	return c.Render(http.StatusOK, r.Func("application/json", func(w io.Writer, d render.Data) error {
-		_, err := w.Write([]byte(parsed))
-		return err
-	}))
+	return c.Render(http.StatusOK, r.JSON(parsed))
 }
