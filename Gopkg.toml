@@ -38,5 +38,41 @@
   name = "github.com/weekface/mgorus"
 
 [[constraint]]
-  name = "github.com/stretchr/testify"
-  version = "1.2.2"
+  branch = "master"
+  name = "github.com/mongodb/mongo-go-driver"
+
+[[constraint]]
+  name = "github.com/gobuffalo/buffalo"
+  version = "0.12.4"
+
+[[constraint]]
+  name = "github.com/gobuffalo/envy"
+  version = "1.6.3"
+
+[[constraint]]
+  name = "github.com/gobuffalo/suite"
+  version = "2.1.2"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gobuffalo/x"
+
+[[constraint]]
+  name = "github.com/rs/cors"
+  version = "1.4.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/unrolled/secure"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/I1820/types"
+
+[[constraint]]
+  name = "github.com/eclipse/paho.mqtt.golang"
+  branch = "master"
+
+[prune]
+  go-tests = true
+  unused-packages = true
