@@ -15,6 +15,7 @@ package actions
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -22,6 +23,7 @@ import (
 
 	"github.com/I1820/ElRunner/codec"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/render"
 )
 
 // scenario, codec request payload
@@ -101,4 +103,54 @@ func (CodecsResource) Destroy(c buffalo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, r.JSON(c.Param("codec_id")))
+}
+
+// Encode encodes given object to byte stream. This function is mapped
+// to the path POST /codecs/{codec_id}/encode
+func (CodecsResource) Encode(c buffalo.Context) error {
+	id := c.Param("codec_id")
+
+	var rq interface{}
+	if err := c.Bind(&rq); err != nil {
+		return c.Error(http.StatusBadRequest, err)
+	}
+
+	encoder, err := codec.NewWithoutCode(id)
+	if err != nil {
+		return c.Error(http.StatusNotFound, fmt.Errorf("%s does not exist on GoRunner", id))
+	}
+
+	parsed, err := encoder.Encode(c, rq)
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	return c.Render(http.StatusOK, r.JSON(parsed))
+
+}
+
+// Decode decodes given byte strem to object. This function is mapped
+// to the path POST /codecs/{codec_id}/decode
+func (CodecsResource) Decode(c buffalo.Context) error {
+	id := c.Param("codec_id")
+
+	var rq []byte
+	if err := c.Bind(&rq); err != nil {
+		return c.Error(http.StatusBadRequest, err)
+	}
+
+	decoder, err := codec.NewWithoutCode(id)
+	if err != nil {
+		return c.Error(http.StatusNotFound, fmt.Errorf("%s does not exist on GoRunner", id))
+	}
+
+	parsed, err := decoder.Decode(c, rq)
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	return c.Render(http.StatusOK, r.Func("application/json", func(w io.Writer, d render.Data) error {
+		_, err := w.Write([]byte(parsed))
+		return err
+	}))
 }
