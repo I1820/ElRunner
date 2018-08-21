@@ -43,6 +43,9 @@ func (a *Application) decode() {
 				continue
 			} else {
 				d.Data = parsed
+				a.Logger.WithFields(logrus.Fields{
+					"component": "elrunner",
+				}).Infof("Decode on: %v", d)
 			}
 			cancel()
 			a.insertStream <- d
@@ -52,7 +55,7 @@ func (a *Application) decode() {
 }
 
 func (a *Application) scenario() {
-	for range a.decodeStream {
+	for range a.scenarioStream {
 	}
 }
 
