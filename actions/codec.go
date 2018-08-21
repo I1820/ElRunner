@@ -14,6 +14,7 @@
 package actions
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -120,7 +121,12 @@ func (CodecsResource) Encode(c buffalo.Context) error {
 		return c.Error(http.StatusNotFound, fmt.Errorf("%s does not exist on GoRunner", id))
 	}
 
-	parsed, err := encoder.Encode(c, rq)
+	b, err := json.Marshal(rq)
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	parsed, err := encoder.Encode(c, string(b))
 	if err != nil {
 		return c.Error(http.StatusInternalServerError, err)
 	}
