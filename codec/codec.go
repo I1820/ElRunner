@@ -13,6 +13,7 @@ package codec
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -35,15 +36,30 @@ type Codec struct {
 // Decode sends base64 coded data into stdin of
 // user codec script and reads string represntation of json data object
 // from its stdout
-func (c *Codec) Decode(ctx context.Context, r []byte) (string, error) {
-	return c.exec(ctx, decodeCommand, base64.StdEncoding.EncodeToString(r))
+func (c *Codec) Decode(ctx context.Context, r []byte) (interface{}, error) {
+	s, err := c.exec(ctx, decodeCommand, base64.StdEncoding.EncodeToString(r))
+	if err != nil {
+		return nil, err
+	}
+
+	var o interface{}
+	if err := json.Unmarshal([]byte(s), &o); err != nil {
+		return nil, err
+	}
+
+	return o, nil
 }
 
 // Encode sends string represntation of json data object into stdin of
 // user codec script and reads base64 coded data
 // from its stdout
-func (c *Codec) Encode(ctx context.Context, p string) ([]byte, error) {
-	s, err := c.exec(ctx, encodeCommand, p)
+func (c *Codec) Encode(ctx context.Context, p interface{}) ([]byte, error) {
+	b, err := json.Marshal(p)
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := c.exec(ctx, encodeCommand, string(b))
 	if err != nil {
 		return nil, err
 	}

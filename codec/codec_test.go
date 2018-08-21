@@ -33,7 +33,7 @@ class ISRC(Codec):
 	r, err := d.Decode(context.Background(), []byte("Hi"))
 	assert.NoError(t, err)
 
-	assert.Equalf(t, "\"Hi\"\n", r, "Invalid Decode Result %q", r)
+	assert.Equalf(t, "Hi", r, "Invalid Decode Result %q", r)
 }
 
 func TestPersistHelloDecoder(t *testing.T) {
@@ -43,7 +43,7 @@ func TestPersistHelloDecoder(t *testing.T) {
 	r, err := d.Decode(context.Background(), []byte("Hi"))
 	assert.NoError(t, err)
 
-	assert.Equalf(t, "\"Hi\"\n", r, "Invalid Decode Result %q", r)
+	assert.Equalf(t, "Hi", r, "Invalid Decode Result %q", r)
 }
 
 func TestFaultyDecoder(t *testing.T) {
@@ -76,7 +76,7 @@ class ISRC(Codec):
 	d, err := New(code, "hi")
 	assert.NoError(t, err)
 
-	r, err := d.Encode(context.Background(), "\"Hi\"")
+	r, err := d.Encode(context.Background(), "Hi")
 	assert.NoError(t, err)
 
 	assert.Equalf(t, "Hi", string(r), "Invalid Encode Result %q", r)
