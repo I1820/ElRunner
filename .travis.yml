@@ -2,8 +2,10 @@ jobs:
   include:
     - stage: test
       language: go
-      go: 1.9
+      go: "1.10"
       dist: trusty
+      services:
+        - docker
       before_install:
         # Setup some env variables
         - GO_FILES=$(find . -iname '*.go' )  # All the .go files
@@ -16,12 +18,16 @@ jobs:
         - go get -u github.com/golang/lint/golint              # Linter
         - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
 
+        # Install python and runtime.py
         - sudo add-apt-repository -y ppa:deadsnakes/ppa
         - sudo apt-get -m update || true
         - sudo apt-get install -y python3.6 python3.6-dev
         - wget https://bootstrap.pypa.io/get-pip.py && sudo -H python3.6 get-pip.py
         - sudo python3.6 -m pip install -U pip setuptools
         - cd runtime.py && sudo python3.6 setup.py install && cd ..
+
+        # docker services
+        - docker run -p 1883:1883 -e "DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on" --name vernemq1 -d erlio/docker-vernemq
       install:
         - go get github.com/gobuffalo/buffalo/buffalo
         - dep ensure
@@ -34,7 +40,8 @@ jobs:
 
     - language: python
       python: 3.6
-      services: mongodb
+      services:
+        - mongodb
       before_install:
         - cd runtime.py
       install:
