@@ -36,6 +36,7 @@ func (a *Application) decode() {
 
 			ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 			parsed, err := decoder.Decode(ctx, d.Raw)
+			cancel()
 			if err != nil {
 				a.Logger.WithFields(logrus.Fields{
 					"component": "elrunner",
@@ -47,7 +48,6 @@ func (a *Application) decode() {
 					"component": "elrunner",
 				}).Infof("Decode on: %v", d)
 			}
-			cancel()
 			a.insertStream <- d
 		}
 		a.scenarioStream <- d
