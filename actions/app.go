@@ -1,15 +1,14 @@
 package actions
 
 import (
-	"context"
-
 	linkapp "github.com/I1820/ElRunner/app"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
-	mgo "github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/sirupsen/logrus"
 	"github.com/unrolled/secure"
+	"github.com/weekface/mgorus"
 
 	"github.com/gobuffalo/x/sessions"
 	"github.com/rs/cors"
@@ -19,7 +18,6 @@ import (
 // application is being run. Default is "development".
 var ENV = envy.Get("GO_ENV", "development")
 var app *buffalo.App
-var db *mgo.Database
 var linkApp *linkapp.Application
 
 // App is where all routes and middleware for buffalo
@@ -55,14 +53,13 @@ func App() *buffalo.App {
 
 		// Create mongodb connection
 		url := envy.Get("DB_URL", "mongodb://172.18.0.1:27017")
-		client, err := mgo.NewClient(url)
-		if err != nil {
-			buffalo.NewLogger("fatal").Fatalf("DB new client error: %s", err)
+		hooker, err := mgorus.NewHooker(url, "i1820", "projects.logs")
+		if err == nil {
+			logrus.AddHook(hooker)
+			logrus.Infof("Logrus MongoDB Hook is %s", url)
+		} else {
+			logrus.Errorf("Logrus MongoDB Hook %q error: %s", url, err)
 		}
-		if err := client.Connect(context.Background()); err != nil {
-			buffalo.NewLogger("fatal").Fatalf("DB connection error: %s", err)
-		}
-		db = client.Database("i1820")
 
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
