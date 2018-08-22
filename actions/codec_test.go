@@ -72,7 +72,7 @@ func (as *ActionSuite) Test_CodecsResource_Encode_Decode_1() {
 	resd := as.JSON("/api/codecs/%s/decode", herID).Post(herCborName)
 	as.Equalf(200, resd.Code, "Error: %s", resd.Body.String())
 	resd.Bind(&dResult)
-	as.Equal(herTextName, dResult)
+	as.Equal("\""+herTextName+"\"", dResult)
 
 	// Encode
 	var eResult []byte
