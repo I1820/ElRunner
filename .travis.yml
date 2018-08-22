@@ -6,6 +6,7 @@ jobs:
       dist: trusty
       services:
         - docker
+        - mongodb
       before_install:
         # Setup some env variables
         - GO_FILES=$(find . -iname '*.go' )  # All the .go files
