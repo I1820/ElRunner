@@ -2,6 +2,7 @@
 [![Travis branch](https://img.shields.io/travis/com/I1820/ElRunner/master.svg?style=flat-square)](https://travis-ci.com/I1820/ElRunner)
 [![Go Report](https://goreportcard.com/badge/github.com/I1820/ElRunner?style=flat-square)](https://goreportcard.com/report/github.com/I1820/ElRunner)
 [![Codacy Badge](https://img.shields.io/codacy/grade/eada226f7b04403380cb7dc8dd517e5b.svg?style=flat-square)](https://www.codacy.com/project/i1820/ElRunner/dashboard)
+[![Buffalo](https://img.shields.io/badge/powered%20by-buffalo-blue.svg?style=flat-square)](http://gobuffalo.io)
 [![Docker Pulls](https://img.shields.io/docker/pulls/i1820/elrunner.svg?style=flat-square)]()
 
 ## Introduction
