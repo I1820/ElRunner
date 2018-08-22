@@ -101,26 +101,6 @@
   version = "v1.4.7"
 
 [[projects]]
-  branch = "master"
-  digest = "1:36fe9527deed01d2a317617e59304eb2c4ce9f8a24115bcc5c2e37b3aee5bae4"
-  name = "github.com/gin-contrib/sse"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
-
-[[projects]]
-  digest = "1:489e108f21464371ebf9cb5c30b1eceb07c6dd772dff073919267493dd9d04ea"
-  name = "github.com/gin-gonic/gin"
-  packages = [
-    ".",
-    "binding",
-    "render",
-  ]
-  pruneopts = "UT"
-  revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
-  version = "v1.2"
-
-[[projects]]
   digest = "1:adea5a94903eb4384abef30f3d878dc9ff6b6b5b0722da25b82e5169216dfb61"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
@@ -277,14 +257,6 @@
   ]
   pruneopts = "UT"
   revision = "dc54d929c4a2942638d7786a178894b41648f284"
-
-[[projects]]
-  digest = "1:ffc060c551980d37ee9e428ef528ee2813137249ccebb0bfc412ef83071cac91"
-  name = "github.com/golang/protobuf"
-  packages = ["proto"]
-  pruneopts = "UT"
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -687,14 +659,6 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:397231009a0a63692093d9dd439f382ce4ac499f26bc5a0978e168c596d2400b"
-  name = "github.com/ugorji/go"
-  packages = ["codec"]
-  pruneopts = "UT"
-  revision = "9831f2c3ac1068a78f50999a30db84270f647af6"
-  version = "v1.1"
-
-[[projects]]
   branch = "master"
   digest = "1:9624432019da6390fc19bd6ef16d110efb7bee291f1d9048273ab229fcb2bea1"
   name = "github.com/unrolled/secure"
@@ -800,14 +764,6 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:cbc72c4c4886a918d6ab4b95e347ffe259846260f99ebdd8a198c2331cf2b2e9"
-  name = "gopkg.in/go-playground/validator.v8"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
-  version = "v8.18.2"
-
-[[projects]]
   branch = "v2"
   digest = "1:5052389c6c809eeced44ec24ff9958bfea70b9859b7a25061c6fd9086c8f8989"
   name = "gopkg.in/mgo.v2"
@@ -843,7 +799,6 @@
   input-imports = [
     "github.com/I1820/types",
     "github.com/eclipse/paho.mqtt.golang",
-    "github.com/gin-gonic/gin",
     "github.com/gobuffalo/buffalo",
     "github.com/gobuffalo/buffalo/middleware",
     "github.com/gobuffalo/buffalo/middleware/ssl",
