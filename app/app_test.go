@@ -24,11 +24,11 @@ import (
 )
 
 func TestPipeline(t *testing.T) {
-	a := New("hello")
+	a := New("el-thing")
 	a.Run()
-	ts := time.Now()
 
-	a.decodeStream <- types.Data{
+	ts := time.Now()
+	d := types.Data{
 		Raw:       []byte("Hello"),
 		Data:      nil,
 		Timestamp: ts,
@@ -37,16 +37,23 @@ func TestPipeline(t *testing.T) {
 		TxInfo:    nil,
 		Project:   "",
 	}
+
+	{
+		_, err := a.db.Collection("data").InsertOne(context.Background(), d)
+		assert.NoError(t, err)
+	}
+
+	a.decodeStream <- d
 	time.Sleep(1 * time.Second)
 
-	var d types.Data
+	var dq types.Data
 	q := a.db.Collection("data").FindOne(context.Background(), bson.NewDocument(
 		bson.EC.SubDocument("timestamp", bson.NewDocument(
 			bson.EC.Time("$gte", ts),
 		)),
 		bson.EC.String("thingid", "el-thing"),
 	))
-	assert.NoError(t, q.Decode(&d))
+	assert.NoError(t, q.Decode(&dq))
 
-	assert.Equal(t, d.Timestamp.Unix(), ts.Unix())
+	assert.Equal(t, d.Raw, dq.Raw)
 }
