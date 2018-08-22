@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"fmt"
+
 	linkapp "github.com/I1820/ElRunner/app"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
@@ -53,7 +55,7 @@ func App() *buffalo.App {
 
 		// Create mongodb connection
 		url := envy.Get("DB_URL", "mongodb://172.18.0.1:27017")
-		hooker, err := mgorus.NewHooker(url, "i1820", "projects.logs")
+		hooker, err := mgorus.NewHooker(url, "i1820", fmt.Sprintf("projects.logs.%s", envy.Get("NAME", "ElRunner")))
 		if err == nil {
 			logrus.AddHook(hooker)
 			logrus.Infof("Logrus MongoDB Hook is %s", url)
