@@ -15,6 +15,8 @@ package app
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/I1820/ElRunner/codec"
@@ -24,33 +26,42 @@ import (
 
 func (a *Application) decode() {
 	for d := range a.decodeStream {
-		// Run decode when data needs decode
-		if d.Data == nil {
-			decoder, err := codec.NewWithoutCode(d.ThingID)
-			if err != nil {
-				a.Logger.WithFields(logrus.Fields{
-					"component": "elrunner",
-				}).Errorf("%s does not exist on GoRunner", d.ThingID)
-				continue
-			}
-
-			ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-			parsed, err := decoder.Decode(ctx, d.Raw)
-			cancel()
-			if err != nil {
-				a.Logger.WithFields(logrus.Fields{
-					"component": "elrunner",
-				}).Errorf("Decode error: %s", err)
-				continue
-			} else {
-				d.Data = parsed
-				a.Logger.WithFields(logrus.Fields{
-					"component": "elrunner",
-				}).Infof("Decode on: %v", d)
-			}
-			a.insertStream <- d
+		decoder, err := codec.NewWithoutCode(d.ThingID)
+		if err != nil {
+			a.Logger.WithFields(logrus.Fields{
+				"component": "elrunner",
+			}).Errorf("%s does not exist on GoRunner", d.ThingID)
+			continue
 		}
-		a.scenarioStream <- d
+
+		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+		parsed, err := decoder.Decode(ctx, d.Raw)
+		cancel()
+		if err != nil {
+			a.Logger.WithFields(logrus.Fields{
+				"component": "elrunner",
+			}).Errorf("Decode error: %s", err)
+			continue
+		} else {
+			d.Data = parsed
+			a.Logger.WithFields(logrus.Fields{
+				"component": "elrunner",
+			}).Infof("Decode on: %v", d)
+		}
+
+		// Publish parsed data
+		b, err := json.Marshal(d)
+		if err != nil {
+			a.Logger.WithFields(logrus.Fields{
+				"component": "uplink",
+			}).Errorf("Marshal data error: %s", err)
+		}
+		a.cli.Publish(fmt.Sprintf("i1820/project/%s/data", d.Project), 0, false, b)
+		a.Logger.WithFields(logrus.Fields{
+			"component": "uplink",
+		}).Infof("Publish data into runner %s", d.Project)
+
+		a.insertStream <- d
 	}
 }
 

@@ -91,7 +91,10 @@ func (a *Application) Run() {
 	opts.SetClientID(fmt.Sprintf("I1820-elrunner-%s", a.Name))
 	opts.SetOrderMatters(false)
 	opts.SetOnConnectHandler(func(client paho.Client) {
-		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/data", a.Name), 0, a.mqttHandler); t.Error() != nil {
+		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/raw", a.Name), 0, a.mqttRawHandler); t.Error() != nil {
+			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
+		}
+		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/data", a.Name), 0, a.mqttDataHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
 	})

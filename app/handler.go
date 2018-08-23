@@ -21,7 +21,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (a *Application) mqttHandler(client paho.Client, message paho.Message) {
+func (a *Application) mqttRawHandler(client paho.Client, message paho.Message) {
 	var d types.Data
 	if err := json.Unmarshal(message.Payload(), &d); err != nil {
 		a.Logger.WithFields(logrus.Fields{
@@ -34,4 +34,19 @@ func (a *Application) mqttHandler(client paho.Client, message paho.Message) {
 		"component": "elrunner",
 	}).Infof("Marshal on %v", d)
 	a.decodeStream <- d
+}
+
+func (a *Application) mqttDataHandler(client paho.Client, message paho.Message) {
+	var d types.Data
+	if err := json.Unmarshal(message.Payload(), &d); err != nil {
+		a.Logger.WithFields(logrus.Fields{
+			"component": "elrunner",
+			"topic":     message.Topic(),
+		}).Errorf("Marshal error %s", err)
+		return
+	}
+	a.Logger.WithFields(logrus.Fields{
+		"component": "elrunner",
+	}).Infof("Marshal on %v", d)
+	a.scenarioStream <- d
 }
