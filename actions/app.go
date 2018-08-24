@@ -80,6 +80,10 @@ func App() *buffalo.App {
 			api.POST("/codecs/{codec_id}/decode", cr.Decode)
 			api.POST("/codecs/{codec_id}/encode", cr.Encode)
 
+			sr := ScenariosResource{}
+			api.Resource("/scenarios", sr)
+			api.GET("/scenarios/{scenario_id}/activate", sr.Activate)
+
 			api.POST("/lint", LintHandler)
 		}
 	}
