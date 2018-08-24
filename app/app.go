@@ -16,6 +16,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"os"
 	"runtime"
 
 	"github.com/I1820/ElRunner/scenario"
@@ -68,6 +69,20 @@ func New(name string) *Application {
 	a.insertStream = make(chan types.Data)
 
 	return &a
+}
+
+// Scenario creates symbolic link for given scenario
+// and runs it. with this method users can have many
+// scenario and active them when ever she want.
+func (a *Application) Scenario(id string) error {
+	if err := os.Symlink(fmt.Sprintf("/tmp/scenario-%s.py", id), "/tmp/scenario-main.py"); err != nil {
+		return err
+	}
+
+	if err := a.scr.ActivateWithoutCode("main"); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Run runs application. this function connects mqtt client and then register its topic
