@@ -124,6 +124,12 @@ func (ScenariosResource) Deactivate(c buffalo.Context) error {
 
 	if s := scenarioRegexp.FindStringSubmatch(name); len(s) > 1 {
 		linkApp.Scenario().Deactivate()
+
+		if err := os.Remove("/tmp/scenario-main.py"); err != nil {
+			// I think remove error is not important
+			// at least for now
+		}
+
 		return c.Render(http.StatusOK, r.JSON(s[1]))
 	}
 
