@@ -117,20 +117,17 @@ func (ScenariosResource) Activate(c buffalo.Context) error {
 // Deactivate deactivates scenario. This function is mapped
 // to the path GET /scenarios/deactivate
 func (ScenariosResource) Deactivate(c buffalo.Context) error {
-	id := c.Param("scenario_id")
-
-	// creates symbolic link for given scenario
-	// and runs it. with this method users can have many
-	// scenario and active them when ever she want.
-	if err := os.Symlink(fmt.Sprintf("/tmp/scenario-%s.py", id), "/tmp/scenario-main.py"); err != nil {
+	name, err := os.Readlink("/tmp/scenario-main.py")
+	if err != nil {
 		return c.Error(http.StatusInternalServerError, err)
 	}
 
-	if err := linkApp.Scenario().ActivateWithoutCode("main"); err != nil {
-		return c.Error(http.StatusInternalServerError, err)
+	if s := scenarioRegexp.FindStringSubmatch(name); len(s) > 1 {
+		linkApp.Scenario().Deactivate()
+		return c.Render(http.StatusOK, r.JSON(s[1]))
 	}
 
-	return c.Render(http.StatusOK, r.JSON(id))
+	return c.Error(http.StatusInternalServerError, fmt.Errorf("This should not happen"))
 }
 
 // Main returns main (activated) scenario. This function is mapped

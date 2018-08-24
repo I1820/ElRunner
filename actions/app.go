@@ -82,6 +82,7 @@ func App() *buffalo.App {
 
 			sr := ScenariosResource{}
 			api.GET("/scenarios/main", sr.Main)
+			api.GET("/scenarios/deactivate", sr.Deactivate)
 			api.Resource("/scenarios", sr)
 			api.GET("/scenarios/{scenario_id}/activate", sr.Activate)
 
