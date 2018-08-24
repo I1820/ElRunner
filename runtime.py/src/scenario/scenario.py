@@ -34,7 +34,7 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = None
 
         try:
-            self.data_db = pymongo.MongoClient(os.environ['MONGO_URL']).isrc
+            self.data_db = pymongo.MongoClient(os.environ['DB_URL']).i1820
         except Exception:
             self.data_db = None
 
