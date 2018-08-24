@@ -135,9 +135,9 @@ func (s *Scenario) ActivateWithoutCode(id string) error {
 
 func (s *Scenario) startRunner(id string) {
 	if s.enable {
+		s.enable = false
 		s.runner.Stop()
 	}
-	s.enable = true
 	s.runner = runner.New(&runner.Task{
 		Run: func(e runner.Event) (string, error) {
 			cmd := exec.Command("runtime.py", "--job", "rule", "--id", e.Env("thing"), fmt.Sprintf("/tmp/scenario-%s.py", id))
@@ -166,6 +166,7 @@ func (s *Scenario) startRunner(id string) {
 		},
 		Interval: 0,
 	}, 1024)
+	s.enable = true
 
 	s.runner.ErrHandler = func(err error) {
 		log.WithFields(log.Fields{
