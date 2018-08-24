@@ -53,26 +53,32 @@ func (a *Application) decode() {
 		b, err := json.Marshal(d)
 		if err != nil {
 			a.Logger.WithFields(logrus.Fields{
-				"component": "uplink",
+				"component": "elrunner",
 			}).Errorf("Marshal data error: %s", err)
 		}
 		a.cli.Publish(fmt.Sprintf("i1820/project/%s/data", d.Project), 0, false, b)
 		a.Logger.WithFields(logrus.Fields{
-			"component": "uplink",
-		}).Infof("Publish data into runner %s", d.Project)
+			"component": "elrunner",
+		}).Infof("Publish parsed data: %s", d.Project)
 
 		a.insertStream <- d
 	}
 }
 
 func (a *Application) scenario() {
-	for range a.scenarioStream {
+	for d := range a.scenarioStream {
+		b, err := json.Marshal(d)
+		if err != nil {
+			a.Logger.WithFields(logrus.Fields{
+				"component": "elrunner",
+			}).Errorf("Marshal data error: %s", err)
+		}
+		a.scr.Data(string(b), d.ThingID)
 	}
 }
 
 func (a *Application) insert() {
 	for d := range a.insertStream {
-		// f is a filter for data. new data is the same as the old one just data field it empty on old data.
 		if _, err := a.db.Collection("data").ReplaceOne(context.Background(), bson.NewDocument(
 			bson.EC.String("thingid", d.ThingID),
 			bson.EC.Time("timestamp", d.Timestamp),
