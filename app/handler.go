@@ -27,12 +27,12 @@ func (a *Application) mqttRawHandler(client paho.Client, message paho.Message) {
 		a.Logger.WithFields(logrus.Fields{
 			"component": "elrunner",
 			"topic":     message.Topic(),
-		}).Errorf("Marshal error %s", err)
+		}).Errorf("Raw Marshal error %s", err)
 		return
 	}
 	a.Logger.WithFields(logrus.Fields{
 		"component": "elrunner",
-	}).Infof("Marshal on %v", d)
+	}).Infof("Raw Marshal on %v", d)
 	a.decodeStream <- d
 }
 
@@ -42,11 +42,11 @@ func (a *Application) mqttDataHandler(client paho.Client, message paho.Message) 
 		a.Logger.WithFields(logrus.Fields{
 			"component": "elrunner",
 			"topic":     message.Topic(),
-		}).Errorf("Marshal error %s", err)
+		}).Errorf("Data Marshal error %s", err)
 		return
 	}
 	a.Logger.WithFields(logrus.Fields{
 		"component": "elrunner",
-	}).Infof("Marshal on %v", d)
+	}).Infof("Data Marshal on %v", d)
 	a.scenarioStream <- d
 }
