@@ -34,9 +34,9 @@ class Scenario(metaclass=abc.ABCMeta):
             self.redis = None
 
         try:
-            self.data_db = pymongo.MongoClient(os.environ['DB_URL']).i1820
+            self._db = pymongo.MongoClient(os.environ['DB_URL']).i1820
         except Exception:
-            self.data_db = None
+            self._db = None
 
     @staticmethod
     def sleep(seconds):
@@ -51,7 +51,7 @@ class Scenario(metaclass=abc.ABCMeta):
         Finds given thing data in database
         :param thingid: Array of things identifiers
         """
-        return self.data_db.parsed.find({
+        return self._db.data.find({
             'thingid': {"$in": thingid},
             'project': os.environ['NAME'],
         })
