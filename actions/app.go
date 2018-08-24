@@ -81,6 +81,7 @@ func App() *buffalo.App {
 			api.POST("/codecs/{codec_id}/encode", cr.Encode)
 
 			sr := ScenariosResource{}
+			api.GET("/scenarios/main", sr.Main)
 			api.Resource("/scenarios", sr)
 			api.GET("/scenarios/{scenario_id}/activate", sr.Activate)
 

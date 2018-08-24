@@ -95,14 +95,55 @@ func (ScenariosResource) Show(c buffalo.Context) error {
 	return c.Render(http.StatusOK, r.JSON(string(b)))
 }
 
-// Activate activates scenario. This function is mapped
+// Activate activates (run) scenario. This function is mapped
 // to the path GET /scenarios/{scenario_id}/activate
 func (ScenariosResource) Activate(c buffalo.Context) error {
 	id := c.Param("scenario_id")
 
-	if err := linkApp.Scenario(id); err != nil {
-		c.Error(http.StatusInternalServerError, err)
+	// creates symbolic link for given scenario
+	// and runs it. with this method users can have many
+	// scenario and active them when ever she want.
+	if err := os.Symlink(fmt.Sprintf("/tmp/scenario-%s.py", id), "/tmp/scenario-main.py"); err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	if err := linkApp.Scenario().ActivateWithoutCode("main"); err != nil {
+		return c.Error(http.StatusInternalServerError, err)
 	}
 
 	return c.Render(http.StatusOK, r.JSON(id))
+}
+
+// Deactivate deactivates scenario. This function is mapped
+// to the path GET /scenarios/deactivate
+func (ScenariosResource) Deactivate(c buffalo.Context) error {
+	id := c.Param("scenario_id")
+
+	// creates symbolic link for given scenario
+	// and runs it. with this method users can have many
+	// scenario and active them when ever she want.
+	if err := os.Symlink(fmt.Sprintf("/tmp/scenario-%s.py", id), "/tmp/scenario-main.py"); err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	if err := linkApp.Scenario().ActivateWithoutCode("main"); err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	return c.Render(http.StatusOK, r.JSON(id))
+}
+
+// Main returns main (activated) scenario. This function is mapped
+// to the path GET /scenarios/main
+func (ScenariosResource) Main(c buffalo.Context) error {
+	name, err := os.Readlink("/tmp/scenario-main.py")
+	if err != nil {
+		return c.Error(http.StatusInternalServerError, err)
+	}
+
+	if s := scenarioRegexp.FindStringSubmatch(name); len(s) > 1 {
+		return c.Render(http.StatusOK, r.JSON(s[1]))
+	}
+
+	return c.Error(http.StatusInternalServerError, fmt.Errorf("This should not happen"))
 }
