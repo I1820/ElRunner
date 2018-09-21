@@ -14,10 +14,11 @@ its provides runtime python library [runtime.py] for you application in order to
 
 These variables are avaiable in container:
 
-- Project ID: `NAME`
-- User Email: `USER`
+- Project ID: `PROJECT`
+- Project Owner Email Address: `OWNER`
 - Redis Host: `REDIS_HOST`
-- Mongo URL: `MONGO_URL`
+- Mongo URL: `DB_URL`
+- Broker URL: `BROKER_URL`
 
 ## Decode/Encode
 
