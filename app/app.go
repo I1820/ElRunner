@@ -45,7 +45,8 @@ type Application struct {
 	insertStream   chan types.Data
 }
 
-// New creates new application. this function creates mqtt client
+// New creates new application. this function does not create mqtt client
+// it creates mongodb session and scenario instances
 func New(name string) *Application {
 	a := Application{}
 
