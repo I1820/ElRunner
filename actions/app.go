@@ -67,7 +67,7 @@ func App() *buffalo.App {
 			app.Use(middleware.ParameterLogger)
 		}
 
-		// LinkApp
+		// LinkApp initiation
 		linkApp = linkapp.New(envy.Get("NAME", "ElRunner"))
 		linkApp.Run()
 

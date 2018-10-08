@@ -100,7 +100,7 @@ func (a *Application) Run() {
 	// state from outside.
 	a.Logger.WithFields(logrus.Fields{
 		"component": "elrunner",
-	}).Infof("ElRunner Link Application %s", a.Name)
+	}).Infof("ElRunner Link Application on project %s", a.Name)
 
 	// Create an MQTT client
 	/*
