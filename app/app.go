@@ -46,9 +46,9 @@ type Application struct {
 	scr     *scenario.Scenario
 
 	// pipeline channels
-	decodeStream   chan types.Data
-	scenarioStream chan types.Data
-	insertStream   chan types.Data
+	decodeStream   chan *types.State
+	scenarioStream chan *types.State
+	insertStream   chan *types.State
 
 	// in order to close the pipeline nicely
 	decodeCloseChan    chan struct{}  // decode stage sends one value to this channel on its return
@@ -75,9 +75,9 @@ func New(name string) *Application {
 	a.scr = scenario.New()
 
 	// pipeline channels
-	a.decodeStream = make(chan types.Data)
-	a.scenarioStream = make(chan types.Data)
-	a.insertStream = make(chan types.Data)
+	a.decodeStream = make(chan *types.State)
+	a.scenarioStream = make(chan *types.State)
+	a.insertStream = make(chan *types.State)
 
 	return &a
 }
@@ -136,16 +136,16 @@ func (a *Application) Run() {
 	}
 	a.db = a.session.Database("i1820")
 
-	// scenario
+	// load the main scenario if it exists
 	if err := a.scr.ActivateWithoutCode("main"); err != nil {
 	}
 
 	// pipeline stages
 	for i := 0; i < runtime.NumCPU(); i++ {
-		go a.decode()
-		go a.scenario()
-		go a.insert()
-		a.insertCloseCounter.Add(1)
+		// go a.decodeStage()
+		go a.scenarioStage()
+		// go a.insertStage()
+		// a.insertCloseCounter.Add(1)
 	}
 }
 
