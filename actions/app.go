@@ -68,7 +68,7 @@ func App() *buffalo.App {
 		}
 
 		// LinkApp initiation
-		linkApp = linkapp.New(envy.Get("NAME", "ElRunner"))
+		linkApp = linkapp.New(envy.Get("PROJECT", "ElRunner"))
 		linkApp.Run()
 
 		// Routes
