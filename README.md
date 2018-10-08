@@ -28,11 +28,11 @@ ElRunner can decode/encode your data with your given codec in python.
 from codec import Codec
 import cbor
 
-class ISRC(Codec):
+class Fanco(Codec):
     def decode(self, data):
         return cbor.loads(data)
     def encode(self, data):
-        pass
+        return cbor.stores(data)
 ```
 
 ## Scenario
