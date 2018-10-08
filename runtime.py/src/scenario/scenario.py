@@ -15,7 +15,7 @@ import redis
 import aiohttp
 import pymongo
 
-# RPC requirements
+# RPC requirements (!)
 RPC_SERVER = '127.0.0.1'
 RPC_PORT = 1373
 URL = 'http://{}:{}/'.format(RPC_SERVER, RPC_PORT)
@@ -28,12 +28,12 @@ class Scenario(metaclass=abc.ABCMeta):
 
     def __init__(self, id):
         self.id = id
-        try:
+        try: # redis connection if avaiable
             self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
         except KeyError:
             self.redis = None
 
-        try:
+        try: # mongo connection if avaiable
             self._db = pymongo.MongoClient(os.environ['DB_URL']).i1820
         except Exception:
             self._db = None
@@ -46,21 +46,23 @@ class Scenario(metaclass=abc.ABCMeta):
     def schedule(delay_seconds, action_function, args=()):
         threading.Timer(delay_seconds, action_function, args).start()
 
-    def find_data(self, thingid):
-        """
+    def find_data(self, thingid, assets):
+        '''
         Finds given thing data in database
-        :param thingid: Array of things identifiers
-        """
-        return self._db.data.find({
-            'thingid': {"$in": thingid},
-            'project': os.environ['NAME'],
+        :param thingid: thing identifier
+        :param assets: array of asset names (please note that we do not accept human readable title here)
+        '''
+        if self._db is None:
+            return []
+        return self._db['data.{0}.{1}'.format(thingd, os.environ['PROJECT']).format()].find({
+            'asset': {"$in": assets},
         })
 
     async def wait_for_data(self, timeout):
-        """
+        '''
         Requests data from server.
         :param timeout: Timeout time until response (data) in seconds.
-        """
+        '''
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.WaitForData'
         request_payload['id'] = self.counter
@@ -73,12 +75,12 @@ class Scenario(metaclass=abc.ABCMeta):
             return json['result']
 
     async def send_to_down_link(self, message, timeout):
-        """
+        '''
         Send data containing commands to server.
         :param message: Message data to be sent to server.
         :param timeout: Timeout time until response (acknowledge) in seconds.
         :return: Response that shows whether message is received or not.
-        """
+        '''
         request_payload = PAYLOAD.copy()
         request_payload['method'] = 'Endpoint.SendToDownLink'
         request_payload['params'] = [message]
@@ -94,8 +96,11 @@ class Scenario(metaclass=abc.ABCMeta):
     @staticmethod
     def send_email(host, port, username, password, sender,
                    receivers, message):
-        """
+        '''
         Send email using given host to some receivers.
+        This function do not raise any exception in order to keep
+        it safe for critical scenarios that need continue running even
+        when sending email is not working.
         :param host: Email server host name or ip.
         :param port: Email server port number.
         :param username: Email account username
@@ -105,7 +110,7 @@ class Scenario(metaclass=abc.ABCMeta):
         :param message: Email body message containing from address,
         to address, subject and body.
         :return: True if email is sent or False otherwise.
-        """
+        '''
         successful = False
         try:
             smtp_obj = smtplib.SMTP(host=host, port=port)
@@ -113,7 +118,6 @@ class Scenario(metaclass=abc.ABCMeta):
             smtp_obj.login(user=username, password=password)
             smtp_obj.sendmail(sender, receivers, message)
             smtp_obj.quit()
-            print("Successfully sent email")
             successful = True
         except smtplib.SMTPException as exception:
             print(exception)
@@ -122,4 +126,7 @@ class Scenario(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def run(self, data=None):
+        '''
+        Implement your scenario here
+        '''
         pass
