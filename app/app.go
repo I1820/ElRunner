@@ -17,6 +17,7 @@ import (
 	"context"
 	"fmt"
 	"runtime"
+	"sync"
 
 	"github.com/I1820/ElRunner/scenario"
 	"github.com/I1820/types"
@@ -26,8 +27,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Application is a main component of uplink that consists of
-// uplink protocols and mqtt client
+// Application part of the Runner gathers data from MQTT
+// system of the I1820 platform and then puts it into its pipeline.
+// Pipeline of application consists of following stage
+// - Decode Stage
+// - Scenario Stage
+// - Insert Stage
+// Name of the application is used as project name in system MQTT subscription.
 type Application struct {
 	Name string
 
@@ -43,6 +49,11 @@ type Application struct {
 	decodeStream   chan types.Data
 	scenarioStream chan types.Data
 	insertStream   chan types.Data
+
+	// in order to close the pipeline nicely
+	decodeCloseChan    chan struct{}  // decode stage sends one value to this channel on its return
+	scenarioCloseChan  chan struct{}  // scenario stage sends one value to this channel on its return
+	insertCloseCounter sync.WaitGroup // count number of insert stages so `Exit` can wait for all of them
 }
 
 // New creates new application. this function does not create mqtt client
@@ -100,7 +111,7 @@ func (a *Application) Run() {
 		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/raw", a.Name), 0, a.mqttRawHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
-		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/data", a.Name), 0, a.mqttDataHandler); t.Error() != nil {
+		if t := a.cli.Subscribe(fmt.Sprintf("i1820/projects/%s/things/+/assets/+/state", a.Name), 0, a.mqttDataHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
 	})
