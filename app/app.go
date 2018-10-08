@@ -118,7 +118,8 @@ func (a *Application) Run() {
 		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/raw", a.Name), 0, a.mqttRawHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
-		if t := a.cli.Subscribe(fmt.Sprintf("i1820/projects/%s/things/+/assets/+/state", a.Name), 0, a.mqttDataHandler); t.Error() != nil {
+
+		if t := a.cli.Subscribe(fmt.Sprintf("i1820/projects/%s/things/+/assets/+/state", a.Name), 0, a.mqttStateHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
 		}
 	})

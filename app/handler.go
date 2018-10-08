@@ -36,7 +36,9 @@ func (a *Application) mqttRawHandler(client paho.Client, message paho.Message) {
 	a.decodeStream <- d
 }
 
-func (a *Application) mqttDataHandler(client paho.Client, message paho.Message) {
+// mqttStateHandler handles states that are coming from MQTT. These states do not need
+// parse so they are passed directly into scenario stage.
+func (a *Application) mqttStateHandler(client paho.Client, message paho.Message) {
 	var d types.Data
 	if err := json.Unmarshal(message.Payload(), &d); err != nil {
 		a.Logger.WithFields(logrus.Fields{
