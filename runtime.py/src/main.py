@@ -25,7 +25,8 @@ from scenario import Scenario
 @click.option('--id', type=str, default="")
 def run(target, job, id):
     '''
-    run given target in provided environment
+    run given target in isolated environment. job specifies target type.
+    id specifies a thing we are working on :)
     '''
     g = runpy.run_path(target, run_name='ucodec')
     for value in g.values():
@@ -52,11 +53,13 @@ def run(target, job, id):
         if codec.thing_location != '' and codec.thing_location in d:
             d['_location'] = d[codec.thing_location]
         print(json.dumps(d))
+
     if job == 'encode':
         s = input()
         with contextlib.redirect_stdout(sys.stderr):
             e = codec().encode(json.loads(s))
         print(base64.b64encode(e).decode('ascii'))
+
     if job == 'rule':
         s = input()
         scenario(id).run(json.loads(s))
