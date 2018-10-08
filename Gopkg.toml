@@ -34,7 +34,7 @@
   name = "github.com/weekface/mgorus"
 
 [[constraint]]
-  branch = "master"
+  version = "=0.0.12"
   name = "github.com/mongodb/mongo-go-driver"
 
 [[constraint]]
