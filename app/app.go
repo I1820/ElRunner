@@ -87,8 +87,15 @@ func (a *Application) Scenario() *scenario.Scenario {
 	return a.scr
 }
 
-// Run runs application. this function connects mqtt client and then register its topic
+// Run runs application. this function connects mqtt client and then subscribes on its topic
 func (a *Application) Run() {
+	// create close channels here so we can run and stop single
+	// application many times
+	a.decodeCloseChan = make(chan struct{}, 1)
+	a.scenarioCloseChan = make(chan struct{}, 1)
+
+	// log core application run. This log is useful for tracing project docker
+	// state from outside.
 	a.Logger.WithFields(logrus.Fields{
 		"component": "elrunner",
 	}).Infof("ElRunner Link Application %s", a.Name)
@@ -104,8 +111,8 @@ func (a *Application) Run() {
 		AutoReconnect: True
 	*/
 	opts := paho.NewClientOptions()
-	opts.AddBroker(envy.Get("BROKER_URL", "tcp://127.0.0.1:1883"))
-	opts.SetClientID(fmt.Sprintf("I1820-elrunner-%s", a.Name))
+	opts.AddBroker(envy.Get("BROKER_URL", "tcp://127.0.0.1:18083"))
+	opts.SetClientID(fmt.Sprintf("I1820-elrunner-%s", a.Name)) // there is only one mqtt client per project
 	opts.SetOrderMatters(false)
 	opts.SetOnConnectHandler(func(client paho.Client) {
 		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/raw", a.Name), 0, a.mqttRawHandler); t.Error() != nil {
@@ -137,5 +144,20 @@ func (a *Application) Run() {
 		go a.decode()
 		go a.scenario()
 		go a.insert()
+		a.insertCloseCounter.Add(1)
 	}
+}
+
+// Exit closes mqtt connection then closes all channels and return from all pipeline stages
+func (a *Application) Exit() {
+	// disconnect waiting time in milliseconds
+	var quiesce uint = 10
+	a.cli.Disconnect(quiesce)
+
+	// close project stream
+	close(a.decodeStream)
+
+	// all channels are going to close
+	// so we are waiting for them
+	a.insertCloseCounter.Wait()
 }
