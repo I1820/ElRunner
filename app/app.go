@@ -43,7 +43,7 @@ type Application struct {
 
 	session *mgo.Client
 	db      *mgo.Database
-	scr     *scenario.Scenario
+	scr     *scenario.Scenario // scenario instance
 
 	// pipeline channels
 	decodeStream   chan *types.State
@@ -82,7 +82,9 @@ func New(name string) *Application {
 	return &a
 }
 
-// Scenario returns application scenario instance
+// Scenario returns application scenario instance.
+// This is a bad habit but we require this becuase we update
+// scenario from http services.
 func (a *Application) Scenario() *scenario.Scenario {
 	return a.scr
 }

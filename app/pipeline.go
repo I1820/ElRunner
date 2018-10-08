@@ -72,7 +72,7 @@ func (a *Application) scenarioStage() {
 				"component": "elrunner",
 			}).Errorf("Marshal data error: %s", err)
 		}
-		a.scr.Data(string(b), d.ThingID)
+		a.scr.Data(string(b), d.ThingID) // passes data to scenario instance
 	}
 }
 
