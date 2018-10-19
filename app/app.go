@@ -63,7 +63,8 @@ func New(name string) *Application {
 
 	a.Name = name
 
-	a.Logger = logrus.New()
+	// hijack standard logger so we have registered hooks
+	a.Logger = logrus.StandardLogger()
 
 	// Create a mongodb connection
 	url := envy.Get("DB_URL", "mongodb://127.0.0.1:27017")
