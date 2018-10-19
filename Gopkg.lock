@@ -117,14 +117,12 @@
   version = "v1.8.0"
 
 [[projects]]
-  digest = "1:e61af881cd75ad287543883bd9d90937f8e152f1e18989d9519b1efeaa0df062"
+  digest = "1:601514938ddede7d913345d211051fd811b93548fc06977848b875186bee3397"
   name = "github.com/gobuffalo/buffalo"
   packages = [
     ".",
     "binding",
-    "middleware",
     "middleware/csrf",
-    "middleware/ssl",
     "render",
     "servers",
     "worker",
@@ -140,17 +138,6 @@
   pruneopts = "UT"
   revision = "1d5d07f03aef257dfa1e6d9a2007e9684d0d7d98"
   version = "v1.0.4"
-
-[[projects]]
-  digest = "1:59a5421266ea258a690382da1833e5723d7fc8c83c085a0b901a38496b332f40"
-  name = "github.com/gobuffalo/buffalo-pop"
-  packages = [
-    "pop",
-    "pop/popmw",
-  ]
-  pruneopts = "UT"
-  revision = "b9aa3818ea5da758172eb4d434955d87beee258e"
-  version = "v1.1.2"
 
 [[projects]]
   digest = "1:38101365bdbea4ca2746cf7bac064b3f18d6a5561787d653a54f80c7afb4b513"
@@ -243,14 +230,6 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "446ff26e108b9a8933dfc854d37a68d5adf2c226"
-
-[[projects]]
-  branch = "master"
-  digest = "1:9a291fb17e0f69c3bf52931f6495d76024becd6771e07b40eddbf0f5ccbed059"
-  name = "github.com/gobuffalo/mw-forcessl"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "73921ae7a130ea521bd2cc3d1a14cf6fb269b266"
 
 [[projects]]
   branch = "master"
@@ -777,14 +756,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b3fc264e7f7d8ce623a4a33e84cb4725c61dd4dd2ab789bc2e5f1713294886b4"
-  name = "github.com/unrolled/secure"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "ff9db2ff917ff44b71a2e62c015f4c7e0e567929"
-
-[[projects]]
-  branch = "master"
   digest = "1:36bd090da7c15cd83d6c180e5910ba8faa51de156282ace60456b9a6eed1f35b"
   name = "github.com/weekface/mgorus"
   packages = ["."]
@@ -909,10 +880,10 @@
     "github.com/I1820/types",
     "github.com/eclipse/paho.mqtt.golang",
     "github.com/gobuffalo/buffalo",
-    "github.com/gobuffalo/buffalo/middleware",
-    "github.com/gobuffalo/buffalo/middleware/ssl",
     "github.com/gobuffalo/buffalo/render",
     "github.com/gobuffalo/envy",
+    "github.com/gobuffalo/mw-contenttype",
+    "github.com/gobuffalo/mw-paramlogger",
     "github.com/gobuffalo/suite",
     "github.com/gobuffalo/x/sessions",
     "github.com/mongodb/mongo-go-driver/mongo",
@@ -920,7 +891,6 @@
     "github.com/rs/cors",
     "github.com/sirupsen/logrus",
     "github.com/stretchr/testify/assert",
-    "github.com/unrolled/secure",
     "github.com/weekface/mgorus",
   ]
   solver-name = "gps-cdcl"

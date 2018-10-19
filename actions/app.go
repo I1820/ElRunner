@@ -5,8 +5,9 @@ import (
 
 	linkapp "github.com/I1820/ElRunner/app"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/envy"
+	contenttype "github.com/gobuffalo/mw-contenttype"
+	paramlogger "github.com/gobuffalo/mw-paramlogger"
 	"github.com/sirupsen/logrus"
 	"github.com/weekface/mgorus"
 
@@ -34,6 +35,11 @@ func App() *buffalo.App {
 			SessionName: "_el_runner_session",
 		})
 
+		// If no content type is sent by the client
+		// the application/json will be set, otherwise the client's
+		// content type will be used.
+		app.Use(contenttype.Add("application/json"))
+
 		// Create mongodb connection
 		url := envy.Get("DB_URL", "mongodb://172.18.0.1:27017")
 		hooker, err := mgorus.NewHooker(url, "i1820", fmt.Sprintf("projects.logs.%s", envy.Get("PROJECT", "ElRunner")))
@@ -45,7 +51,7 @@ func App() *buffalo.App {
 		}
 
 		if ENV == "development" {
-			app.Use(middleware.ParameterLogger)
+			app.Use(paramlogger.ParameterLogger)
 		}
 
 		// LinkApp initiation
