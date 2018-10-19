@@ -118,6 +118,12 @@ func (a *Application) Run() {
 	opts.SetClientID(fmt.Sprintf("I1820-elrunner-%s", a.Name)) // there is only one mqtt client per project
 	opts.SetOrderMatters(false)
 	opts.SetOnConnectHandler(func(client paho.Client) {
+		// log core application broker connection. This log is useful for tracing project docker
+		// state from outside.
+		a.Logger.WithFields(logrus.Fields{
+			"component": "elrunner",
+		}).Infof("ElRunner Link Application on project %s is connected to broker", a.Name)
+
 		// TODO generic decoder
 		if t := a.cli.Subscribe(fmt.Sprintf("i1820/project/%s/raw", a.Name), 0, a.mqttRawHandler); t.Error() != nil {
 			a.Logger.Fatalf("MQTT subscribe error: %s", t.Error())
