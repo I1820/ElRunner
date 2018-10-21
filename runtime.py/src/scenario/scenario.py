@@ -27,7 +27,7 @@ class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
     def __init__(self, id):
-        self.id = id
+        self.id = id # thing identification
         try: # redis connection if avaiable
             self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
         except KeyError:
@@ -60,7 +60,7 @@ class Scenario(metaclass=abc.ABCMeta):
 
     async def wait_for_data(self, timeout):
         '''
-        Requests data from server.
+        Waits for incoming data that are from the ElRunner core.
         :param timeout: Timeout time until response (data) in seconds.
         '''
         request_payload = PAYLOAD.copy()
@@ -125,7 +125,7 @@ class Scenario(metaclass=abc.ABCMeta):
         return successful
 
     @abc.abstractmethod
-    def run(self, data=None):
+    async def run(self, data=None):
         '''
         Implement your scenario here
         '''

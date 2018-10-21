@@ -14,6 +14,7 @@ import json
 import traceback
 import sys
 import contextlib
+import asyncio
 
 from codec import Codec
 from scenario import Scenario
@@ -62,7 +63,7 @@ def run(target, job, id):
 
     if job == 'rule':
         s = input()
-        scenario(id).run(json.loads(s))
+        asyncio.run(scenario(id).run(json.loads(s)))
 
 
 def main():
