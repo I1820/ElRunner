@@ -88,13 +88,13 @@ class Fanco(Scenario):
         f.write(str(data))
         f.write('\n')
 
-	response = await self.wait_for_data(timeout=1000)
+        response = await self.wait_for_data(timeout=1000)
         if response is not None:
             f.write(str(response))
         else:
             f.write('timeout')
         f.close()
-	`)
+        `)
 
 	s := New()
 	go func() {
