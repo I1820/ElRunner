@@ -19,7 +19,7 @@ jobs:
         - go get -u golang.org/x/lint/golint   # linter
         - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
 
-        # Install python and runtime.py
+        # Install python and runtime.py based on deadsnakes ppa
         - sudo add-apt-repository -y ppa:deadsnakes/ppa
         - sudo apt-get -m update || true
         - sudo apt-get install -y python3.6 python3.6-dev
@@ -40,7 +40,7 @@ jobs:
         - buffalo test
 
     - language: python
-      python: 3.6
+      python: 3.7
       services:
         - mongodb
       before_install:
