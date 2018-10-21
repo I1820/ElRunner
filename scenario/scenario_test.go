@@ -37,8 +37,8 @@ func TestHelloScenario(t *testing.T) {
 	code := []byte(`
 from scenario import Scenario
 
-class ISRC(Scenario):
-    def run(self, data):
+class Fanco(Scenario):
+    async def run(self, data):
         f = open('/tmp/hello', 'w+')
         f.write(str(data))
         f.close()
@@ -82,21 +82,17 @@ func TestRPCScenario(t *testing.T) {
 import asyncio
 from scenario import Scenario
 
-class ISRC(Scenario):
-    def run(self, data):
+class Fanco(Scenario):
+    async def run(self, data):
         f = open('/tmp/rpc', 'w+')
         f.write(str(data))
         f.write('\n')
 
-        loop = asyncio.get_event_loop()
-        t = asyncio.ensure_future(self.wait_for_data(timeout=1000))
-        loop.run_until_complete(t)
-        loop.close()
-        response = t.result()
+	response = await self.wait_for_data(timeout=1000))
         if response is not None:
             f.write(str(response))
         else:
-            f.write(str(t.done()))
+            f.write('timeout')
         f.close()
 	`)
 
@@ -122,6 +118,8 @@ class ISRC(Scenario):
 	data, err := ioutil.ReadAll(f)
 	assert.NoError(t, err)
 
+	assert.Equal(t, data, []byte("{\"Hello\": 10}\n{\"Hello\": 9}"))
+
 	t.Log(string(data))
 }
 
@@ -130,19 +128,19 @@ func TestEmailScenario(t *testing.T) {
 from scenario import Scenario
 
 
-class S1(Scenario):
-    def run(self, data):
-        sender = 'ceitiotlabtest@gmail.com'
+class Fanco(Scenario):
+    async def run(self, data):
+        sender = 'platform.avidnetco@gmail.com'
         receivers = ['parham.alvani@gmail.com']
 
-        message = 'From: From Travis CI <ceitiotlabtest@gmail.com>\n' \
+        message = 'From: From Travis CI of Avidnet <platform.avidnetco@gmail.com>\n' \
                   'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
-                  'Subject: Rule Engine Notification\n\n' \
+                  'Subject: Rule Engine Notification (Avidnet-Travis)\n\n' \
                   'Data:' + str(data) + '\n' \
-                                        'Sent by Rule Engine. Scenario:1.'
+                                        'Sent by Rule Engine. Scenario'
         self.send_email(host='smtp.gmail.com', port=587,
-                        username="ceitiotlabtest",
-                        password="ceit is the best",
+                        username="platform.avidnetco@gmail.com",
+                        password="fancopass(1397)",
                         sender=sender,
                         receivers=receivers, message=message)
 	`)
