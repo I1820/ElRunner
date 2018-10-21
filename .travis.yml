@@ -28,9 +28,9 @@ jobs:
         - go get -u github.com/kisielk/errcheck    # errcheck checks that you checked errors.
 
         # Install python and runtime.py based on deadsnakes ppa
-        - curl "https://bootstrap.pypa.io/get-pip.py" | python3.7
-        - python3.7 -m pip install setuptools
-        - cd runtime.py && python3.7 setup.py install && cd ..
+        - curl "https://bootstrap.pypa.io/get-pip.py" | sudo -H python3.7
+        - sudo python3.7 -m pip install setuptools
+        - cd runtime.py && sudo python3.7 setup.py install && cd ..
 
         # docker services
         - docker run -p 18083:1883 -e "DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on" --name vernemq1 -d erlio/docker-vernemq
