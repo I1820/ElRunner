@@ -27,5 +27,5 @@ RUN apk add --no-cache build-base python3-dev
 WORKDIR /app/runtime.py
 RUN python3 setup.py install
 # Remove python stuffs
-RUN apk del build-base python3.7-dev
+RUN apk del build-base python3-dev
 ENTRYPOINT ["/app/ElRunner"]
