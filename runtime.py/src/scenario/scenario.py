@@ -27,13 +27,13 @@ class Scenario(metaclass=abc.ABCMeta):
     counter = 0
 
     def __init__(self, id):
-        self.id = id # thing identification
-        try: # redis connection if avaiable
+        self.id = id  # thing identification
+        try:  # redis connection if avaiable
             self.redis = redis.Redis(host=os.environ['REDIS_HOST'])
         except KeyError:
             self.redis = None
 
-        try: # mongo connection if avaiable
+        try:  # mongo connection if avaiable
             self._db = pymongo.MongoClient(os.environ['DB_URL']).i1820
         except Exception:
             self._db = None
@@ -50,13 +50,15 @@ class Scenario(metaclass=abc.ABCMeta):
         '''
         Finds given thing data in database
         :param thingid: thing identifier
-        :param assets: array of asset names (please note that we do not accept human readable title here)
+        :param assets: array of asset names
+        (please note that we do not accept human readable title here)
         '''
         if self._db is None:
             return []
-        return self._db['data.{0}.{1}'.format(thingd, os.environ['PROJECT']).format()].find({
-            'asset': {"$in": assets},
-        })
+        return self._db['data.{0}.{1}'.format(thingid, os.environ['PROJECT'])
+                        .format()].find({
+                            'asset': {"$in": assets},
+                        })
 
     async def wait_for_data(self, timeout):
         '''
