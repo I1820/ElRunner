@@ -22,10 +22,10 @@ jobs:
         # Install python and runtime.py based on deadsnakes ppa
         - sudo add-apt-repository -y ppa:deadsnakes/ppa
         - sudo apt-get -m update || true
-        - sudo apt-get install -y python3.6 python3.6-dev
-        - wget https://bootstrap.pypa.io/get-pip.py && sudo -H python3.6 get-pip.py
-        - sudo python3.6 -m pip install -U pip setuptools
-        - cd runtime.py && sudo python3.6 setup.py install && cd ..
+        - sudo apt-get install -y python3.7 python3.7-dev
+        - wget https://bootstrap.pypa.io/get-pip.py && sudo -H python3.7 get-pip.py
+        - sudo python3.7 -m pip install -U pip setuptools
+        - cd runtime.py && sudo python3.7 setup.py install && cd ..
 
         # docker services
         - docker run -p 18083:1883 -e "DOCKER_VERNEMQ_ALLOW_ANONYMOUS=on" --name vernemq1 -d erlio/docker-vernemq
