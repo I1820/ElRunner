@@ -72,9 +72,9 @@ func (c *Codec) exec(ctx context.Context, t command, input string) (string, erro
 
 	switch t {
 	case decodeCommand:
-		cmd = exec.CommandContext(ctx, "runtime.py", "--job", "decode", fmt.Sprintf("/tmp/codec-%s.py", c.id))
+		cmd = exec.CommandContext(ctx, "runtime.py", "--job", "decode", "--id", c.id, fmt.Sprintf("/tmp/codec-%s.py", c.id))
 	case encodeCommand:
-		cmd = exec.CommandContext(ctx, "runtime.py", "--job", "encode", fmt.Sprintf("/tmp/codec-%s.py", c.id))
+		cmd = exec.CommandContext(ctx, "runtime.py", "--job", "encode", "--id", c.id, fmt.Sprintf("/tmp/codec-%s.py", c.id))
 	}
 
 	// stdin
