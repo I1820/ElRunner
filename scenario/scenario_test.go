@@ -126,6 +126,7 @@ class Fanco(Scenario):
 func TestEmailScenario(t *testing.T) {
 	code := []byte(`
 from scenario import Scenario
+from datetime import datetime
 
 
 class Fanco(Scenario):
@@ -136,7 +137,8 @@ class Fanco(Scenario):
         message = 'From: From Travis CI of Avidnet <platform.avidnetco@gmail.com>\n' \
                   'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
                   'Subject: Rule Engine Notification (Avidnet-Travis)\n\n' \
-                  'Data:' + str(data) + '\n' \
+                  'Data: ' + str(data) + '\n' \
+		  'Date: ' + str(datetime.now()) + '\n' \
                                         'Sent by Rule Engine. Scenario'
         self.send_email(host='smtp.gmail.com', port=587,
                         username="platform.avidnetco@gmail.com",
