@@ -11,6 +11,7 @@ jobs:
           packages:
             - python3.7-dev
             - python3.7
+            - libssl-dev
       services:
         - docker
         - mongodb
@@ -23,12 +24,12 @@ jobs:
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
         # Install linters
-        - go get -u golang.org/x/lint/golint   # linter
-        - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
+        - go get -u golang.org/x/lint/golint       # linter
+        - go get -u github.com/kisielk/errcheck    # errcheck checks that you checked errors.
 
         # Install python and runtime.py based on deadsnakes ppa
         - curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
-        - python3.7 get-pip.py --user
+        - sudo python3.7 get-pip.py
         - sudo python3.7 -m pip install setuptools
         - cd runtime.py && sudo python3.7 setup.py install && cd ..
 
