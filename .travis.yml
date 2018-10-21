@@ -4,6 +4,13 @@ jobs:
       language: go
       go: "1.10"
       dist: trusty
+      addons:
+        apt:
+          sources:
+            - deadsnakes
+          packages:
+            - python3.7-dev
+            - python3.7
       services:
         - docker
         - mongodb
@@ -20,10 +27,9 @@ jobs:
         - go get -u github.com/kisielk/errcheck                # errcheck checks that you checked errors.
 
         # Install python and runtime.py based on deadsnakes ppa
-        - sudo add-apt-repository -y ppa:deadsnakes/ppa
-        - sudo apt-get -m update || true
-        - sudo apt-get install -y python3.7 python3.7-dev
-        - sudo python3.7 -mpip install setuptools
+        - curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+        - python3.7 get-pip.py --user
+        - sudo python3.7 -m pip install setuptools
         - cd runtime.py && sudo python3.7 setup.py install && cd ..
 
         # docker services
