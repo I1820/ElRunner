@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build-env /ElRunner /app/
 COPY runtime.py /app/runtime.py
 # Install python stuffs
-RUN apk add --no-cache build-base python3.7-dev
+RUN apk add --no-cache build-base python3-dev
 # Install runtime.py
 WORKDIR /app/runtime.py
 RUN python3 setup.py install
