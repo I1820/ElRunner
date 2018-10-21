@@ -20,6 +20,26 @@ These variables are avaiable in container:
 - Mongo URL: `DB_URL`
 - Broker URL: `BROKER_URL`
 
+## Runtime.py
+Python runtime environment for ElRunner scripts. This environment is written in python 3.7. In order to install
+it do following commands in ubuntu 18.04:
+
+```sh
+sudo apt install python3.7 python3.7-venv python3.7-doc
+cd runtime.py
+python3.7 -mvenv .
+rm bin/python3
+ln -s /usr/bin/python3.7 bin/python3
+pip3.7 install -U setuptools
+python3.7 setup.py install
+```
+
+Please note that following packages have C dependencies so they require python3.7-dev for installation.
+
+- cbor
+- aiohttp
+
+
 ## Decode/Encode
 
 ElRunner can decode/encode your data with your given codec in python.
