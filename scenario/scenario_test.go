@@ -118,7 +118,7 @@ class Fanco(Scenario):
 	data, err := ioutil.ReadAll(f)
 	assert.NoError(t, err)
 
-	assert.Equal(t, data, []byte("{'Hello': 10}\n{'Hello': 9}"))
+	assert.Equal(t, data, []byte("{'Hello': 10}\n{\"Hello\": 9}"))
 
 	t.Log(string(data))
 }
