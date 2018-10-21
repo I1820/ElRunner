@@ -22,35 +22,44 @@ from scenario import Scenario
 
 @click.command()
 @click.argument('target', type=click.Path())
-@click.option('--job', type=click.Choice(['decode', 'encode', 'rule']))
-@click.option('--id', type=str, default="")
+@click.option('--job', type=click.Choice(['decode', 'encode', 'rule']),
+              required=True)
+@click.option('--id', type=str, required=True)
 def run(target, job, id):
     '''
     run given target in isolated environment. job specifies target type.
     id specifies a thing we are working on :)
     '''
-    g = runpy.run_path(target, run_name='ucodec')
-    for value in g.values():
-        if isinstance(value, type) and issubclass(value, Codec) and \
-                value.__module__ == 'ucodec':
-            codec = value
 
-    g = runpy.run_path(target, run_name='uscenario')
-    for value in g.values():
-        if isinstance(value, type) and issubclass(value, Scenario) and \
-                value.__module__ == 'uscenario':
-            scenario = value
+    # search and load codec from given target.
+    # it raises an exception if there is no class that inherits codec class.
+    if job == 'decode' or job == 'encode':
+        g = runpy.run_path(target, run_name='ucodec')
+        for value in g.values():
+            if isinstance(value, type) and issubclass(value, Codec) and \
+                    value.__module__ == 'ucodec':
+                codec = value
+                break
+        else:
+            raise Exception("Invalid codec class")
 
-    if (job == 'decode' or job == 'encode') and 'codec' not in locals():
-        raise Exception("Invalid codec class")
-
-    if job == 'scenario' and 'scenario' not in locals():
-        raise Exception("Invalid scenario class")
+    # search and load scenario from given target.
+    # it raises an exception if there is no class that inherits scenario class.
+    if job == 'rule':
+        g = runpy.run_path(target, run_name='uscenario')
+        for value in g.values():
+            if isinstance(value, type) and issubclass(value, Scenario) and \
+                    value.__module__ == 'uscenario':
+                scenario = value
+                break
+        else:
+            raise Exception("Invalid scenario class")
 
     if job == 'decode':
         s = input()
         with contextlib.redirect_stdout(sys.stderr):
             d = codec().decode(base64.b64decode(s))
+        # handles location in codec
         if codec.thing_location != '' and codec.thing_location in d:
             d['_location'] = d[codec.thing_location]
         print(json.dumps(d))
