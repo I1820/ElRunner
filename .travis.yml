@@ -41,6 +41,8 @@ jobs:
 
     - language: python
       python: 3.7
+      dist: xenial
+      sudo: required
       services:
         - mongodb
       before_install:
