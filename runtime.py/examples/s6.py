@@ -23,8 +23,8 @@ class S6(Scenario):
 
         message = 'From: From Avidnet <platform.avidnetco@gmail.com>\n' \
                   'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
-                  'Subject: Load Generator Notification \
-            [Thing: ' + self.id + ']\n\n' \
+                  'Subject: Load Generator Notification' \
+            '[Thing: ' + self.id + ']\n\n' \
                   'Count: ' + count + '\n' \
                   'Date-Time: ' + str(datetime.now()) + '\n' \
                   'At: ' + data['at'] + '\n' \
