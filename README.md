@@ -39,6 +39,8 @@ Please note that following packages have C dependencies so they require python3.
 - cbor
 - aiohttp
 
+## Logging
+Each I1820Core classes have a Logger that sends logs to MongoDB using [log4mongo](https://pypi.org/project/log4mongo/).
 
 ## Decode/Encode
 
