@@ -2,8 +2,8 @@
 Scenario 6:
 This scenario relay on two asset, time and count.
 it sends email when count is multiple of 10 * 60 * 1000.
-Avidnet uses this script for its load tests. In these tests avidnet compares
-datetime with at in each mail.
+I1820 uses this script for its load tests. In these tests we compares
+datetime with `at` section of each data in every mail that this scenario sends.
 '''
 
 from scenario import Scenario
