@@ -21,7 +21,7 @@ EXPOSE 8080/tcp
 WORKDIR /app
 COPY --from=build-env /ElRunner /app/
 COPY runtime.py /app/runtime.py
-# Install certificates
+# Install certificates (email and sms services of runners require this)
 RUN apk add --no-cache ca-certificates && update-ca-certificates
 # Install python stuffs
 RUN apk add --no-cache build-base python3-dev
