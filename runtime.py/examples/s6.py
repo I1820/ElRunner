@@ -18,10 +18,10 @@ class S6(Scenario):
         if int(count) % (10 * 60 * 100) != 0:
             return
 
-        sender = 'platform.avidnetco@gmail.com'
+        sender = ''
         receivers = ['parham.alvani@gmail.com']
 
-        message = 'From: From Avidnet <platform.avidnetco@gmail.com>\n' \
+        message = 'From: From I1820 <>\n' \
                   'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
                   'Subject: Load Generator Notification' \
             '[Thing: ' + self.id + ']\n\n' \
@@ -29,8 +29,8 @@ class S6(Scenario):
                   'Date-Time: ' + str(datetime.now()) + '\n' \
                   'At: ' + data['at'] + '\n' \
             'Sent by Rule Engine. Scenario-6.'
-        self.send_email(host='smtp.gmail.com', port=587,
-                        username="platform.avidnetco@gmail.com",
-                        password="fancopass(1397)",
+        self.send_email(host='', port=587,
+                        username='',
+                        password='',
                         sender=sender,
                         receivers=receivers, message=message)
