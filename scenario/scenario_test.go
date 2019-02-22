@@ -125,24 +125,25 @@ class Fanco(Scenario):
 
 func TestEmailScenario(t *testing.T) {
 	code := []byte(`
+import os
 from scenario import Scenario
 from datetime import datetime
 
 
 class Fanco(Scenario):
     async def run(self, data):
-        sender = 'platform.avidnetco@gmail.com'
+        sender = 'i1820.org@gmail.com'
         receivers = ['parham.alvani@gmail.com']
 
-        message = 'From: From Travis CI of Avidnet <platform.avidnetco@gmail.com>\n' \
+        message = 'From: From Travis CI of I1820 <i1820.org@gmail.com>\n' \
                   'To: To Parham Alvani <parham.alvani@gmail.com>\n' \
-                  'Subject: Rule Engine Notification (Avidnet-Travis)\n\n' \
+                  'Subject: Rule Engine Notification (I1820-Travis)\n\n' \
                   'Data: ' + str(data) + '\n' \
 		  'Date: ' + str(datetime.now()) + '\n' \
                                         'Sent by Rule Engine. Scenario'
         self.send_email(host='smtp.gmail.com', port=587,
-                        username="platform.avidnetco@gmail.com",
-                        password="fancopass(1397)",
+                        username='i1820.org@gmail.com',
+                        password=os.environ['I1820_EMAIL_PASSWORD'],
                         sender=sender,
                         receivers=receivers, message=message)
 	`)
