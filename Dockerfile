@@ -1,9 +1,9 @@
 # Build stage
-FROM golang:alpine AS build-env
-COPY . $GOPATH/src/github.com/I1820/ElRunner
-RUN apk --no-cache add git
-WORKDIR $GOPATH/src/github.com/I1820/ElRunner
-RUN go get -v && go build -v -o /ElRunner
+FROM golang:1.12-alpine AS build-env
+WORKDIR /app
+RUN apk --no-cache add git ca-certificates git gcc g++ libc-dev
+COPY . .
+RUN go build -v -o /ElRunner
 
 # Final stage
 FROM alpine:latest
